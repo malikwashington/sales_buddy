@@ -1,2 +1,28 @@
 # sales_buddy
 web-based CRM and mobile sales enablement tool
+
+
+features:
+
+Has Auth
+Upcoming tasks
+Task priority editor
+
+Mass upload contacts via csv
+
+Has dynamic dashboards for:
+- [ ] Gamification
+    - [ ] Consecutive days of activity
+    - [ ] Goals? Set by user?
+    - [ ] Levels 
+        - [ ] Based on contacts? Activity?
+- [ ] Total contacts added
+- [ ] Contacts emailed
+- [ ] Contacts called
+- [ ] Daily/weekly/monthly
+- [ ] HVT LI posts (prospect & company)
+- [ ] Total contacts added (day, month, year, all-time)
+- [ ] Contacts emailed
+- [ ] Contacts called
+- [ ] Daily/weekly/monthly
+- [ ] HVT LI posts (prospect & company)
