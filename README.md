@@ -3,6 +3,11 @@ web-based CRM and mobile sales enablement tool
 
 
 features:
+create virtual env
+install django 
+create project
+bse bages/pages
+
 
 Has Auth
 Upcoming tasks
