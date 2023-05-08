@@ -12,6 +12,7 @@ bse bages/pages
 Has Auth
 Upcoming tasks
 Task priority editor
+chat with teams
 
 Mass upload contacts via csv
 
@@ -31,3 +32,5 @@ Has dynamic dashboards for:
 - [ ] Contacts called
 - [ ] Daily/weekly/monthly
 - [ ] HVT LI posts (prospect & company)
+- [ ] twilio api
+- [ ] chron jobs/scheduling
