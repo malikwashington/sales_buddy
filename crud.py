@@ -1,20 +1,20 @@
 """CRUD operations."""
 
-from model import db, User, Movie, Rating, connect_to_db
+from model import db, User, connect_to_db
 
 
 def create_user(email, password):
-    """Create and return a new user."""
+  """Create and return a new user."""
 
-    user = User(email=email, password=password)
+  user = User(email=email, password=password)
 
-    return user
+  return user
 
 
 def get_users():
-    """Return all users."""
+  """Return all users."""
 
-    return User.query.all()
+  return User.query.all()
   
   
 def get_contacts_by_user(user_id):
