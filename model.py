@@ -1,5 +1,4 @@
 """Models for  app."""
-import os
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
@@ -15,7 +14,7 @@ class User(db.Model):
   email = db.Column(db.String, unique=True, nullable=False)
   password = db.Column(db.String, nullable=False)
   
-  contacts = db.relationship('Contact', backref='user')
+  contacts = db.relationship('Contact', back_populates='user')
 
   def __repr__(self):
     return f'<User user_id={self.user_id} email={self.email}'
@@ -25,23 +24,12 @@ class Contact(db.Model):
   
   __tablename__ = "contacts" 
   
-  def __init__(self, f_name, l_name, linkedin, email, company, notes, urgency, potential, opportunity):
-    self.f_name = f_name
-    self.l_name = l_name
-    self.linkedin = linkedin
-    self.email = email
-    self.company = company
-    self.notes = notes
-    self.urgency = urgency
-    self.potential = potential
-    self.opportunity = opportunity
-    self.priority = priority
-
   contact_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
   f_name = db.Column(db.String(25), nullable=False)
   l_name = db.Column(db.String(25), nullable=False)
+  phone = db.Column(db.String(25), nullable=True)
   linkedin = db.Column(db.String(100), nullable=True)
   email = db.Column(db.String(100), nullable=True)
   company = db.Column(db.String(100), nullable=True)
@@ -50,60 +38,64 @@ class Contact(db.Model):
   potential = db.Column(db.Integer, nullable=False, default=0)
   opportunity = db.Column(db.Integer, nullable=False, default=0)
   date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-  last_contacted = db.Column(db.DateTime, nullable=True)
-  priority = db.Column(db.Float, nullable=False)
-
+  last_contacted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+  priority = db.Column(db.Float, nullable=False, default=0)
+  
 
   # contact_history = db.relationship('Contact_History', backref='contact')
-  #do i have to make a contact_history table? 
+  #do i have to make a contact_history table to properly update the last_contacted column? 
   #or can i just have a call_history, email_history, text_history table?
   
-  call_history = db.relationship('Call_Record', backref='contact')
-  email_history = db.relationship('Email_Record', backref='contact')
-  text_history = db.relationship('Text_Record', backref='contact')
+  call_history = db.relationship('Call_Record', back_populates='contact')
+  email_history = db.relationship('Email_Record', back_populates='contact')
+  text_history = db.relationship('Text_Record', back_populates='contact')
   
-  user = db.relationship('User', backref='contacts')
+  user = db.relationship('User', back_populates='contacts')
   
   def __repr__(self):
     return f'''<Contact contact_id={self.contact_id} priority={self.priority}
   f_name={self.f_name} l_name={self.l_name}>''' 
 
+class Email_Record(db.Model):
+  '''An email record for a contact'''
+  
+  __tablename__ = "email_records"
+  
+  contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
+  email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  email_body = db.Column(db.Text, nullable=True)
+  email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+  
+  contact = db.relationship('Contact', back_populates='email_history')
+
 class Call_Record(db.Model):
   '''A call record for a contact'''
   
-  __tablename__ = "call_history"
+  __tablename__ = "call_records"
 
-  
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id')) 
   call_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   call_notes = db.Column(db.Text, nullable=True)
   call_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
   
+  contact = db.relationship('Contact', back_populates='call_history')
+
   def __repr__(self):
     return f'<Call_Record call_id={self.call_id} for contact_id={self.contact_id}>'
   
-class Email_Record(db.Model):
-  '''An email record for a contact'''
-  
-  __tablename__ = "email_history"
-  
-  contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
-  email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  email_body = db.Column(db.Text, nullable=False)
-  email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-  
-  def __repr__(self):
-    return f'<Email_Record email_id={self.email_id} for contact_id={self.contact_id}>'
+
 
 class Text_Record(db.Model):
   '''A text record for a contact'''
   
-  __tablename__ = "text_history"
+  __tablename__ = "text_records"
   
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   text_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   text_body = db.Column(db.Text, nullable=False)
   text_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+  
+  contact = db.relationship('Contact', back_populates='text_history')
   
   def __repr__(self):
     return f'<Text_Record text_id={self.text_id} for contact_id={self.contact_id}>'
@@ -125,8 +117,6 @@ if __name__ == "__main__":
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every
     # query it executes.
-    name = 'salesbuddy'
-    connect_to_db(app)
-    os.system(f'dropdb {name} --if-exists')
-    os.system(f'createdb {name}')
-    os.system(f'db.create_all()')
+    with app.app_context():
+      connect_to_db(app)
+      db.create_all()
