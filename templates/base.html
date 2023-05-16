@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} Sales Buddy {% endblock %}</title>
+    {% block head %} {% endblock %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/style.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Some fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+    />
+    <!-- Font Awesome goes in the Head -->
+    <script
+      src="https://kit.fontawesome.com/ebe0d025e9.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top px-2">
+      <a class="navbar-brand" href="#">SalesBuddy</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+        </ul>
+
+        <div class="collapse navbar-collapse justify-content-end mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Sign Up
+              </a>
+
+              <div
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
+                <a class="dropdown-item" href="#">Sign Up</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Sign In</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% block body %} {% endblock %}
+
+    <div class="container-fluid m-0 p-0">
+      <div class="row">
+        <footer class="bg-light text-center m-0">
+          <div class="container p-0">
+            <!-- Section: Social media -->
+            <section class="mb-1 mt-2">
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #3b5998"
+                href="#!"
+                role="button"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #55acee"
+                href="#!"
+                role="button"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #dd4b39"
+                href="#!"
+                role="button"
+                ><i class="fab fa-google"></i
+              ></a>
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #ac2bac"
+                href="#!"
+                role="button"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #0082ca"
+                href="#!"
+                role="button"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a
+                class="btn btn-primary btn-floating mb-1 mx-2"
+                style="background-color: #333333"
+                href="#!"
+                role="button"
+                ><i class="fab fa-github"></i
+              ></a>
+            </section>
+          </div>
+
+          <div
+            class="text-center p-3 m-0"
+            style="background-color: rgba(0, 0, 0, 0.2)"
+          >
+            © 2020 Copyright: Malik Washington
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+      integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
