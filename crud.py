@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import db, User, Contact, connect_to_db
+from model import User, Contact
 # from server import app
 
 def create_user(email, password):
@@ -18,7 +18,7 @@ def get_users():
 def get_user_by_email(email):
   """Return a user by email."""
 
-  return User.query.filter(User.email == email).first()
+  return User.query.filter(User.email.lower() == email.lower()).first()
 
 
 

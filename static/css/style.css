@@ -44,6 +44,7 @@ body {
   justify-content: center;
 }
 
+
 .card .box.front img {
   width: 120px;
   height: 120px;
@@ -56,6 +57,10 @@ body {
 .card:hover .box.front {
   transform: rotateY(180deg);
 }
+
+/* #carousel{
+  margin-bottom: ;
+} */
 
 .box.front h2 {
   font-family: 'Bebas Neue', cursive;
@@ -80,9 +85,10 @@ body {
 }
 
 .card .box.back .fa-quote-left {
+  float: left;
   position: absolute;
   top: 25px;
-  left: 180px;
+  left: 10%; 
   font-size: 3.2rem;
 }
 

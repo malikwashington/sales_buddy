@@ -12,15 +12,19 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="../css/style.css">
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
     />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+   
+   <!-- CSS stylesheet -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+   
+   
     <!-- Some fonts -->
     <link
       rel="stylesheet"
@@ -30,6 +34,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
     />
+   
+   
     <!-- Font Awesome goes in the Head -->
     <script
       src="https://kit.fontawesome.com/ebe0d025e9.js"
@@ -38,7 +44,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top px-2">
-      <a class="navbar-brand" href="#">SalesBuddy</a>
+      <a class="navbar-brand" href="/">SalesBuddy</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -65,40 +71,45 @@
             <a class="nav-link" href="#">Pricing</a>
           </li>
         </ul>
-
+        
         <div class="collapse navbar-collapse justify-content-end mr-auto">
           <ul class="navbar-nav mr-3">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Sign Up
-              </a>
-
-              <div
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="navbarDropdown"
-              >
-                <a class="dropdown-item" href="#">Sign Up</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Sign In</a>
-              </div>
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " data-bs-toggle="modal" data-bs-target="#login">Login</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
+
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+        ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     {% block body %} {% endblock %}
 
-    <div class="container-fluid m-0 p-0">
+    <div class="container-fluid m-0 p-0 text-white fixed-bottom">
       <div class="row">
         <footer class="bg-light text-center m-0">
-          <div class="container p-0">
+          <div class="container-fluid m-0 p-0">
             <!-- Section: Social media -->
             <section class="mb-1 mt-2">
               <a
