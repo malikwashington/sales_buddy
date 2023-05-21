@@ -3,11 +3,12 @@
 from model import User, Contact
 # from server import app
 
-def create_user(email, password):
+def create_user(fname, lname, email, password):
   """Create and return a new user."""
 
-  user = User(email=email, password=password)
+  user = User(fname=fname, lname=lname, email=email, password=password)
 
+  print(f'\n\n user created: {user} \n\n')
   return user
 
 def get_users():

@@ -1,28 +1,54 @@
 {% extends 'base.html' %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %}Sign In{% endblock %}
 
 {% block body %}
-
 <div class="container">
-  <form action="/signup" method="POST">
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input required type="email" name="email" placeholder="Email" 
-        class="form-control" id="email">
+  
+  <h1>Joint The Revolution!</h1>
+  <form method="post">
+    {{form.hidden_tag()}}
+    <div class="row">
+      <div class="col">
+        
+        <div class="form-group-lg">
+          {{form.fname.label(class="form-control-label")}}
+          {{form.fname(class="form-control", placeholder="Enter your first name")}}
+        </div>
+
+      </div>
+
+      <div class="col">
+
+        <div class="form-group-lg">
+          {{form.lname.label(class="form-control-label")}}
+          {{form.lname(class="form-control", placeholder="Enter your last name")}}
+        </div>
+
+      </div>
+
     </div>
+
     <div class="form-group">
-      <label for="password">Password</label>
-      <input required type="password" name="password" placeholder="Password" 
-        class="form-control" id="password">
+      {{form.email.label(class="form-control-label")}}
+      {{form.email(class="form-control", placeholder="Enter your email")}}
     </div>
+
     <div class="form-group">
-      <label for="password2">Confirm Password</label>
-      <input required type="password" name="password2" placeholder="Confirm Password" 
-        class="form-control" id="password2">
+      {{form.password.label(class="form-control-label")}}
+      {{form.password(class="form-control", placeholder="Enter your password")}}
     </div>
-    <button type="submit" class="btn btn-primary">Sign Up</button>
+
+    <div class="form-group">
+      {{form.password2.label(class="form-control-label")}}
+      {{form.password2(class="form-control", placeholder="Confirm your password")}}
+    </div>
+    <br>
+    <div class="form-group">
+      {{form.submit(class="btn btn-danger btn-lg float-end")}}
+    </div>
   </form>
+
 </div>
 
 {% endblock %}

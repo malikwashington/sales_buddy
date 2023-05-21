@@ -11,7 +11,6 @@ import os
 import json
 from datetime import datetime
 
-
 os.system("dropdb salesbuddy --if-exists")
 os.system("createdb salesbuddy")
 
@@ -20,7 +19,7 @@ with server.app.app_context():
   model.db.create_all()
 
   #create user
-  test_user = crud.create_user('test@test.com', 'test')
+  test_user = crud.create_user('test','user', 'test@test.com', 'test')
 
   model.db.session.add(test_user)
   model.db.session.commit()

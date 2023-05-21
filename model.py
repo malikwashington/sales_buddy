@@ -1,6 +1,7 @@
 """Models for  app."""
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
@@ -11,11 +12,30 @@ class User(db.Model):
   
   
   user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  fname = db.Column(db.String(25), nullable=False)
+  lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
-  password = db.Column(db.String, nullable=False)
+  password_hash = db.Column(db.String(128), nullable=False)
   
+  @property
+  def full_name(self):
+    """Return full name of user"""
+    
+    return f'{self.fname} {self.lname}'
+  
+  @property
+  def password(self):
+    raise AttributeError('password is a write-only field')
+  
+  @password.setter
+  def password(self, password):
+    self.password_hash = generate_password_hash(password)
+    
+  def verify_password(self, password):
+    return check_password_hash(self.password_hash, password)
+    
   contacts = db.relationship('Contact', back_populates='user')
-
+ 
   def __repr__(self):
     return f'<User user_id={self.user_id} email={self.email}'
 

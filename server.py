@@ -1,40 +1,67 @@
 """Server for sales buddy app."""
 
+from forms import RegistrationForm
+from keys import SECRET_KEY
 from flask import Flask, render_template, request, flash, session, redirect
 from model import connect_to_db, db
 import crud
 
 from jinja2 import StrictUndefined
+# from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from forms import RegistrationForm
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
+app.config['SECRET_KEY'] = SECRET_KEY
 
+#Invalid URL
+@app.errorhandler(404)
+def page_not_found(e):
+  """Custom 404 page."""
+  return render_template('404.html'), 404
+
+#Internal Server Error
+@app.errorhandler(500)
+def page_not_found(e):
+  """Custom 404 page."""
+  return render_template('500.html'), 500
+
+#Homepage
 @app.route('/')
 def homepage():
   """View homepage."""
 
   return render_template('homepage.html')
 
+#signup up page
 @app.route('/signup', methods=['GET','POST'])
 def sign_up():
   """sign up page."""
-  error = ''
-  if request.method == 'POST':
-    email = request.form.get('email')
-    password = request.form.get('password')
-    password2 = request.form.get('password2')
-    user = crud.get_user_by_email(email)
-    if user:
-      error = 'User already exists'
-      return render_template('signup.html', error=error)
-    elif password != password2:
-      error = 'Passwords do not match'
-      return render_template('signup.html', error=error)
+  
+  form = RegistrationForm()  
+  name = None
+  
+  if form.validate_on_submit():
+    fname = form.fname.data
+    lname = form.lname.data
+    email = form.email.data
+    password = form.password.data
+    form.fname.data = ''
+    form.lname.data = ''
+    form.email.data = ''
+    form.password.data = ''
+    form.password2.data = ''
+    if crud.get_user_by_email(email):
+      flash(f'Account already exists for {form.email.data}!', 'danger')
+      return redirect('/signup')
     else:
-      crud.create_user(email, password)
-      flash('Account created! Please log in.')
-      return redirect('/homepage')
-  return render_template('signup.html')
+      user = crud.create_user(fname, lname, email, password)
+      db.session.add(user)
+      db.session.commit()
+      flash(f'Account created for {form.name.data}!', 'success')
+      return redirect('/')
+  
+  return render_template('signup.html', form=form, name=name)
 
   
   
