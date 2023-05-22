@@ -2,16 +2,17 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class User(db.Model, UserMixin):
   """A user.""" 
   
   __tablename__ = "users"
   
   
-  user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
@@ -37,7 +38,7 @@ class User(db.Model):
   contacts = db.relationship('Contact', back_populates='user')
  
   def __repr__(self):
-    return f'<User user_id={self.user_id} email={self.email}'
+    return f'<User user_id={self.id} email={self.email}'
 
 class Contact(db.Model):
   '''A contact'''
@@ -45,7 +46,7 @@ class Contact(db.Model):
   __tablename__ = "contacts" 
   
   contact_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
   f_name = db.Column(db.String(25), nullable=False)
   l_name = db.Column(db.String(25), nullable=False)

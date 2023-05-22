@@ -6,22 +6,24 @@ from model import User, Contact
 def create_user(fname, lname, email, password):
   """Create and return a new user."""
 
-  user = User(fname=fname, lname=lname, email=email, password=password)
+  user = User(fname=fname, lname=lname, email=email.lower(), password=password)
 
   print(f'\n\n user created: {user} \n\n')
   return user
-
-def get_users():
-  """Return all users."""
-
-  return User.query.all()
   
 def get_user_by_email(email):
   """Return a user by email."""
 
-  return User.query.filter(User.email.lower() == email.lower()).first()
+  return User.query.filter(User.email == email.lower().strip()).first()
 
-
+def login_user(email, password):
+  '''checks if email and password match a user in the database 
+  returns a tuple of boolean and if true, the user object'''
+  user = get_user_by_email(email)
+  verify = user.verify_password(password)
+  if all((user,verify)):
+    return (verify, user)
+  return (False,)
 
 def add_contact_to_user(user, f_name, l_name, urgency=0, potential=0, opportunity=0,
                         phone=None, linkedin=None, email=None, company=None, notes=None): 
@@ -40,4 +42,4 @@ def get_contacts_by_user(user_id):
 
 
 # if __name__ == '__main__':
-  # connect_to_db(app)
+#   connect_to_db(app)

@@ -1,11 +1,45 @@
 {% extends 'base.html' %}
 
 
+{%block navright %}
+
+ <li class="nav-item">
+              <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " data-bs-toggle="modal" data-bs-target="#login">Login</a>
+            </li>
+
+{% endblock %}
+
+{% block modalTitle %} Sign In {% endblock %}
+
+{% block modalBody %}
+<form action="/" id="modal-form" method="POST">
+  {{form.hidden_tag()}}
+
+  <div class="form-group">
+    {{form.email.label(class="form-control-label")}}
+    {{form.email(class="form-control")}}
+  </div>
+
+  <div class="form-group">
+    {{form.password.label(class="form-control-label")}}
+    {{form.password(class="form-control")}}
+  </div>
+</form>
+
+{% endblock %}
+
+{% block modalFooter %}
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+{{form.submit(class="btn btn-primary", form="modal-form")}}
+{% endblock %}
 
 
 {% block body %}
 
-  <div class="container overflow-auto mb-3 mt-5 pt-5">
+  <div class="container overflow-auto my-5 py-5">
     <div class="row">
       <div class="col">
         <h1>Home</h1>
@@ -88,14 +122,17 @@
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
         </p>
-          
- 
+        
+        
       </div>
     </div>
-
-<!-- carousel -->
-        
-    <div id="carousel" class="carousel slide mb-5 mt-2" data-bs-ride="carousel">
+    
+    <!-- carousel -->
+    
+    <div id="carousel" class="carousel slide mb-5 pb-2 mt-2" data-bs-ride="carousel">
+      <div class="container text-center">
+        <h2 class="p-5">Customer Testimonials:</h2>
+      </div>
       <div class="carousel-inner">
               
         <div class="carousel-item active">
@@ -103,7 +140,7 @@
             <!-- card 1 -->
                 <div class="col-lg-4">
                   <div class="card">
-                      
+                      <!-- card front -->
                     <div class="box front">
                       <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
                       <h2>Name</h2>
@@ -113,6 +150,7 @@
                       
                     <div class="box back">
                       <span class="fa fa-quote-left mb-1"></span>
+                      <!-- quote for the back of the card -->
                       <p class="mt-2">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                         Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -133,6 +171,7 @@
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
+                  <!-- quote for the back of the card -->
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                     Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -155,6 +194,7 @@
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
+                  <!-- text for back of card -->
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                     Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -182,6 +222,7 @@
               
               <div class="box back">
                 <span class="fa fa-quote-left mb-1"></span>
+                <!-- text for back of card -->
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                   Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -203,6 +244,7 @@
             
             <div class="box back">
               <span class="fa fa-quote-left mb-1"></span>
+              <!-- text for back of card -->
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                 Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -225,6 +267,7 @@
             
             <div class="box back">
               <span class="fa fa-quote-left mb-1"></span>
+              <!-- text for the back of the card -->
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                 Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -252,6 +295,7 @@
                 </div>
                 
                 <div class="box back">
+                  <!-- text for the back of the card -->
                   <p>
                     <span class="fa fa-quote-left mb-1"></span>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
@@ -273,6 +317,7 @@
                 </div>
                 
                 <div class="box back">
+                  <!-- text for the back of the card -->
                   <p>
                     <span class="fa fa-quote-left mb-1"></span>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
@@ -296,6 +341,7 @@
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
+                  <!-- text for the back of the card -->
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                     Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
@@ -311,4 +357,5 @@
       </div>
     </div>
   </div>
+  
 {% endblock %}
