@@ -4,7 +4,7 @@ import forms
 from keys import SECRET_KEY
 from flask import Flask, render_template, request, flash, session, redirect, url_for
 from model import connect_to_db, db, User, Contact
-import crud
+import user_funcs
 
 from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -57,7 +57,7 @@ def homepage():
     form.email.data = ''
     form.password.data = ''
     # sign in user
-    user = crud.login_user(email, password)
+    user = user_funcs.login_user(email, password)
     if user[0]:
       #login user
       login_user(user[1])
@@ -88,12 +88,12 @@ def sign_up():
     form.password.data = ''
     form.password2.data = ''
     #check if user exists
-    if crud.get_user_by_email(email):
+    if user_funcs.get_user_by_email(email):
       flash(f'Account already exists for {email}!', 'danger')
       return render_template('/signup.html', form=form)
     else:
     #create user 
-      user = crud.create_user(fname, lname, email, password)
+      user = user_funcs.create_user(fname, lname, email, password)
       db.session.add(user)
       db.session.commit()
       flash(f'Account created for {user.full_name}!', 'success')

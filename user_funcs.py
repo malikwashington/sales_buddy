@@ -26,7 +26,7 @@ def login_user(email, password):
   return (False,)
 
 def add_contact_to_user(user, f_name, l_name, urgency=0, potential=0, opportunity=0,
-                        phone=None, linkedin=None, email=None, company=None, notes=None): 
+                        phone=None, email=None, company=None, notes=None,linkedin=None): 
   """Add a contact to a user"""
   
   contact = Contact(user=user, f_name=f_name, l_name=l_name, phone=phone, 

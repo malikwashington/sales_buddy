@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block navright %}
+<li class="nav-item">
+  <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
+</li>
+{% endblock %}
+
+{% block body %}
+<div class="container overflow-auto my-5 py-5">
+  <div id="sidebar" class="sidebar">
+
+  </div>
+  <h1>Home</h1>
+  <p> Welcome to the home page!</p>
+  <br>
+  <br>
+  <br>
+  <div class="table-responsive">
+    <table class="table table-striped table-dark table-hover">
+      <thead>
+        <tr>
+          <!-- <th onclick="sortTable(0)" scope="col">#</th> -->
+          <th onclick="sortTable(0)" scope="col">First Name</th>
+          <th onclick="sortTable(1)" scope="col">Last Name</th>
+          <th onclick="sortTable(2)" scope="col">Email</th>
+          <th onclick="sortTable(3)" scope="col">Phone</th>
+          <th onclick="sortTable(4)"scope="col">Company</th>
+        </tr>
+      </thead>  
+        <tbody>
+          {% for contact in current_user.contacts %}
+          <tr onclick="openForm(name)" name='{{loop.index}}'>
+            <!-- <th scope="row">{{loop.index}}</th> -->
+            <td>{{contact.f_name}}</td>
+            <td>{{contact.l_name}}</td>
+            <td>{{contact.email}}</td>
+            <td>{{contact.phone}}</td>
+            <td>{{contact.company}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script >
+  function sortTable(n) {
+  let shouldSwitch, switchcount = 0;
+  let table = document.getElementById("myTable2");
+  let switching = true;
+  let dir = "asc";
+  
+  while (switching) {
+    //since no switching has been done, this is set to false:
+    switching = false;
+    let rows = table.rows;
+    /* Loop through all table rows starting at row 1: */
+    for (let i = 1; i < rows.length - 1; i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      let x = rows[i].getElementsByTagName("TD")[n];
+      let y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount++;
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+function openForm(name) {
+  console.log(name);
+}
+</script>
+{% endblock %}

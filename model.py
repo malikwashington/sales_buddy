@@ -17,7 +17,10 @@ class User(db.Model, UserMixin):
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
-  admin = db.Column(db.Boolean, default=False)
+  
+  @property
+  def admin(self):
+    return True
   
   @property
   def full_name(self):
@@ -27,7 +30,7 @@ class User(db.Model, UserMixin):
   
   @property
   def password(self):
-    raise AttributeError('password is a write-only field')
+    raise AttributeError('We do not store passwords!')
   
   @password.setter
   def password(self, password):
@@ -37,10 +40,42 @@ class User(db.Model, UserMixin):
     return check_password_hash(self.password_hash, password)
     
   contacts = db.relationship('Contact', back_populates='user')
- 
+  sub_users = db.relationship('Sub_User', back_populates='parent_user')
+    
   def __repr__(self):
     return f'<User user_id={self.id} email={self.email}'
 
+class Sub_User(db.Model, User, UserMixin):
+  '''A sub user with limited permissions and access'''
+
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  parent_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+  fname = db.Column(db.String(25), nullable=False)
+  lname = db.Column(db.String(25), nullable=True)
+  email = db.Column(db.String, unique=True, nullable=False)
+  password_hash = db.Column(db.String(128), nullable=False)
+  
+  
+  parent_user = db.relationship('User', back_populates='sub_users')
+  contacts = db.relationship('User', backref='contacts')
+  
+  @property
+  def full_name(self):
+    '''Return full name of sub user'''
+    
+    return f'{self.fname} {self.lname}'
+  
+  @property
+  def password(self):
+    raise AttributeError('We do not store passwords!')
+  
+  @password.setter
+  def password(self, password):
+    self.password_hash = generate_password_hash(password)
+    
+  def verify_password(self, password):
+    return check_password_hash(self.password_hash, password)
+  
 class Contact(db.Model):
   '''A contact'''
   
@@ -82,7 +117,6 @@ class Email_Record(db.Model):
   '''An email record for a contact'''
   
   __tablename__ = "email_records"
-  
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   email_body = db.Column(db.Text, nullable=True)
@@ -103,7 +137,7 @@ class Call_Record(db.Model):
 
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id')) 
   call_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  from_ = db.Column(db.String(100), nullable=False)
+  from_ = db.Column(db.String(100), nullable=False, default='Unknown')
   call_notes = db.Column(db.Text, nullable=True)
   call_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
   
@@ -126,7 +160,7 @@ class Text_Record(db.Model):
   
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   text_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  from_ = db.Column(db.String(100), nullable=False)
+  from_ = db.Column(db.String(100), nullable=False, default='Unknown')
   text_body = db.Column(db.Text, nullable=False)
   text_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
   

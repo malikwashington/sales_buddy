@@ -35,3 +35,25 @@ class UpdateContactForm(FlaskForm):
   '''form to update existing contacts'''
   
   
+
+class ContactForm(FlaskForm, contact= None):
+  '''form for creating new contacts'''
+  
+  fname = StringField('First Name', validators=[InputRequired(), Length(min=2, max=20)], default=contact.fname or '')
+  lname = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)], default=contact.lname or '')
+  phone = StringField('Phone Number', validators=[InputRequired(), Length(min=10, max=20)], default=contact.phone or '')
+  linkedin = StringField('LinkedIn', validators=[InputRequired(), Length(min=2, max=100)], default=contact.linkedin or '')
+  email = StringField('Email', validators=[InputRequired(), Email()], default=contact.email or '')  
+  company = StringField('Company', validators=[InputRequired(), Length(min=2, max=100)], default=contact.company or '')
+  notes = StringField('Notes', validators=[InputRequired(), Length(min=2, max=1000)], default=contact.notes or '')
+  urgency = SelectField('Urgency', choices=[(0, 'Not Urgent'), (1, 'Urgent'), (2, 'Very Urgent')], default=contact.urgency or 0)
+  potential = SelectField('Potential', choices=[(0, 'Not Interested'), (1, 'Interested'), (2, 'Very Interested')], default=contact.potential or 0)
+  opportunity = SelectField('Opportunity', choices=[(0, 'No Opportunity'), (1, 'Opportunity'), (2, 'Great Opportunity')], default=contact.opportunity or 0)
+  submit = SubmitField('Submit')
+  
+class SequenceForm(FlaskForm):
+  '''form for creating new sequences'''
+  
+  sequence_name = StringField('Sequence Name', validators=[InputRequired(), Length(min=2, max=20)])
+  step_1 = SelectField('Step 1', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  
