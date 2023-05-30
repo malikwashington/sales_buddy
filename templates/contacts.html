@@ -1,12 +1,8 @@
-{% extends "base.html" %}
+{% extends "loggedin.html" %}
 
 {% block title %}Home{% endblock %}
 
-{% block navright %}
-<li class="nav-item">
-  <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
-</li>
-{% endblock %}
+
 
 {% block body %}
 <div class="container overflow-auto my-5 py-5">

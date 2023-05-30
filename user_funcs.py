@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import User, Contact
+from model import User, Contact, Sub_User
 # from server import app
 
 def create_user(fname, lname, email, password):
@@ -10,6 +10,14 @@ def create_user(fname, lname, email, password):
 
   print(f'\n\n user created: {user} \n\n')
   return user
+  
+def create_sub_user(parent_user, fname, lname, email, password):
+  """Create and return a new sub user."""
+
+  sub_user = Sub_User(parent_user=parent_user, fname=fname, lname=lname, email=email.lower(), password=password)
+
+  print(f'\n\n sub user created: {sub_user} \n\n')
+  return sub_user
   
 def get_user_by_email(email):
   """Return a user by email."""

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block navleft %}
+
+<li class="nav-item">
+  <a href="{{url_for('contacts')}}" class="nav-link">Contacts</a>
+</li>
+
+<li class="nav-item">
+  <a href="{{url_for('profile')}}" class="nav-link">Profile</a>
+</li>
+
+<li class="nav-item">
+  <a href="{{url_for('dashboard')}}" class="nav-link">Dashboard</a>
+</li>
+
+<li class="nav-item">
+  <a href="{{url_for('tasks')}}" class="nav-link">Tasks</a>
+</li>
+
+{% endblock %}
+
+{% block navright %}
+{% if current_user.admin %}
+<li class="nav-item">
+  <a href="{{url_for('admin')}}" class="nav-link">Admin</a>
+</li>
+{% endif %}
+<li class="nav-item">
+  <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
+</li>
+{% endblock %}

@@ -60,6 +60,10 @@ class Sub_User(db.Model, User, UserMixin):
   contacts = db.relationship('User', backref='contacts')
   
   @property
+  def admin(self):
+    return False
+
+  @property
   def full_name(self):
     '''Return full name of sub user'''
     
