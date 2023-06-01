@@ -14,7 +14,8 @@ def create_user(fname, lname, email, password):
 def create_sub_user(parent_user, fname, lname, email, password):
   """Create and return a new sub user."""
 
-  sub_user = Sub_User(parent_user=parent_user, fname=fname, lname=lname, email=email.lower(), password=password)
+  sub_user =\
+    Sub_User(parent_user=parent_user, fname=fname, lname=lname, email=email.lower(), password=password)
 
   print(f'\n\n sub user created: {sub_user} \n\n')
   return sub_user
@@ -48,6 +49,10 @@ def get_contacts_by_user(user_id):
   
   return Contact.query.filter(Contact.user_id == user_id).all()
 
+def get_contact_by_id(user_id, contact_id):
+  """Return a contact by id"""
+  
+  return Contact.query.filter(Contact.user_id == user_id, Contact.contact_id == contact_id).first()
 
 # if __name__ == '__main__':
 #   connect_to_db(app)

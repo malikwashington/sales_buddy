@@ -3,6 +3,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import uuid
 
 db = SQLAlchemy()
 
@@ -17,6 +18,9 @@ class User(db.Model, UserMixin):
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
+  uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())[:8]) 
+  contacts = db.relationship('Contact', back_populates='user')
+  sub_users = db.relationship('Sub_User', back_populates='parent_user')
   
   @property
   def admin(self):
@@ -39,9 +43,6 @@ class User(db.Model, UserMixin):
   def verify_password(self, password):
     return check_password_hash(self.password_hash, password)
     
-  contacts = db.relationship('Contact', back_populates='user')
-  sub_users = db.relationship('Sub_User', back_populates='parent_user')
-    
   def __repr__(self):
     return f'<User user_id={self.id} email={self.email}'
 
@@ -54,7 +55,7 @@ class Sub_User(db.Model, User, UserMixin):
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
-  
+  disabled = db.Column(db.Boolean, nullable=False, default=False)
   
   parent_user = db.relationship('User', back_populates='sub_users')
   contacts = db.relationship('User', backref='contacts')

@@ -6,13 +6,14 @@ from model import db, Call_Record, Text_Record
 client = Client(keys.TWILIO_USERNAME, keys.TWILIO_PASSWORD)
 
 
+  
 def send_sms(contact, text):
     """Send an SMS to a user's contact"""
 
     prefix = '+1'
 
     message = client.messages.create(
-        to=prefix + phone,
+        to=prefix + contact.phone,
         from_='+18559126913',
         body=text)
     print(message.sid)

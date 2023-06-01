@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, BooleanField, TextAreaField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, ValidationError
 import email_validator
 
@@ -56,4 +56,42 @@ class SequenceForm(FlaskForm):
   
   sequence_name = StringField('Sequence Name', validators=[InputRequired(), Length(min=2, max=20)])
   step_1 = SelectField('Step 1', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
-  
+  step_1_notes = TextAreaField('Step 1 Notes')
+  step_2 = SelectField('Step 2', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_2_notes = TextAreaField('Step 2 Notes')
+  step_3 = SelectField('Step 3', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_3_notes = TextAreaField('Step 3 Notes')
+  step_4 = SelectField('Step 4', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_4_notes = TextAreaField('Step 4 Notes')
+  step_5 = SelectField('Step 5', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_5_notes = TextAreaField('Step 5 Notes')
+  step_6 = SelectField('Step 6', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_6_notes = TextAreaField('Step 6 Notes')
+  step_7 = SelectField('Step 7', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_7_notes = TextAreaField('Step 7 Notes')
+  step_8 = SelectField('Step 8', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_8_notes = TextAreaField('Step 8 Notes')
+  step_9 = SelectField('Step 9', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_9_notes = TextAreaField('Step 9 Notes')
+  step_10 = SelectField('Step 10', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_10_notes = TextAreaField('Step 10 Notes')
+  step_11 = SelectField('Step 11', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_11_notes = TextAreaField('Step 11 Notes')
+  step_12 = SelectField('Step 12', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_12_notes = TextAreaField('Step 12 Notes')
+  step_13 = SelectField('Step 13', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_13_notes = TextAreaField('Step 13 Notes')
+  step_14 = SelectField('Step 14', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_14_notes = TextAreaField('Step 14 Notes')
+  step_15 = SelectField('Step 15', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_15_notes = TextAreaField('Step 15 Notes')
+  step_16 = SelectField('Step 16', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_16_notes = TextAreaField('Step 16 Notes')
+  step_17 = SelectField('Step 17', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_17_notes = TextAreaField('Step 17 Notes')
+  step_18 = SelectField('Step 18', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_18_notes = TextAreaField('Step 18 Notes')
+  step_19 = SelectField('Step 19', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_19_notes = TextAreaField('Step 19 Notes')
+  step_20 = SelectField('Step 20', choices=[('call', 'Call'), ('email', 'Email'), ('text', 'Text')])
+  step_20_notes = TextAreaField('Step 20 Notes')

@@ -110,6 +110,32 @@ def sign_up():
 def profile():
   '''profile page'''
   return render_template('profile.html')
+
+@app.route('/contacts')
+@login_required
+def contacts():
+  '''contacts page'''
+  return render_template('contacts.html')
+
+@app.route('/contacts/<contact_id>')
+@login_required
+def contact(contact_id):
+  '''contact page'''
+
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  return render_template('contact.html', contact=contact)
+
+@app.route('/contacts/new', methods=['GET','POST'])
+@login_required
+def new_contact():
+  '''new contact route'''
+
+@app.route('/sequences')
+@login_required
+def sequences():
+  '''sequences page'''
+  form = forms.SequenceForm()
+  return render_template('sequences.html', form=form)
   
 if __name__ == '__main__':
   connect_to_db(app)
