@@ -11,6 +11,7 @@ def create_user(fname, lname, email, password):
   print(f'\n\n user created: {user} \n\n')
   return user
   
+
 def create_sub_user(parent_user, fname, lname, email, password):
   """Create and return a new sub user."""
 
@@ -20,10 +21,12 @@ def create_sub_user(parent_user, fname, lname, email, password):
   print(f'\n\n sub user created: {sub_user} \n\n')
   return sub_user
   
+
 def get_user_by_email(email):
   """Return a user by email."""
 
   return User.query.filter(User.email == email.lower().strip()).first()
+
 
 def login_user(email, password):
   '''checks if email and password match a user in the database 
@@ -33,6 +36,7 @@ def login_user(email, password):
   if all((user,verify)):
     return (verify, user)
   return (False,)
+
 
 def add_contact_to_user(user, f_name, l_name, urgency=0, potential=0, opportunity=0,
                         phone=None, email=None, company=None, notes=None,linkedin=None): 
@@ -44,10 +48,12 @@ def add_contact_to_user(user, f_name, l_name, urgency=0, potential=0, opportunit
   print(contact.user_id)
   return contact
   
+
 def get_contacts_by_user(user_id):
   """Return all contacts belonging to a user"""
   
   return Contact.query.filter(Contact.user_id == user_id).all()
+
 
 def get_contact_by_id(user_id, contact_id):
   """Return a contact by id"""

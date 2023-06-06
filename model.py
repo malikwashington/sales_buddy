@@ -18,7 +18,7 @@ class User(db.Model, UserMixin):
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
-  uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())[:8]) 
+  uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())) 
   contacts = db.relationship('Contact', back_populates='user')
   sub_users = db.relationship('Sub_User', back_populates='parent_user')
   
@@ -46,7 +46,7 @@ class User(db.Model, UserMixin):
   def __repr__(self):
     return f'<User user_id={self.id} email={self.email}'
 
-class Sub_User(db.Model, User, UserMixin):
+class Sub_User(db.Model, UserMixin):
   '''A sub user with limited permissions and access'''
 
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -56,9 +56,14 @@ class Sub_User(db.Model, User, UserMixin):
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
   disabled = db.Column(db.Boolean, nullable=False, default=False)
-  
+  uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())) 
+
   parent_user = db.relationship('User', back_populates='sub_users')
-  contacts = db.relationship('User', backref='contacts')
+  
+  
+  @property
+  def contacts(self):
+    return self.parent_user.contacts
   
   @property
   def admin(self):

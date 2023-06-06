@@ -11,6 +11,8 @@ from contact_funcs import set_priority
 import os
 import json
 from datetime import datetime
+
+
 os.system("dropdb salesbuddy --if-exists")
 os.system("createdb salesbuddy")
 

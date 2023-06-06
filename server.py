@@ -1,15 +1,29 @@
 """Server for sales buddy app."""
 
 import forms
+import twilio_API
 from keys import SECRET_KEY
-from flask import Flask, render_template, request, flash, session, redirect, url_for
+from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
 import user_funcs
-
 from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+import flask_sockets 
+import json
+import base64
+import logging
+from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact 
+
+#this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
+def add_url_rule(self, rule, _, f, **options):
+  """Add a URL rule for websocket handling."""
+  self.url_map.add(flask_sockets.Rule(rule, endpoint=f, websocket=True))
+
+flask_sockets.Sockets.add_url_rule = add_url_rule
+  
 
 app = Flask(__name__)
+sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
 
@@ -48,6 +62,8 @@ def page_not_found(e):
 @app.route('/', methods=['GET','POST'])
 def homepage():
   """View homepage."""
+  if current_user.is_authenticated:
+    return redirect(url_for('profile'))
   
   form = forms.SignInForm()
   #validate sign in form
@@ -111,6 +127,12 @@ def profile():
   '''profile page'''
   return render_template('profile.html')
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+  '''dashboard  page'''
+  return render_template('dashboard.html')
+
 @app.route('/contacts')
 @login_required
 def contacts():
@@ -120,23 +142,122 @@ def contacts():
 @app.route('/contacts/<contact_id>')
 @login_required
 def contact(contact_id):
-  '''contact page'''
+  '''returns a single contact'''
+
 
   contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
-  return render_template('contact.html', contact=contact)
+  calls = get_calls_by_contact(contact_id)
+  calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'from_': call.from_} for call in calls]
+  texts = get_texts_by_contact(contact_id)
+  texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'from_': text.from_} for text in texts]
+  emails = get_emails_by_contact(contact_id)
+  emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'from_': email.from_} for email in emails]
+
+  contact_dict = {
+    'contact_id': contact.contact_id,
+    'f_name': contact.f_name,
+    'l_name': contact.l_name,
+    'phone': contact.phone,
+    'linkedin': contact.linkedin,
+    'email': contact.email,
+    'company': contact.company,
+    'notes': contact.notes,
+    'urgency': contact.urgency,
+    'potential': contact.potential,
+    'opportunity': contact.opportunity,
+    'last_contacted': contact.last_contacted,
+    'priority': contact.priority,
+    'call_history': calls,
+    'text_history': texts,
+    'email_history': emails,
+  }
+  return contact_dict
 
 @app.route('/contacts/new', methods=['GET','POST'])
 @login_required
 def new_contact():
   '''new contact route'''
 
-@app.route('/sequences')
+@app.route('/sequences', methods=['GET','POST'])
 @login_required
 def sequences():
   '''sequences page'''
   form = forms.SequenceForm()
   return render_template('sequences.html', form=form)
+
+@sockets.route('/text')
+def text(ws):
+  '''creating a websocket route to handle text messages from twilio api'''
+  
+
+# @app.route('/phone', methods=['GET', 'POST'])
+@sockets.route('/phone')
+def phone(ws):
+  '''creating a websocket route to handle phone calls from twilio api'''
+  
+  app.logger.info('Connection accepted')
+
+  while not ws.closed:
+    message = ws.receive()
+    if message is None:
+      app.logger.info('No message received...')
+      continue
+    message = json.loads(message)
+    print('\n\n', message, '\n\n')
+    if message['type'] == 'call':
+      resp = twilio_API.voice(message['number'])
+      ws.send(resp)
+    elif message['type'] == 'text':
+      resp = twilio_API.send_sms(message['number'], message['text'])
+      ws.send(resp)
+    else:
+      print('error')
+      ws.send('error')
+  print('closed')
+  ws.close()
+#   '''route to handle phone calls from twilio api'''
+  
+#   resp = twilio_API.voice(request.form['number'])
+#   return Response(resp, mimetype='text/xml') 
+
+@app.route('/email', methods=['GET', 'POST'])
+def email():
+  '''route to handle emails from twilio api'''
+
+@app.route('/calls', methods=['GET', 'POST'])
+def calls():
+  '''route to handle calls from twilio api'''
+
+  return render_template('calls.html')
+
+@app.route('/tasks', methods=['GET', 'POST'])
+def tasks():
+  '''route to handle tasks list'''
+  
+  return render_template('tasks.html')
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+  '''route to handle admin page'''
+  
+  return render_template('admin.html')
+
+@app.route('/token', methods=['GET'])
+def token():
+  '''generates a token for twiml api'''  
+
+  return twilio_API.token()
   
 if __name__ == '__main__':
+  app.logger.setLevel(logging.DEBUG)
+  from gevent import pywsgi
+  from geventwebsocket.handler import WebSocketHandler
   connect_to_db(app)
-  app.run(host='0.0.0.0', debug=True)
+  
+  server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+  print('\n\n Server started \n\n')
+  server.serve_forever()
+  
+ #this is the old way to start the server before flask_sockets was added
+  # app.run(host='0.0.0.0', debug=True)
+ 
