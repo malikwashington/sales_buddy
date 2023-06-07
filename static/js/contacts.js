@@ -1,49 +1,38 @@
-function sortTable(n) {
-  let shouldSwitch, switchcount = 0;
-  let table = document.getElementById("myTable2");
-  let switching = true;
-  let dir = "asc";
-  
-  while (switching) {
-    //since no switching has been done, this is set to false:
-    switching = false;
-    let rows = table.rows;
-    /* Loop through all table rows starting at row 1: */
-    for (let i = 1; i < rows.length - 1; i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Get the two elements you want to compare,
-      one from current row and one from the next: */
-      let x = rows[i].getElementsByTagName("TD")[n];
-      let y = rows[i + 1].getElementsByTagName("TD")[n];
-      /* Check if the two rows should switch place,
-      based on the direction, asc or desc: */
-      if (dir == "asc") {
-        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      } else if (dir == "desc") {
-        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      switchcount++;
-    } else {
-      if (switchcount == 0 && dir == "asc") {
-        dir = "desc";
-        switching = true;
-      }
-    }
-  }
+function call(id) {
+  let number = document.getElementById("phone").innerHTML;
+  number = "+1" + number.replace(/\D/g, "");
+
+  fetch("/token")
+    .then((response) => {
+      return response.text();
+    })
+    .then((response) => {
+      const token = response;
+      return token;
+    })
+    .then((token) => {
+      Twilio.Device.setup(token);
+    });
 }
 
+function openForm(id) {
+  fetch(`/contacts/${id}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      // console.log(data);
+      document.getElementById("sidebar").innerHTML = `
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">${data.f_name} ${data.l_name}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${data.company}</h6>
+            <p class="card-text">${data.email}</p>
+            <p onclick=call(id) id="phone" class="card-text">${data.phone}</p>
+            <a href="#" class="card-link">Edit</a>
+            <a href="#" class="card-link">Delete</a>
+          </div>
+        </div>
+        `;
+    });
+}
