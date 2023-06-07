@@ -16,9 +16,9 @@ function call(id) {
 }
 
 function openForm(id) {
+  console.log(id)
   //helper function to populate data, add onclick to delete and add event listener to edit button
   const populateData = (data) => {
-    console.log(data)
     document.getElementsByClassName("modal-title")[1].innerHTML =
       `${data.f_name} ${data.l_name}`;
     document.getElementsByClassName("modal-body")[1].innerHTML = `
@@ -77,8 +77,7 @@ function openForm(id) {
               <label for="last_contacted">Last Contacted</label>
             </div>
             <div class="col-8">
-              <p class="mt-2">${data.last_contacted ? data.last_contacted : ""
-      }</p>
+              <p class="mt-2">${data.last_contacted ? data.last_contacted : ""}</p>
             </div>
           </div>
         </div>
@@ -89,18 +88,16 @@ function openForm(id) {
               <label for="notes">Notes</label>
             </div>
             <div class="col-8">
-              <input type="text" class="form-control" id="notes" name="notes" value="${data.notes ? data.notes : ""
-      }">
+              <input type="text" class="form-control" id="notes" name="notes"
+              value="${data.notes ? data.notes : ""}">
             </div>
           </div>
         </div>
 
-      </form>
-      `;
+      </form>`;
     
     const form = document.getElementById("modal-form");
     const footer = document.getElementsByClassName("modal-footer")[1];
-      console.log('once again: ',data)
     footer.innerHTML = `
       <div class="row">
       
@@ -110,7 +107,7 @@ function openForm(id) {
        
         <div id='center' class="col-4">
         <button type="button" class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#login'
-         data-bs-dismiss='modal' id='edit' onclick="editContact(${data.contact_id})" > Edit </button>
+         data-bs-dismiss='modal' id='edit'> Edit </button>
         </div>
 
         <div id='right' class="col-4">
@@ -123,22 +120,15 @@ function openForm(id) {
       document.getElementById('center').style.textAlign = 'center'
       document.getElementById('right').style.textAlign = 'right'
     footer.style.display = "block";
-    console.log('last time: ',data)
-      document.getElementById("edit").addEventListener("click", () => {
-        editContact(data);
+    document.getElementById("edit").addEventListener("click", () => {
+      editContact(data);
       });
-    // const save = document.getElementById('save')
-    // if (prevNotes != data.notes && !save.firstChild) {
-    //   save.innnerHTML = `
-    //     <button type="button" class="btn btn-success" onclick=saveContact(${data.contact_id})>Save</button>
-    //   ` }
-    // else if (prevNotes == data.notes && save.firstChild) save.innerHTML = ''
-    
   }
 
 //uses the + operator to convert id variable to a number, if it is not a number, it is full contact data
-  if(isNaN(+id)) return populateData(id)
-  
+  if (isNaN(+id)) {
+    return populateData(id)
+  }
 
   //otherwise we make an api call to get contact data
   fetch(`/contacts/${id}`)
@@ -146,15 +136,12 @@ function openForm(id) {
         return response.json();
       })
       .then((data) => {
-        console.log(data)
         return populateData(data);
     });
 }
-
-function editContact(data) {
-  while(!isNaN(+data)) console.log('this is what edit sees:\n',data)
+function editContact(data, count=0) {
   document.getElementsByClassName("modal-title")[0].innerHTML = 'Edit Contact'
-  const form = document.getElementById('modal-form')
+  const form = document.getElementById('login-form')
   for (const line of form) {
     if (line.type != 'hidden' && line.id in data) line.value = data[line.id]
   }
