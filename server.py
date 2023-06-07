@@ -31,6 +31,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'homepage'
 
+@app.login_manager.unauthorized_handler
+def unauthorized():
+  """Redirect unauthorized users to Login page."""
+  flash('Sign up or Login to view that page.', 'danger')
+  return redirect('/')
+
 @login_manager.user_loader
 def load_user(user_id):
   '''Load user by id'''
@@ -222,7 +228,7 @@ def new_contact():
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
-  '''edit con'tact route'''
+  '''edit contact route'''
   edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
   return redirect('/contacts')
 

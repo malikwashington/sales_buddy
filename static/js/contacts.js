@@ -21,7 +21,6 @@ function openForm(id) {
       return response.json();
     })
     .then((data) => {
-      // console.log(data);
       document.getElementById("sidebar").innerHTML = `
         <div class="card" style="width: 18rem;">
           <div class="card-body">
