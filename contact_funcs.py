@@ -68,3 +68,25 @@ def set_priority(contact):
   p =(contact.urgency+contact.potential+contact.opportunity)/(1+(datetime.utcnow()-contact.last_contacted).days)
   contact.priority = p
   return p
+
+def delete_contact(contact):
+  '''deletes a contact'''
+
+  db.session.delete(contact)
+  db.session.commit()
+  
+def edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+  '''edits a contact'''
+  contact = Contact.query.get(contact_id).first()
+  contact.f_name = f_name
+  contact.l_name = l_name
+  contact.phone = phone
+  contact.linkedin = linkedin
+  contact.email = email
+  contact.company = company
+  contact.notes = notes
+  contact.urgency = urgency
+  contact.potential = potential
+  contact.opportunity = opportunity
+  db.session.commit()
+  return contact

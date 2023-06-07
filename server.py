@@ -12,7 +12,7 @@ import flask_sockets
 import json
 import base64
 import logging
-from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact 
+from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact 
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
 def add_url_rule(self, rule, _, f, **options):
@@ -137,14 +137,25 @@ def dashboard():
 @login_required
 def contacts():
   '''contacts page'''
-  return render_template('contacts.html')
+  
+  form = forms.ContactForm()
+  contacts = user_funcs.get_contacts_by_user(current_user.id)
+  contacts = [{
+    'contact_id': contact.contact_id, 
+    'f_name': contact.f_name, 
+    'l_name': contact.l_name, 
+    'phone': contact.phone, 
+    'email': contact.email, 
+    'company': contact.company, 
+    'last_contacted': contact.last_contacted, 
+    'priority': contact.priority} for contact in contacts]
+  return render_template('contacts.html', form=form, contacts=contacts)
 
 @app.route('/contacts/<contact_id>')
 @login_required
 def contact(contact_id):
   '''returns a single contact'''
-
-
+    
   contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
   calls = get_calls_by_contact(contact_id)
   calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'from_': call.from_} for call in calls]
@@ -178,6 +189,51 @@ def contact(contact_id):
 def new_contact():
   '''new contact route'''
 
+  form = forms.ContactForm()
+  if form.validate_on_submit():
+    f_name = form.f_name.data
+    l_name = form.l_name.data
+    phone = form.phone.data
+    linkedin = form.linkedin.data
+    email = form.email.data
+    company = form.company.data
+    notes = form.notes.data
+    urgency = form.urgency.data
+    potential = form.potential.data
+    opportunity = form.opportunity.data
+    form.f_name.data = ''
+    form.l_name.data = ''
+    form.phone.data = ''
+    form.linkedin.data = ''
+    form.email.data = ''
+    form.company.data = ''
+    form.notes.data = ''
+    form.urgency.data = ''
+    form.potential.data = ''
+    form.opportunity.data = ''
+    contact = user_funcs.add_contact_to_user(
+      current_user, f_name, l_name, urgency, potential, opportunity, phone, email, 
+      linkedin, company, notes)
+    db.session.add(contact)
+    db.session.commit()
+    flash(f'Contact created for {contact.full_name}!', 'success')
+    return redirect('/contacts')
+
+@app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
+@login_required
+def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+  '''edit con'tact route'''
+  edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+  return redirect('/contacts')
+
+@app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
+@login_required
+def delete_existing_contact(contact_id):
+  '''delete contact route'''
+  
+  delete_contact(contact_id)
+  return redirect('/contacts')
+
 @app.route('/sequences', methods=['GET','POST'])
 @login_required
 def sequences():
@@ -196,7 +252,7 @@ def phone(ws):
   '''creating a websocket route to handle phone calls from twilio api'''
   
   app.logger.info('Connection accepted')
-
+  print('\n\n\n\n\n', ws, '\n\n\n\n\n')
   while not ws.closed:
     message = ws.receive()
     if message is None:
