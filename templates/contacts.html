@@ -3,7 +3,7 @@
 
 {% block nr_extra %}
 <li class="nav-item">
-  <a data-bs-toggle="modal" data-bs-target="#login" class="nav-link">Create New Contact</a>
+  <a data-bs-toggle="modal" onclick='newContact()' data-bs-target="#login" class="nav-link">Create New Contact</a>
 </li>
 {% endblock %}
 
@@ -45,10 +45,10 @@
         >
           <!-- <th scope="row">{{loop.index}}</th> -->
           <td>{{contact.f_name}}</td>
-          <td>{{contact.l_name}}</td>
-          <td>{{contact.email}}</td>
-          <td>{{contact.phone}}</td>
-          <td>{{contact.company}}</td>
+          <td>{{contact.l_name or ''}}</td>
+          <td>{{contact.email or ''}}</td>
+          <td>{{contact.phone or ''}}</td>
+          <td>{{contact.company or ''}}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -60,19 +60,23 @@
 {% block modalTitle %}Create New Contact{% endblock %}
 
 {% block modalBody %}
-<form action="/contacts/new" id="modal-form" method="POST" >
+<form action="/contacts/new" id="login-form" name="login-form" method="POST" >
   <!-- class="form-horizontal"> -->
 
 {{form.hidden_tag()}} 
 
-{% for line in form if line.id != 'csrf_token' %}
+{% for line in form %}
+
 <div class="form-group">
   <div class="row mb-2">
-    <div class="col-4">
-      {{line.label}} 
+    
+    <div class="col-4 d-flex align-items-center">
+      {% if not loop.last %}
+      {{line.label(class_="form-control-label")}} 
+      {% endif %}
     </div>
-    <div class="col-8 mr-0 pr-0">
-      {{line(width=100%, class_="form-control")}}
+    <div class="col-8">
+      {{line(class_="form-control")}}
     </div>
   </div>
 </div>
@@ -85,7 +89,7 @@
 <button type="button" class="btn btn-secondary" data-dismiss="modal">
   Close
 </button>
-<button type="submit" class="btn btn-primary">Save changes</button>
+<button type="submit" form='login-form' class="btn btn-primary">Submit</button>
 {% endblock %}
 
 {% block scripts %}

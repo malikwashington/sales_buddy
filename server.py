@@ -190,7 +190,7 @@ def contact(contact_id):
   }
   return contact_dict
 
-@app.route('/contacts/new', methods=['GET','POST'])
+@app.route('/contacts/new', methods=['POST'])
 @login_required
 def new_contact():
   '''new contact route'''
@@ -229,12 +229,50 @@ def new_contact():
 @login_required
 def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
   '''edit contact route'''
+  form = forms.ContactForm()
+  #validate the form
+  if form.validate_on_submit():
+    f_name = form.f_name.data
+    l_name = form.l_name.data
+    phone = form.phone.data
+    linkedin = form.linkedin.data
+    email = form.email.data
+    company = form.company.data
+    notes = form.notes.data
+    urgency = form.urgency.data
+    potential = form.potential.data
+    opportunity = form.opportunity.data
+    print(f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+    form.f_name.data = ''
+    form.l_name.data = ''
+    form.phone.data = ''
+    form.linkedin.data = ''
+    form.email.data = ''
+    form.company.data = ''
+    form.notes.data = ''
+    form.urgency.data = ''
+    form.potential.data = ''
+    form.opportunity.data = ''
+    #edit contact
+    full_name = f'{f_name} {l_name}'
+    flash(f'Contact {full_name} edited!', 'success')
   edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
   return redirect('/contacts')
 
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
 @login_required
 def delete_existing_contact(contact_id):
+  form = forms.ContactForm()
+  #validate the form
+  if form.validate_on_submit():
+    contact_id = form.contact_id.data
+    form.contact_id.data = ''
+  #delete contact
+  user_funcs.delete_contact_from_user(current_user, contact_id)
+
+  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name()
+  flash(f'Contact {full_name} deleted!', 'success')
+  redirect('/contacts')
   '''delete contact route'''
   
   delete_contact(contact_id)

@@ -39,20 +39,16 @@ class UpdateContactForm(FlaskForm):
 class ContactForm(FlaskForm):
   '''form for creating new contacts'''
   
-  fname = StringField(
-    'First Name', validators=[InputRequired(), Length(min=2, max=20)])
-  lname = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)])
+  f_name = StringField('First Name', validators=[InputRequired(), Length(min=2, max=20)])
+  l_name = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)])
   phone = StringField('Phone Number', validators=[InputRequired(), Length(min=10, max=20)])
   linkedin = StringField('LinkedIn', validators=[InputRequired(), Length(min=2, max=100)])
   email = StringField('Email', validators=[InputRequired(), Email()])  
   company = StringField('Company', validators=[InputRequired(), Length(min=2, max=100)])
-  notes = StringField('Notes', validators=[InputRequired(), Length(min=2, max=1000)])
-  urgency = SelectField('Urgency', choices=[(0, 'Not Urgent'), (1, 'Urgent'), (2, 'Very Urgent')])
-  potential = SelectField(
-    'Potential', choices=[(0, 'Not Interested'), (1, 'Interested'), (2, 'Very Interested')], default=0)
-  opportunity = SelectField(
-    'Opportunity', choices=[(0, 'No Opportunity'), (1, 'Opportunity'), (2, 'Great Opportunity')], 
-    default=0)
+  notes = TextAreaField('Notes', validators=[Length(min=2, max=1000)])
+  urgency = SelectField('Urgency', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
+  potential = SelectField('Potential', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
+  opportunity = SelectField('Opportunity', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
   
 class SequenceForm(FlaskForm):
   '''form for creating new sequences'''
