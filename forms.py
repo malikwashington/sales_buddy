@@ -53,7 +53,6 @@ class ContactForm(FlaskForm):
   opportunity = SelectField(
     'Opportunity', choices=[(0, 'No Opportunity'), (1, 'Opportunity'), (2, 'Great Opportunity')], 
     default=0)
-  submit = SubmitField('Submit')
   
 class SequenceForm(FlaskForm):
   '''form for creating new sequences'''
