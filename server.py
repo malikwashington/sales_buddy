@@ -160,7 +160,7 @@ def change_password():
 @login_required
 def profile():
   '''profile page'''
-  
+
   return render_template('profile.html', form=forms.ChangePasswordForm())
 
 @app.route('/dashboard')
@@ -320,11 +320,19 @@ def text(ws):
   '''creating a websocket route to handle text messages from twilio api'''
   
 
-# @app.route('/phone', methods=['GET', 'POST'])
-@sockets.route('/phone')
+@app.route('/phone', methods=['GET', 'POST'])
+@login_required
+def phone():
+  '''route to stand as endpoint to host page for phone calls'''
+
+  return render_template('phone.html')
+
+
+@sockets.route('/forwarding')
 @login_required
 def phone(ws):
-  '''creating a websocket route to handle phone calls from twilio api'''
+  '''creating a websocket route to handle incoming phone calls from twilio api
+  and route them to my personal phone number using the twilio api'''
   
   app.logger.info('Connection accepted')
   print('\n\n\n\n\n', ws, '\n\n\n\n\n')
@@ -346,10 +354,14 @@ def phone(ws):
       ws.send('error')
   print('closed')
   ws.close()
-#   '''route to handle phone calls from twilio api'''
+
+@app.route('/voice', methods=['GET', 'POST'])
+@login_required
+def voice():
+  '''route to handle phone calls with the twilio api'''
   
-#   resp = twilio_API.voice(request.form['number'])
-#   return Response(resp, mimetype='text/xml') 
+  resp = twilio_API.voice(request.form['number'])
+  return Response(resp, mimetype='text/xml') 
 
 @app.route('/email', methods=['GET', 'POST'])
 @login_required
