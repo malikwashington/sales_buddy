@@ -4,6 +4,24 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+#link-button{
+  color: rgb(255,255,255);
+  background-color: rgb(67, 69, 139);
+  border-radius: 5px;
+  padding: 5px;
+  text-decoration: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  outline: solid 1px #0000;
+  outline-offset: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+#link-button:active{
+  transform: translateY(2px);
+  filter: saturate(150%);
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
 /* .container {
    margin-top: 15%; 
 } */

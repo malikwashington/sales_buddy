@@ -50,6 +50,13 @@ class ContactForm(FlaskForm):
   potential = SelectField('Potential', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
   opportunity = SelectField('Opportunity', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
   
+class ChangePasswordForm(FlaskForm):
+  '''form for changing password'''
+  
+  old_password = PasswordField('Old Password', validators=[InputRequired()])
+  new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=20)])
+  new_password2 = PasswordField('Confirm New Password', validators=[InputRequired(), EqualTo('new_password', message='Passwords must match')])
+
 class SequenceForm(FlaskForm):
   '''form for creating new sequences'''
   

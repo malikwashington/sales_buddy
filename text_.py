@@ -11,6 +11,7 @@ def send_text(contact, text):
   from_='+18559126913',
     body=text)
   print(message.sid)
+  
 
 def send_call(contact):
   '''make a phone call'''

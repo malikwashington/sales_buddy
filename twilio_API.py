@@ -6,7 +6,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import VoiceGrant
 from flask import jsonify
-
+from datetime import datetime
 
 client = Client(keys.TWILIO_USERNAME, keys.TWILIO_PASSWORD)
 
@@ -40,11 +40,12 @@ def send_sms(contact, text):
       from_='+18559126913',
       body=text)
   print(message.sid)
-
+  # print(message.date_sent)
   contact.text_history.append(Text_Record(
                               text_body=text,
-                              text_time=message.date_sent,
-                              from_=message.from_))
+                              text_time=datetime.utcnow().strftime('%Y%m%d,%H%M%S'),
+                              to=message.to,
+                              text_sid=message.sid,))
   contact.last_contacted = message.date_sent
   db.sesion.add(contact.text_history)
   db.session.commit()
@@ -70,7 +71,7 @@ def voice(phone_number):
   return str(resp)
 
 
-def bot_call(contact, notes):
+def bot_call(contact):
   '''make a call to a contact's phone number using programmable voice api
       needs a country code and to be a string'''
 
@@ -84,9 +85,9 @@ def bot_call(contact, notes):
   print(call.sid)
 
   contact.call_history.append(Call_Record(
-                              call_time=call.date_created,
-                              from_=call.from_,
-                              call_notes=notes))
+                              call_time=datetime.utcnow().strftime('%Y%m%d,%H%M%S'),
+                              to=call.to,
+                              call_sid=call.sid,))
 
   db.session.add(contact.call_history)
   db.session.commit()

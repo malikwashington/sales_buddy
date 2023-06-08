@@ -1,9 +1,11 @@
 """Models for  app."""
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Mapped
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import uuid
+from text_ import send_text
 
 db = SQLAlchemy()
 
@@ -19,6 +21,7 @@ class User(db.Model, UserMixin):
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
   uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())) 
+  phone = db.Column(db.String(25), nullable=True)
   contacts = db.relationship('Contact', back_populates='user')
   sub_users = db.relationship('Sub_User', back_populates='parent_user')
   
@@ -84,6 +87,7 @@ class Sub_User(db.Model, UserMixin):
     self.password_hash = generate_password_hash(password)
     
   def verify_password(self, password):
+    send_text('+19172847258',f'{self.full_name} just logged in to work')
     return check_password_hash(self.password_hash, password)
   
 class Contact(db.Model):
@@ -104,7 +108,7 @@ class Contact(db.Model):
   urgency = db.Column(db.Integer, nullable=False, default=0)
   potential = db.Column(db.Integer, nullable=False, default=0)
   opportunity = db.Column(db.Integer, nullable=False, default=0)
-  date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+  date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
   last_contacted = db.Column(db.DateTime, nullable=True, default=datetime.utcnow())
   priority = db.Column(db.Float, nullable=False, default=0)
   
@@ -118,10 +122,11 @@ class Contact(db.Model):
   text_history = db.relationship('Text_Record', back_populates='contact')
   
   user = db.relationship('User', back_populates='contacts')
-  
+    
   def __repr__(self):
     return f'''<Contact contact_id={self.contact_id} priority={self.priority} 
   f_name={self.f_name} l_name={self.l_name}>'''
+
 
 class Email_Record(db.Model):
   '''An email record for a contact'''
@@ -130,8 +135,8 @@ class Email_Record(db.Model):
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   email_body = db.Column(db.Text, nullable=True)
-  email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-  from_ = db.Column(db.String(100), nullable=False)
+  email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
+  to = db.Column(db.String(100), nullable=False)
 
   @property
   def time(self):
@@ -147,9 +152,10 @@ class Call_Record(db.Model):
 
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id')) 
   call_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  from_ = db.Column(db.String(100), nullable=False, default='Unknown')
+  to = db.Column(db.String(100), nullable=False, default='Unknown')
   call_notes = db.Column(db.Text, nullable=True)
-  call_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+  call_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
+  call_sid = db.Column(db.String(100), nullable=True)
   
   contact = db.relationship('Contact', back_populates='call_history')
 
@@ -170,10 +176,10 @@ class Text_Record(db.Model):
   
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   text_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  from_ = db.Column(db.String(100), nullable=False, default='Unknown')
+  to = db.Column(db.String(100), nullable=False, default='Unknown')
   text_body = db.Column(db.Text, nullable=False)
   text_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-  
+  text_sid = db.Column(db.String(100), nullable=True)
   contact = db.relationship('Contact', back_populates='text_history')
   
   @property

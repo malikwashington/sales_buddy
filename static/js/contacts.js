@@ -139,7 +139,7 @@ function openForm(id) {
         return populateData(data);
     });
 }
-function editContact(data, count=0) {
+function editContact(data) {
   document.getElementsByClassName("modal-title")[0].innerHTML = 'Edit Contact'
   const form = document.getElementById('login-form')
   for (const line of form) {
@@ -167,7 +167,8 @@ function saveContact(id, past='modal-form') {
   form.reset()
 }
 
-function deleteContact() {
+function deleteContact(id) {
   console.log("delete contact")
+  
 
 }

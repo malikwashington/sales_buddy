@@ -80,6 +80,7 @@ def homepage():
     form.password.data = ''
     # sign in user
     user = user_funcs.login_user(email, password)
+
     if user[0]:
       #login user
       login_user(user[1])
@@ -88,8 +89,12 @@ def homepage():
       #flash message if incorrect email or password
       flash(f'Incorrect email or password', 'danger')
       return redirect('/')
+  elif form.errors: 
+    flash(f'Incorrect email or password', 'danger')
+    return redirect('/')
   return render_template('homepage.html', form=form)
 
+    
 #signup up page
 @app.route('/signup', methods=['GET','POST'])
 def sign_up():
@@ -127,11 +132,36 @@ def sign_up():
     return render_template('signup.html', form=form)
   return render_template('signup.html', form=form)
 
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+  '''change password page'''
+  
+  form = forms.ChangePasswordForm()
+  if form.validate_on_submit():
+    old_password = form.old_password.data
+    new_password = form.new_password.data
+    new_password2 = form.new_password2.data
+    form.old_password.data = ''
+    form.new_password.data = ''
+    form.new_password2.data = ''
+    if current_user.verify_password(old_password):
+      current_user.password = new_password
+      db.session.commit()
+      flash('Password changed successfully', 'success')
+      return redirect('/profile')
+    else:
+      flash('Incorrect password', 'danger')
+      return redirect('/change_password')
+  return render_template('change_password.html', form=form)
+
 @app.route('/profile')
 @login_required
 def profile():
   '''profile page'''
-  return render_template('profile.html')
+  
+  return render_template('profile.html', form=forms.ChangePasswordForm())
 
 @app.route('/dashboard')
 @login_required
@@ -164,11 +194,11 @@ def contact(contact_id):
     
   contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
   calls = get_calls_by_contact(contact_id)
-  calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'from_': call.from_} for call in calls]
+  calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'to': call.to} for call in calls]
   texts = get_texts_by_contact(contact_id)
-  texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'from_': text.from_} for text in texts]
+  texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'to': text.to} for text in texts]
   emails = get_emails_by_contact(contact_id)
-  emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'from_': email.from_} for email in emails]
+  emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'to': email.to} for email in emails]
 
   contact_dict = {
     'contact_id': contact.contact_id,
@@ -292,6 +322,7 @@ def text(ws):
 
 # @app.route('/phone', methods=['GET', 'POST'])
 @sockets.route('/phone')
+@login_required
 def phone(ws):
   '''creating a websocket route to handle phone calls from twilio api'''
   
@@ -321,32 +352,44 @@ def phone(ws):
 #   return Response(resp, mimetype='text/xml') 
 
 @app.route('/email', methods=['GET', 'POST'])
+@login_required
 def email():
   '''route to handle emails from twilio api'''
 
 @app.route('/calls', methods=['GET', 'POST'])
+@login_required
 def calls():
   '''route to handle calls from twilio api'''
 
   return render_template('calls.html')
 
 @app.route('/tasks', methods=['GET', 'POST'])
+@login_required
 def tasks():
   '''route to handle tasks list'''
   
   return render_template('tasks.html')
 
 @app.route('/admin', methods=['GET', 'POST'])
+@login_required
 def admin():
   '''route to handle admin page'''
+  
+  if current_user.admin:
+    return render_template('admin.html')
+  else:
+    flash('You do not have access to that page', 'danger')
+    return redirect('/profile')
   
   return render_template('admin.html')
 
 @app.route('/token', methods=['GET'])
+@login_required
 def token():
   '''generates a token for twiml api'''  
 
   return twilio_API.token()
+
   
 if __name__ == '__main__':
   app.logger.setLevel(logging.DEBUG)

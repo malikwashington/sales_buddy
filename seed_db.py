@@ -11,6 +11,7 @@ from contact_funcs import set_priority
 import os
 import json
 from datetime import datetime
+import re
 
 
 os.system("dropdb salesbuddy --if-exists")
@@ -32,27 +33,34 @@ with server.app.app_context():
     # model.db.session.commit()
 
     # Load  data from JSON file
-    with open("data/MOCK_DATA.json") as f:
+    with open("data/Mock3.json") as f:
         contact_data = json.loads(f.read())
-
+        
     for contact in contact_data:
         test_contact = user_funcs.add_contact_to_user(
             test_user, contact['f_name'], contact['l_name'],
             contact['urgency'], contact['potential'],
             contact['opportunity'], contact['phone'],
-            contact['email'],)
+            contact['email'],contact['company'], contact['notes'])
 
         for record in contact['call_history']:
+            record['call_time'] = re.sub('[:\-]', '', record['call_time'].strip())
+            record['call_time'] = re.sub('\s', ',', record['call_time'])
             test_contact = contact_funcs.add_call_to_contact(
-                test_contact,'Unkown', record['call_notes'])
+                test_contact, record['call_notes'], record['call_time'])
 
         for record in contact['text_history']:
+            record['text_time'] = re.sub('[:\-]', '', record['text_time'].strip())
+            record['text_time'] = re.sub('\s', ',', record['text_time'])
             test_contact = contact_funcs.add_text_to_contact(
-                test_contact, record['text_body'])
+                test_contact, record['text_body'], record['text_time'])
 
         for record in contact['email_history']:
+            record['email_time'] = re.sub('[:\-]', '', record['email_time'].strip())
+            record['email_time'] = re.sub('\s', ',', record['email_time'])
+
             test_contact = contact_funcs.add_email_to_contact(
-                test_contact, record['email_body'])
+                test_contact, record['email_body'], record['email_time'])
 
         model.db.session.add(test_contact)
         model.db.session.commit()
