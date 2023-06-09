@@ -2,6 +2,12 @@
 
 import forms
 import twilio_API
+import os
+import re
+from dotenv import load_dotenv
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VoiceGrant
+from twilio.twiml.voice_response import VoiceResponse
 from keys import SECRET_KEY
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
@@ -26,6 +32,13 @@ app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
+
+phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
+
+twilio_number = os.environ.get("TWILIO_CALLER_ID")
+
+# Store the most recently created identity in memory for routing calls
+IDENTITY = {"identity": ""}
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -324,7 +337,7 @@ def text(ws):
 @login_required
 def phone():
   '''route to stand as endpoint to host page for phone calls'''
-
+  return app.send_static_file('phone.html')
   return render_template('phone.html')
 
 
@@ -398,9 +411,33 @@ def admin():
 @login_required
 def token():
   '''generates a token for twiml api'''  
+  # get credentials for environment variables
+  account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+  application_sid = os.environ["TWILIO_TWIML_APP_SID"]
+  api_key = os.environ["API_KEY"]
+  api_secret = os.environ["API_SECRET"]
 
-  id = current_user.full_name
-  return twilio_API.token(id)
+  # Generate a random user name and store it
+  identity = current_user.full_name
+  IDENTITY["identity"] = identity
+
+  # Create access token with credentials
+  token = AccessToken(account_sid, api_key, api_secret, identity=identity)
+
+  # Create a Voice grant and add to token
+  voice_grant = VoiceGrant(
+      outgoing_application_sid=application_sid,
+      incoming_allow=True,
+  )
+  token.add_grant(voice_grant)
+
+  # Return token info as JSON
+  token = token.to_jwt()
+
+  # Return token info as JSON
+  return jsonify(identity=identity, token=token)
+  # id = current_user.full_name
+  # return twilio_API.token(id)
 
   
 if __name__ == '__main__':

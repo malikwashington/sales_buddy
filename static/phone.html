@@ -1,19 +1,15 @@
-{% extends 'loggedin.html' %}
-
-{% block title %}Phone{% endblock %}
-
-{% block head %}
-<link rel="stylesheet" href="static/css/call_settings.css">
-{% endblock %}
-
-{% block body%}
-<h1>Phone Calls</h1>
-<br>
-<br>
-<div class="container overflow-auto my-5 py-5">
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Twilio Voice JavaScript SDK Quickstart</title>
+    <link rel="stylesheet" href="./static/css/call_settings.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Twilio Voice JavaScript SDK Quickstart</h1>
       <button id="startup-button">Start up the Device</button>
-  <main id="controls">
+    </header>
+    <main id="controls">
       <section class="left-column" id="info">
         <h2>Your Device Info</h2>
         <div id="client-name"></div>
@@ -61,14 +57,8 @@
       </section>
     </main>
 
-  </div>
-  
-  {% endblock %}
-  
-  {% block scripts %}
-  
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script type="text/javascript" src="../static/js/twilio.js"></script>
-  <script src="../static/js/quickstart.js"></script>
-
-{% endblock %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./static/js/twilio.js"></script>
+    <script src="./static/js/quickstart.js"></script>
+  </body>
+</html>

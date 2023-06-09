@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import uuid
 from text_ import send_text
+import keys
 
 db = SQLAlchemy()
 
@@ -87,7 +88,7 @@ class Sub_User(db.Model, UserMixin):
     self.password_hash = generate_password_hash(password)
     
   def verify_password(self, password):
-    send_text('+19172847258',f'{self.full_name} just logged in to work')
+    send_text(keys.BOSS,f'{self.full_name} just logged in to work')
     return check_password_hash(self.password_hash, password)
   
 class Contact(db.Model):

@@ -12,3 +12,5 @@ TWIML_APP_SID = os.getenv('TWIML_APP_SID')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
+
+BOSS = os.getenv('MASTER_NUMBER')
