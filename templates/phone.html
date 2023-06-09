@@ -2,13 +2,16 @@
 
 {% block title %}Phone{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="static/css/call_settings.css">
+{% endblock %}
+
 {% block body%}
 <h1>Phone Calls</h1>
 <br>
 <br>
-<br>
 <div class="container overflow-auto my-5 py-5">
-     <!-- <h1>Twilio Voice JavaScript SDK Quickstart</h1> -->
+
       <button id="startup-button">Start up the Device</button>
   <main id="controls">
       <section class="left-column" id="info">

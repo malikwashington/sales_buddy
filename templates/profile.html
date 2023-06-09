@@ -3,11 +3,11 @@
 {% block title %}Profile{% endblock %}
 
 {% block body%}
-<div class="container overflow-auto my-5 py-5">
-<div class="container">
+<h1>Profile</h1>
+<br>
+<br>
 
-  <h1>Profile</h1>
-  <br><br>
+<div class="container overflow-auto my-5 py-5">
   <div class="card">
     <div class="card-header">
       {{ current_user.full_name }}
@@ -37,7 +37,6 @@
 
     </div>
   </div>
-</div>
 </div>
 
 {% endblock %}

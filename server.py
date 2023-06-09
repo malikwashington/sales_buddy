@@ -399,8 +399,9 @@ def admin():
 @login_required
 def token():
   '''generates a token for twiml api'''  
-
-  return twilio_API.token()
+  print('\n\n\n\n\n\n', current_user.full_name, '\n\n\n\n\n\n')
+  id = current_user.full_name
+  return twilio_API.token(id)
 
   
 if __name__ == '__main__':

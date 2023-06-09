@@ -11,7 +11,7 @@ from datetime import datetime
 client = Client(keys.TWILIO_USERNAME, keys.TWILIO_PASSWORD)
 
 
-def token():
+def token(id):
   """Generate a Twilio token for a user"""
 
   token = AccessToken(
@@ -27,7 +27,7 @@ def token():
   token.add_grant(voice_grant)
   token = token.to_jwt()#.decode('utf-8') not used in twilio docs
 
-  return jsonify(identity='Salesforce User', token=token)
+  return jsonify(identity=id, token=token)
 
   
 def send_sms(contact, text):
