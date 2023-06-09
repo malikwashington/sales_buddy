@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@twilio/voice-sdk": "git+https://github.com/twilio/twilio-voice.js.git#2.0.0"
+  }
+}
