@@ -56,7 +56,7 @@ def voice(phone_number):
   resp = VoiceResponse()
   dial = Dial(
             caller_id='+18559126913',
-            number=phone_number,
+            # number=phone_number,
             
             # action='/handleDialCallStatus',
             # method='POST',
@@ -65,7 +65,7 @@ def voice(phone_number):
             # recording_status_callback='https://myapp.com/recording-handler',
             # recording_status_callback_method='POST',
   )
-
+  dial.number(phone_number)
   resp.append(dial)
   
   return str(resp)

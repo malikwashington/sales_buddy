@@ -359,7 +359,7 @@ def phone(ws):
 @login_required
 def voice():
   '''route to handle phone calls with the twilio api'''
-  
+  print('\n\n\n\n\n\n', request.form['number'], '\n\n\n\n\n\n')
   resp = twilio_API.voice(request.form['number'])
   return Response(resp, mimetype='text/xml') 
 
@@ -393,13 +393,12 @@ def admin():
     flash('You do not have access to that page', 'danger')
     return redirect('/profile')
   
-  return render_template('admin.html')
 
 @app.route('/token', methods=['GET'])
 @login_required
 def token():
   '''generates a token for twiml api'''  
-  print('\n\n\n\n\n\n', current_user.full_name, '\n\n\n\n\n\n')
+
   id = current_user.full_name
   return twilio_API.token(id)
 
