@@ -11,7 +11,7 @@ from datetime import datetime
 client = Client(keys.TWILIO_USERNAME, keys.TWILIO_PASSWORD)
 
 
-def token():
+def token(id):
   """Generate a Twilio token for a user"""
 
   token = AccessToken(
@@ -27,7 +27,7 @@ def token():
   token.add_grant(voice_grant)
   token = token.to_jwt()#.decode('utf-8') not used in twilio docs
 
-  return jsonify(identity='Salesforce User', token=token)
+  return jsonify(identity=id, token=token)
 
   
 def send_sms(contact, text):
@@ -56,7 +56,7 @@ def voice(phone_number):
   resp = VoiceResponse()
   dial = Dial(
             caller_id='+18559126913',
-            number=phone_number,
+            # number=phone_number,
             
             # action='/handleDialCallStatus',
             # method='POST',
@@ -65,7 +65,7 @@ def voice(phone_number):
             # recording_status_callback='https://myapp.com/recording-handler',
             # recording_status_callback_method='POST',
   )
-
+  dial.number(phone_number)
   resp.append(dial)
   
   return str(resp)

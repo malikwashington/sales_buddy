@@ -2,6 +2,13 @@
 
 import forms
 import twilio_API
+import os
+import re
+from faker import Faker
+from dotenv import load_dotenv
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VoiceGrant
+from twilio.twiml.voice_response import VoiceResponse, Dial
 from keys import SECRET_KEY
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
@@ -26,6 +33,16 @@ app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
+
+fake = Faker()
+phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
+alphanumeric_only = re.compile("[\W_]+")
+
+load_dotenv()
+twilio_number = os.environ.get("TWILIO_CALLER_ID")
+
+# Store the most recently created identity in memory for routing calls
+IDENTITY = {"identity": ""}
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -160,7 +177,7 @@ def change_password():
 @login_required
 def profile():
   '''profile page'''
-  
+
   return render_template('profile.html', form=forms.ChangePasswordForm())
 
 @app.route('/dashboard')
@@ -321,35 +338,66 @@ def text(ws):
   
 
 # @app.route('/phone', methods=['GET', 'POST'])
-@sockets.route('/phone')
+@app.route('/phone')
 @login_required
-def phone(ws):
-  '''creating a websocket route to handle phone calls from twilio api'''
+def phone():
+  '''route to stand as endpoint to host page for phone calls'''
+  # return app.send_static_file('phone.html')
+  return render_template('phone.html')
+
+
+# # @sockets.route('/forwarding')
+# # @login_required
+# # def phone(ws):
+# #   '''creating a websocket route to handle incoming phone calls from twilio api
+# #   and route them to my personal phone number using the twilio api'''
   
-  app.logger.info('Connection accepted')
-  print('\n\n\n\n\n', ws, '\n\n\n\n\n')
-  while not ws.closed:
-    message = ws.receive()
-    if message is None:
-      app.logger.info('No message received...')
-      continue
-    message = json.loads(message)
-    print('\n\n', message, '\n\n')
-    if message['type'] == 'call':
-      resp = twilio_API.voice(message['number'])
-      ws.send(resp)
-    elif message['type'] == 'text':
-      resp = twilio_API.send_sms(message['number'], message['text'])
-      ws.send(resp)
-    else:
-      print('error')
-      ws.send('error')
-  print('closed')
-  ws.close()
-#   '''route to handle phone calls from twilio api'''
+# #   app.logger.info('Connection accepted')
+# #   print('\n\n\n\n\n', ws, '\n\n\n\n\n')
+# #   while not ws.closed:
+# #     message = ws.receive()
+# #     if message is None:
+# #       app.logger.info('No message received...')
+#       continue
+#     message = json.loads(message)
+#     print('\n\n', message, '\n\n')
+#     if message['type'] == 'call':
+#       resp = twilio_API.voice(message['number'])
+#       ws.send(resp)
+#     elif message['type'] == 'text':
+#       resp = twilio_API.send_sms(message['number'], message['text'])
+#       ws.send(resp)
+#     else:
+#       print('error')
+#       ws.send('error')
+#   print('closed')
+#   ws.close()
+
+@app.route("/voice", methods=["POST"])
+def voice():
+  print('\n\n\n\n\n', 'welcome to the terror dome', '\n\n\n\n\n')
+  resp = VoiceResponse()
+  if request.form.get("To") == twilio_number:
+      # Receiving an incoming call to our Twilio number
+      dial = Dial()
+      # Route to the most recently created client based on the identity stored in the session
+      dial.client(IDENTITY["identity"])
+      resp.append(dial)
+  elif request.form.get("To"):
+      # Placing an outbound call from the Twilio client
+      dial = Dial(caller_id=twilio_number)
+      # wrap the phone number or client name in the appropriate TwiML verb
+      # by checking if the number given has only digits and format symbols
+      if phone_pattern.match(request.form["To"]):
+          dial.number(request.form["To"])
+      else:
+          dial.client(request.form["To"])
+      resp.append(dial)
+  else:
+      resp.say("Thanks for calling!")
+
+  return Response(str(resp), mimetype="text/xml")
   
-#   resp = twilio_API.voice(request.form['number'])
-#   return Response(resp, mimetype='text/xml') 
 
 @app.route('/email', methods=['GET', 'POST'])
 @login_required
@@ -381,26 +429,49 @@ def admin():
     flash('You do not have access to that page', 'danger')
     return redirect('/profile')
   
-  return render_template('admin.html')
 
-@app.route('/token', methods=['GET'])
+@app.route("/token", methods=["GET"])
 @login_required
 def token():
-  '''generates a token for twiml api'''  
+    '''get twilio token for client'''
 
-  return twilio_API.token()
+    # get credentials for environment variables
+    account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+    application_sid = os.environ["TWILIO_TWIML_APP_SID"]
+    api_key = os.environ["API_KEY"]
+    api_secret = os.environ["API_SECRET"]
+
+    # Generate a random user name and store it
+    identity = alphanumeric_only.sub("", current_user.full_name)
+    IDENTITY["identity"] = identity
+
+    # Create access token with credentials
+    token = AccessToken(account_sid, api_key, api_secret, identity=identity)
+
+    # Create a Voice grant and add to token
+    voice_grant = VoiceGrant(
+        outgoing_application_sid=application_sid,
+        incoming_allow=True,
+    )
+    token.add_grant(voice_grant)
+
+    # Return token info as JSON
+    token = token.to_jwt()
+
+    # Return token info as JSON
+    return jsonify(identity=identity, token=token)
 
   
 if __name__ == '__main__':
-  app.logger.setLevel(logging.DEBUG)
-  from gevent import pywsgi
-  from geventwebsocket.handler import WebSocketHandler
+  # app.logger.setLevel(logging.DEBUG)
+  # from gevent import pywsgi
+  # from geventwebsocket.handler import WebSocketHandler
   connect_to_db(app)
   
-  server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+  # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
   print('\n\n Server started \n\n')
-  server.serve_forever()
+  # server.serve_forever()
   
  #this is the old way to start the server before flask_sockets was added
-  # app.run(host='0.0.0.0', debug=True)
+  app.run(host='0.0.0.0', debug=True)
  
