@@ -331,10 +331,6 @@ def sequences():
   '''sequences page'''
   form = forms.SequenceForm()
   return render_template('sequences.html', form=form)
-
-@sockets.route('/text')
-def text(ws):
-  '''creating a websocket route to handle text messages from twilio api'''
   
 
 # @app.route('/phone', methods=['GET', 'POST'])
