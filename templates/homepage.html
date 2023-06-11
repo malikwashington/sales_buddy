@@ -1,39 +1,17 @@
 {% extends 'base.html' %}
 
+{% include './modals/login_modal.html' %}
 
 {%block navright %}
 
- <li class="nav-item">
-              <a class="nav-link" href="/signup">Sign Up</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link " data-bs-toggle="modal" data-bs-target="#login">Login</a>
-            </li>
+<li class="nav-item">
+  <a class="nav-link" href="/signup">Sign Up</a>
+</li>
 
-{% endblock %}
+<li class="nav-item">
+  <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login">Login</a>
+</li>
 
-
-
-{% block modalBody %}
-<form action="/" id="modal-form" method="POST">
-  {{form.hidden_tag()}}
-
-  <div class="form-group">
-    {{form.email.label(class="form-control-label")}}
-    {{form.email(class="form-control")}}
-  </div>
-
-  <div class="form-group">
-    {{form.password.label(class="form-control-label")}}
-    {{form.password(class="form-control")}}
-  </div>
-</form>
-
-{% endblock %}
-
-{% block modalFooter %}
-<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-{{form.submit(class="btn btn-primary", form="modal-form")}}
 {% endblock %}
 
 

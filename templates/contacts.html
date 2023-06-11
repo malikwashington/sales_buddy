@@ -1,13 +1,28 @@
 {% extends "loggedin.html" %} 
+
+{% include './modals/contact_detail_modal.html' %}
+{% include './modals/edit_contact_modal.html' %}
+{% include './modals/new_contact_modal.html' %}
+{% include './modals/call_in_progress_modal.html' %}
+{% include './modals/confirmation_modal.html' %}
+
 {% block title %}Contacts{% endblock %} 
+
+
 
 {% block nr_extra %}
 <li class="nav-item">
-  <a data-bs-toggle="modal" onclick='newContact()' data-bs-target="#login" class="nav-link">Create New Contact</a>
-</li>
-{% endblock %}
-
-{% block body%}
+  <a 
+      data-bs-toggle="modal" 
+      data-bs-target="#newContactModal" 
+      class="nav-link"
+      href="#">
+      Create New Contact
+    </a>
+  </li>
+  {% endblock %}
+  
+  {% block body%}
 
 
 <!-- <div id="sidebar" class="sidebar bg-light"></div> -->
@@ -39,7 +54,7 @@
           id="{{contact.contact_id}}"
           name="{{loop.index}}"
           data-bs-toggle="modal"
-          data-bs-target="#contactModal"
+          data-bs-target="#contactDetailModal"
         >
           <!-- <th scope="row">{{loop.index}}</th> -->
           <td>{{contact.f_name}}</td>
@@ -55,41 +70,9 @@
 </div>
 {% endblock %} 
 
-{% block modalTitle %}Create New Contact{% endblock %}
 
-{% block modalBody %}
-<form action="/contacts/new" id="login-form" name="login-form" method="POST" >
-  <!-- class="form-horizontal"> -->
 
-{{form.hidden_tag()}} 
-
-{% for line in form %}
-
-<div class="form-group">
-  <div class="row mb-2">
-    
-    <div class="col-4 d-flex align-items-center">
-      {% if not loop.last %}
-      {{line.label(class_="form-control-label")}} 
-      {% endif %}
-    </div>
-    <div class="col-8">
-      {{line(class_="form-control")}}
-    </div>
-  </div>
-</div>
-{% endfor %}
-</form>
-{% endblock %}
-
-{% block modalFooter %}
-
-<button type="button" class="btn btn-secondary" data-dismiss="modal">
-  Close
-</button>
-<button type="submit" form='login-form' class="btn btn-primary">Submit</button>
-{% endblock %}
 
 {% block scripts %}
-<script src="../static/js/contacts.js"></script>
+<script src="../static/js/contacts_modals.js"></script>
 {% endblock %}

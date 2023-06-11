@@ -19,9 +19,9 @@ function openForm(id) {
   console.log(id)
   //helper function to populate data, add onclick to delete and add event listener to edit button
   const populateData = (data) => {
-    document.getElementsByClassName("modal-title")[1].innerHTML =
+    document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
-    document.getElementsByClassName("modal-body")[1].innerHTML = `
+    document.getElementById('contactDetailModalBody').innerHTML = `
       <form id="modal-form" name='modal-form'>
         <div class="form-group">
           <div class="row mb-2">
@@ -88,41 +88,52 @@ function openForm(id) {
               <label for="notes">Notes</label>
             </div>
             <div class="col-8">
-              <input type="text" class="form-control" id="notes" name="notes"
-              value="${data.notes ? data.notes : ""}">
+              <textarea type="text" class="form-control" id="notes" name="notes"
+              value="${data.notes ? data.notes : ""}"></textarea>
             </div>
           </div>
         </div>
 
       </form>`;
-    
-    const form = document.getElementById("modal-form");
-    const footer = document.getElementsByClassName("modal-footer")[1];
+
+    const footer = document.getElementById("contactDetailModalFooter");
+
     footer.innerHTML = `
       <div class="row">
       
         <div class="col-4">
-        <button type="button" class="btn btn-danger" onclick=deleteContact(${data.contact_id})>Delete</button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-toggle='modal'
+          data-bs-target='#confirmationModal'
+          onclick=deleteContact(${data.contact_id}, ${data.f_name+' '+data.l_name})>
+            Delete
+        </button>
         </div>
        
         <div id='center' class="col-4">
-        <button type="button" class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#login'
-         data-bs-dismiss='modal' id='edit'> Edit </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          data-bs-toggle='modal' 
+          data-bs-target='#contactEditModal'
+          id='edit'>
+           Edit 
+        </button>
         </div>
 
         <div id='right' class="col-4">
-        <button type="button" class="btn btn-success" onclick=saveContact(${data.contact_id})>Save</button>
+        <button type="button" class="btn btn-success"
+            onclick=saveContact(${data.contact_id})>Save</button>
         </div>
 
-      </div>
-      `;
+      </div>`;
    
       document.getElementById('center').style.textAlign = 'center'
       document.getElementById('right').style.textAlign = 'right'
-    footer.style.display = "block";
-    document.getElementById("edit").addEventListener("click", () => {
-      editContact(data);
-      });
+      footer.style.display = "block";
+      document.getElementById("edit").addEventListener("click",()=>editContact(data));
   }
 
 //uses the + operator to convert id variable to a number, if it is not a number, it is full contact data
@@ -139,24 +150,27 @@ function openForm(id) {
         return populateData(data);
     });
 }
+
+
 function editContact(data) {
-  document.getElementsByClassName("modal-title")[0].innerHTML = 'Edit Contact'
-  const form = document.getElementById('login-form')
+  console.log(data)
+  const form = document.getElementById('contactEditForm')
   for (const line of form) {
     if (line.type != 'hidden' && line.id in data) line.value = data[line.id]
   }
 
-  document.getElementsByClassName("modal-footer")[0].innerHTML = `
-  <button type="button" data-bs-toggle='modal' data-bs-target='#contactModal' 
+  document.getElementById('contactEditModalFooter').innerHTML = `
+  <button type="button" data-bs-toggle='modal' data-bs-target='#contactDetailModal' 
       data.bs-dismiss='modal' class="btn btn-info" id='cancel'>Cancel</button>
   <button type="button" id='save' class="btn btn-warning" >Save</button>
   `;
 
-  document.getElementById("save").addEventListener("click", () => { saveContact(data.contact_id, 'login-form');});
-  document.getElementById("cancel").addEventListener("click", () => { openForm(data); });
+  document.getElementById("save").addEventListener("click",
+    () => { saveContact(data.contact_id, 'contactEditForm'); });
+  document.getElementById("cancel").addEventListener("click",()=>openForm(data));
 }
 
-function saveContact(id, past='modal-form') {
+function saveContact(id, past) {
   console.log("save contact")
   const form = document.getElementById(past)
   console.log(form)
@@ -167,8 +181,24 @@ function saveContact(id, past='modal-form') {
   form.reset()
 }
 
-function deleteContact(id) {
+function deleteContact(id, fullName) {
   console.log("delete contact")
   
+  document.getElementById('confirmationModalTitle')
+    .innerHTML = `Delete Contact: "${fullName}"?`
+  document.getElementById('confirmationModalBody').innerHTML = `
+    <p>Are you sure you want to delete this contact?</p>
+    <p>This action cannot be undone.</p>`
+  document.getElementById('confirmationModalFooter').innerHTML = `
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      data-bs-toggle="modal" 
+      data-bs-target="#contactDetailModal">
+    Cancel
+  </button>
 
+  <form action="/contacts/${id}/delete" method="POST">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>`
 }

@@ -4,7 +4,6 @@ import forms
 import twilio_API
 import os
 import re
-from faker import Faker
 from dotenv import load_dotenv
 from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import VoiceGrant
@@ -34,7 +33,7 @@ sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
 
-fake = Faker()
+
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
 alphanumeric_only = re.compile("[\W_]+")
 

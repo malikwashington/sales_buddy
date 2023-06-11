@@ -1,0 +1,36 @@
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Log In To Your SalesBuddy Account
+        </h5>
+        <button type="button" class="close" data-bs-toggle="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/" id="modal-form" method="POST">
+          {{form.hidden_tag()}}
+
+          <div class="form-group">
+            {{form.email.label(class="form-control-label")}}
+            {{form.email(class="form-control")}}
+          </div>
+
+          <div class="form-group">
+            {{form.password.label(class="form-control-label")}}
+            {{form.password(class="form-control")}}
+          </div>
+        </form>
+      </div>
+          
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal">
+          Close
+        </button>
+        {{form.submit(class="btn btn-primary", form="modal-form")}}
+      </div>
+    </div>
+  </div>
+</div>
