@@ -1,5 +1,6 @@
 from twilio.rest import Client
 import keys
+from re import sub
 from model import db, Call_Record, Text_Record
 from twilio.twiml.voice_response import VoiceResponse, Dial
 from twilio.twiml.messaging_response import MessagingResponse
@@ -33,21 +34,23 @@ def token(id):
 def send_sms(contact, text):
   """Send an SMS to a user's contact"""
 
-  prefix = '+1'
-
+  phone_number = '+1' + sub('[^\d]','',contact.phone)
   message = client.messages.create(
-      to=prefix + contact.phone,
-      from_='+18559126913',
-      body=text)
+      to= phone_number,
+      from_= keys.BIZ_PHONE,
+      body= text)
   print(message.sid)
   # print(message.date_sent)
+  sent_time = datetime.utcnow()
+  formatted_time = sent_time.strftime('%a, %d %b %Y %H:%M:%S %Z')
+  print('\n\n\n\n\n\n', formatted_time, '\n\n\n\n\n\n')
   contact.text_history.append(Text_Record(
                               text_body=text,
-                              text_time=datetime.utcnow().strftime('%Y%m%d,%H%M%S'),
+                              text_time=sent_time.strftime('%Y%m%d,%H%M%S'),
                               to=message.to,
                               text_sid=message.sid,))
-  contact.last_contacted = message.date_sent
-  db.sesion.add(contact.text_history)
+  contact.last_contacted = formatted_time
+  db.session.add(contact)
   db.session.commit()
 
 def voice(phone_number):

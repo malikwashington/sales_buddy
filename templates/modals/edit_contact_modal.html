@@ -6,36 +6,51 @@
         <h5 class="modal-title" id="contactEditModalTitle">
           Edit Contact 
         </h5>
-        <button type="button" class="close" data-bs-toggle="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
-      <div class="modal-body" id="contactEditModalBody">
-       
-       <form action="/" method='POST' id="contactEditForm">
+      
+      <form action="/" method='POST' id="contactEditForm">
+        
+        <div class="modal-body" id="contactEditModalBody">
           {{form.hidden_tag()}} 
 
-          {% for line in form %}
+          {% for line in form if line.id != "submit" %}
 
           <div class="form-group">
             <div class="row mb-2">
               
-              <div class="col-4 d-flex align-items-center">
-                {% if not loop.last %}
+              <span class="col-4 d-flex align-items-center">
+                <!-- {% if not loop.last %} -->
                 {{line.label(class_="form-control-label")}} 
-                {% endif %}
-              </div>
-              <div class="col-8">
+                <!-- {% endif %} -->
+              </span>
+              <span class="col-8">
+                {% if line.id == 'phone' %}
+                  {{line(
+                    class_="form-control", 
+                    onInput="this.value = phoneFormat(this.value)")}}
+                {% else %}
                 {{line(class_="form-control")}}
-              </div>
+                {% endif %}
+              </span>
             </div>
           </div>
           {% endfor %}
-       </form> 
-      </div>
-      <div class="modal-footer" id="contactEditModalFooter">
-        
-      </div>
+        </div>
+        <div class="modal-footer" id="contactEditModalFooter">
+          <button 
+          type="button" 
+          data-bs-toggle='modal' 
+          data-bs-target='#contactDetailModal' 
+          data.bs-dismiss='modal' 
+          class="btn btn-info" 
+          id='cancelEdit'
+          >
+            Cancel
+          </button>
+          
+          {{form.submit(class="btn btn-warning", id="editSave", value="Save Changes")}}
+        </div>
+      </form> 
     </div>
   </div>
 </div>

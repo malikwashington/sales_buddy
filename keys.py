@@ -14,3 +14,4 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 BOSS = os.getenv('MASTER_NUMBER')
+BIZ_PHONE = os.getenv('TWILIO_NUMBER')

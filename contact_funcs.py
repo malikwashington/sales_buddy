@@ -1,6 +1,6 @@
 from datetime import datetime
 from model import Contact, Email_Record, Call_Record, Text_Record, db
-
+from user_funcs import get_contact_by_id, delete_contact_by_id
 
 def add_call_to_contact(contact, call_notes=None, call_time=datetime.utcnow()):
   """Add a call to a contact"""
@@ -69,15 +69,17 @@ def set_priority(contact):
   contact.priority = p
   return p
 
-def delete_contact(contact):
+def delete_contact(user_id, contact_id):
   '''deletes a contact'''
-
-  db.session.delete(contact)
-  db.session.commit()
   
-def edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+  delete_contact_by_id(user_id, contact_id)
+  
+  return get_contact_by_id(user_id, contact_id) == None
+
+  
+def edit_contact(user_id, contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
   '''edits a contact'''
-  contact = Contact.query.get(contact_id).first()
+  contact = get_contact_by_id(user_id, contact_id)
   contact.f_name = f_name
   contact.l_name = l_name
   contact.phone = phone
@@ -88,5 +90,13 @@ def edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, no
   contact.urgency = urgency
   contact.potential = potential
   contact.opportunity = opportunity
+  db.session.commit()
+  return contact
+
+  
+def edit_contact_notes(user_id, contact_id, notes):
+  '''edits a contact's notes'''
+  contact = get_contact_by_id(user_id, contact_id)
+  contact.notes = notes
   db.session.commit()
   return contact

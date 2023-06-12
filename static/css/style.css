@@ -4,7 +4,7 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-#no-pointer-events {
+.no-pointer-events {
   pointer-events: none;
 }
 

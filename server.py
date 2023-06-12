@@ -18,7 +18,7 @@ import flask_sockets
 import json
 import base64
 import logging
-from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact 
+from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
 def add_url_rule(self, rule, _, f, **options):
@@ -241,7 +241,7 @@ def contact(contact_id):
 def new_contact():
   '''new contact route'''
 
-  form = forms.ContactForm()
+  form = forms.ContactForm(request.form)
   if form.validate_on_submit():
     f_name = form.f_name.data
     l_name = form.l_name.data
@@ -273,11 +273,20 @@ def new_contact():
 
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
-def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+def edit_existing_contact(contact_id):
   '''edit contact route'''
-  form = forms.ContactForm()
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  # form = request.form
+  form = forms.ContactForm(request.form)
+
   #validate the form
   if form.validate_on_submit():
+    #edit contact
+    full_name = f'{form.f_name.data} {form.l_name.data}'
+    
     f_name = form.f_name.data
     l_name = form.l_name.data
     phone = form.phone.data
@@ -288,40 +297,44 @@ def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, co
     urgency = form.urgency.data
     potential = form.potential.data
     opportunity = form.opportunity.data
-    print(f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
-    form.f_name.data = ''
-    form.l_name.data = ''
-    form.phone.data = ''
-    form.linkedin.data = ''
-    form.email.data = ''
-    form.company.data = ''
-    form.notes.data = ''
-    form.urgency.data = ''
-    form.potential.data = ''
-    form.opportunity.data = ''
-    #edit contact
-    full_name = f'{f_name} {l_name}'
+
+    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
     flash(f'Contact {full_name} edited!', 'success')
-  edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+    return redirect('/contacts')
+  else :
+    flash(f'Contact not edited!', 'danger')
+    return render_template('contacts.html', form=form)
+
+
+@app.route('/contacts/<contact_id>/edit/notes', methods=['POST'])
+@login_required
+def edit_existing_contact_notes(contact_id):
+  '''edit contact notes route'''
+  if request.method == 'GET':
+    return render_template('404.html')
+  form = request.form
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  notes = form.get('notes').strip()
+  
+  flash(f'Contact {contact.full_name} edited!', 'success')
+  edit_contact_notes(current_user.id ,contact_id, notes)
   return redirect('/contacts')
 
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
 @login_required
 def delete_existing_contact(contact_id):
-  form = forms.ContactForm()
-  #validate the form
-  if form.validate_on_submit():
-    contact_id = form.contact_id.data
-    form.contact_id.data = ''
-  #delete contact
-  user_funcs.delete_contact_from_user(current_user, contact_id)
-
-  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name()
-  flash(f'Contact {full_name} deleted!', 'success')
-  redirect('/contacts')
   '''delete contact route'''
   
-  delete_contact(contact_id)
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  
+  #delete contact
+  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name
+  user_funcs.delete_contact_by_id(current_user.id, contact_id)
+
+  flash(f'Contact {full_name} deleted!', 'success')
+  
   return redirect('/contacts')
 
 @app.route('/sequences', methods=['GET','POST'])
@@ -331,6 +344,19 @@ def sequences():
   form = forms.SequenceForm()
   return render_template('sequences.html', form=form)
   
+@app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
+@login_required
+def text(contact_id):
+  '''route to stand as endpoint for text messages'''
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  form = request.form
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  sms = form.get('sms').strip()
+  twilio_API.send_sms(contact, sms)
+  return redirect('/contacts')
 
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')

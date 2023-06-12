@@ -123,6 +123,12 @@ class Contact(db.Model):
   text_history = db.relationship('Text_Record', back_populates='contact')
   
   user = db.relationship('User', back_populates='contacts')
+  
+  @property
+  def full_name(self):
+    '''Return full name of contact'''
+    
+    return f'{self.f_name} {self.l_name}'
     
   def __repr__(self):
     return f'''<Contact contact_id={self.contact_id} priority={self.priority} 
