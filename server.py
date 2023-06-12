@@ -264,8 +264,18 @@ def new_contact():
     form.potential.data = ''
     form.opportunity.data = ''
     contact = user_funcs.add_contact_to_user(
-      current_user, f_name, l_name, urgency, potential, opportunity, phone, email, 
-      linkedin, company, notes)
+      current_user, 
+      f_name, 
+      l_name, 
+      urgency, 
+      potential, 
+      opportunity, 
+      phone, 
+      email,
+      company, 
+      notes,
+      linkedin 
+      )
     db.session.add(contact)
     db.session.commit()
     flash(f'Contact created for {contact.full_name}!', 'success')

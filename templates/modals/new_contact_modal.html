@@ -1,5 +1,6 @@
 
 <div class="modal " id="newContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -7,13 +8,13 @@
           Create New Contact
         </h5>
         <button type="button" class="close" data-bs-toggle="modal" aria-label="Close">
-          <span class='no-pointer-events' aria-hidden="true">&times;</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form action="/contacts/new" method="POST" name="new-contact" id="new-contact-form">
         <div class="modal-body" id="newContactModalBody">
           {{form.hidden_tag()}}
-          {% for line in form %}
+          {% for line in form if line.id != 'submit' %}
 
           <div class="form-group">
             <div class="row mb-2">
@@ -23,17 +24,27 @@
                 {{line.label(class_="form-control-label")}} 
                 {% endif %}
               </div>
-
+              
               <div class="col-8">
+                {% if line.id == 'phone' %}
+                {{line(
+                  class_="form-control", 
+                  placeholder="(555) 555 - 5555", 
+                  type="tel",
+                  onInput="this.value=phoneFormat(this.value)")}}
+                {% elif line.id == 'email' %}
+                {{line(class_="form-control", placeholder="Enter your email address", type="email")}}
+                {% else %}
                 {{line(class_="form-control")}}
+                {% endif %}
               </div>
-            
+              
             </div>
           </div>
           {% endfor %}
-
+          
         </div>
-
+        
         <div class="modal-footer" id="newContactModalFooter">
           <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#newContactModal">
             Close
@@ -46,3 +57,4 @@
     </div>
   </div>
 </div>
+          </div>

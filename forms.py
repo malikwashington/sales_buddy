@@ -41,8 +41,8 @@ class ContactForm(FlaskForm):
   
   f_name = StringField('First Name', validators=[InputRequired(), Length(min=2, max=20)])
   l_name = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)])
-  phone = StringField('Phone Number', validators=[InputRequired()])
   linkedin = StringField('LinkedIn', validators=[Length(min=0, max=100)])
+  phone = StringField('Phone Number', validators=[InputRequired()])
   email = StringField('Email', validators=[Email()])  
   company = StringField('Company', validators=[Length(min=2, max=100)])
   notes = TextAreaField('Notes', validators=[Length(min=0, max=1000)])
