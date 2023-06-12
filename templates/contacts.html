@@ -33,8 +33,11 @@
 <br />
 <div class="container overflow-auto my-5 py-5">
   <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-
   <div class="table-responsive">
+    <div class="row m-2 mb-5">
+      <label for="searchTable" class="col-2">Search</label>
+      <input type="text" id="searchTable" class="form-control col-4" onkeyup="searchTable()" placeholder="Search for names..">
+    </div>
     <table
       id="myTable2"
       class="sortable table table-striped table-dark table-hover"
@@ -76,5 +79,5 @@
 
 
 {% block scripts %}
-<script src="../static/js/contacts_modals.js"></script>
+<script src="../static/js/contacts.js"></script>
 {% endblock %}

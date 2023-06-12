@@ -110,7 +110,7 @@ class Contact(db.Model):
   potential = db.Column(db.Integer, nullable=False, default=0)
   opportunity = db.Column(db.Integer, nullable=False, default=0)
   date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
-  last_contacted = db.Column(db.DateTime, nullable=True, default=datetime.utcnow())
+  last_contacted = db.Column(db.DateTime, nullable=True, default='')
   priority = db.Column(db.Float, nullable=False, default=0)
   
 

@@ -15,8 +15,32 @@
 //     });
 // }
 
+function searchTable() {
+  let found = false;
+  const input = document.getElementById("searchTable");
+  let filter = input.value.toUpperCase();
+  const table = document.getElementById("myTable2");
+  const tr = table.getElementsByTagName("tr");
+  for (let i = 1; i < tr.length; i++) {
+    let td = tr[i].getElementsByTagName("td");
+    console.log(td)
+    for (let j = 0; j < td.length; j++) {
+      if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+        found = true;
+      }
+    }
+    if (found) {
+      tr[i].style.display = "";
+      found = false;
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+}
+
 function openForm(id) {
-  //helper function to populate data, add onclick to delete and add event listener to edit button
+  //helper function to populate data into contact detail modal, 
+  //add onclick to delete and add event listener to edit button
   const populateData = (data) => {
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
