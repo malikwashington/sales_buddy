@@ -280,7 +280,10 @@ def new_contact():
     db.session.commit()
     flash(f'Contact created for {contact.full_name}!', 'success')
     return redirect('/contacts')
-
+  else :
+    flash(f'Contact not created!', 'danger')
+    [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
+    return render_template('contacts.html', form=form)
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id):
