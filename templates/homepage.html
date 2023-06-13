@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% include './modals/login_modal.html' %}
+{% include './modals/signup_modal.html' %}
 
 {%block navright %}
 
 <li class="nav-item">
-  <a class="nav-link" href="/signup">Sign Up</a>
+  <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#sign-up">Sign Up</a>
 </li>
 
 <li class="nav-item">

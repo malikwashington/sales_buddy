@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
   
   
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  profile = db.Column(db.String(100), nullable=True, default=None)
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
@@ -57,6 +58,7 @@ class Sub_User(db.Model, UserMixin):
   parent_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
+  profile = db.Column(db.String(100), nullable=False, default='./static/img/user.png')
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
   disabled = db.Column(db.Boolean, nullable=False, default=False)

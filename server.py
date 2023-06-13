@@ -9,15 +9,14 @@ from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import VoiceGrant
 from twilio.twiml.voice_response import VoiceResponse, Dial
 from keys import SECRET_KEY
+import keys
+import cloudinary.uploader
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
 import user_funcs
 from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import flask_sockets 
-import json
-import base64
-import logging
 from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
@@ -84,19 +83,24 @@ def page_not_found(e):
 @app.route('/', methods=['GET','POST'])
 def homepage():
   """View homepage."""
+  #redirect to profile if user is logged in
   if current_user.is_authenticated:
     return redirect(url_for('profile'))
   
-  form = forms.SignInForm()
+  #sign up form
+  signUpForm = forms.RegistrationForm()
+  
+  #sign in form 
+  signInForm = forms.SignInForm()
   #validate sign in form
-  if form.validate_on_submit():
-    email = form.email.data
-    password = form.password.data
-    form.email.data = ''
-    form.password.data = ''
+  if signInForm.validate_on_submit():
+    email = signInForm.email.data
+    password = signInForm.password.data
+    signInForm.email.data = ''
+    signInForm.password.data = ''
     # sign in user
     user = user_funcs.login_user(email, password)
-
+    print('\n\n\n\n\n', user, '\n\n\n\n\n')
     if user[0]:
       #login user
       login_user(user[1])
@@ -105,18 +109,22 @@ def homepage():
       #flash message if incorrect email or password
       flash(f'Incorrect email or password', 'danger')
       return redirect('/')
-  elif form.errors: 
+  elif signInForm.errors: 
     flash(f'Incorrect email or password', 'danger')
     return redirect('/')
-  return render_template('homepage.html', form=form)
+  return render_template('homepage.html', signInForm=signInForm, signUpForm=signUpForm)
 
     
 #signup up page
 @app.route('/signup', methods=['GET','POST'])
 def sign_up():
   """sign up page."""
+  if current_user.is_authenticated:
+    return redirect(url_for('profile'))
+  elif request.method == 'GET':
+    return redirect('/')
   
-  form = forms.RegistrationForm()  
+  form = forms.RegistrationForm(request.form)  
   
  #validate sign up form 
   if form.validate_on_submit():
@@ -143,18 +151,19 @@ def sign_up():
       return redirect('/')
   #if form is not valid flash errors
   if form.errors: 
-    print(form.errors.values())
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
     return render_template('signup.html', form=form)
   return render_template('signup.html', form=form)
 
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/password-reset', methods=['GET', 'POST'])
 @login_required
 def change_password():
   '''change password page'''
+  if request.method == 'GET':
+    return render_template('404.html')
   
-  form = forms.ChangePasswordForm()
+  form = forms.ChangePasswordForm(request.form)
   if form.validate_on_submit():
     old_password = form.old_password.data
     new_password = form.new_password.data
@@ -164,20 +173,50 @@ def change_password():
     form.new_password2.data = ''
     if current_user.verify_password(old_password):
       current_user.password = new_password
+      db.session.add(current_user)
       db.session.commit()
       flash('Password changed successfully', 'success')
       return redirect('/profile')
     else:
       flash('Incorrect password', 'danger')
-      return redirect('/change_password')
-  return render_template('change_password.html', form=form)
+      return redirect('/profile')
+  flash('Passwords do not match', 'danger')
+  return redirect('/profile')
 
 @app.route('/profile')
 @login_required
 def profile():
   '''profile page'''
+  pwForm = forms.ChangePasswordForm()
+  return render_template('profile.html', pwForm=pwForm)
 
-  return render_template('profile.html', form=forms.ChangePasswordForm())
+@app.route('/profile/edit', methods=['POST'])
+@login_required
+def edit_profile():
+  '''edit profile route'''
+  
+  form = request.form
+  fname = form.get('fname').strip()
+  lname = form.get('lname').strip()
+  email = form.get('email').strip()
+  phone = form.get('phone').strip()
+  
+  return redirect('/profile')
+
+@app.route('/profile/edit/photo', methods=['POST'])
+@login_required
+def edit_profile_photo():
+  '''edit profile photo route'''
+  
+
+  photo = request.files.get('photo')
+  result = cloudinary.uploader.upload(photo,
+                                      api_key=keys.CLOUDINARY_KEY,
+                                      api_secret=keys.CLOUDINARY_SECRET,
+                                      cloud_name=keys.CLOUD_NAME,)
+  img_url = result['secure_url']
+
+  return redirect('/profile')
 
 @app.route('/dashboard')
 @login_required

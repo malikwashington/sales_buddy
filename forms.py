@@ -27,14 +27,6 @@ class SignInForm(FlaskForm):
   submit = SubmitField('Sign In')
   
   
-class CreateContactForm(FlaskForm):
-  '''form for creating new contacts'''
-
-  
-class UpdateContactForm(FlaskForm):
-  '''form to update existing contacts'''
-  
-  
 
 class ContactForm(FlaskForm):
   '''form for creating new contacts'''
@@ -57,6 +49,7 @@ class ChangePasswordForm(FlaskForm):
   old_password = PasswordField('Old Password', validators=[InputRequired()])
   new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=20)])
   new_password2 = PasswordField('Confirm New Password', validators=[InputRequired(), EqualTo('new_password', message='Passwords must match')])
+  submit = SubmitField('Submit')
 
 class SequenceForm(FlaskForm):
   '''form for creating new sequences'''

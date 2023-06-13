@@ -32,9 +32,10 @@ def login_user(email, password):
   '''checks if email and password match a user in the database 
   returns a tuple of boolean and if true, the user object'''
   user = get_user_by_email(email)
-  verify = user.verify_password(password)
-  if all((user,verify)):
-    return (verify, user)
+  if user:
+    verify = user.verify_password(password)
+    if verify:
+      return (verify, user)
   return (False,)
 
 

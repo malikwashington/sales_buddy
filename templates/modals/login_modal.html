@@ -1,4 +1,4 @@
-<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -9,28 +9,32 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form action="/" id="modal-form" method="POST">
-          {{form.hidden_tag()}}
-
+      <form action="/" id="login-modal-form" method="POST">
+          <div class="modal-body">
+          {{signInForm.hidden_tag()}}
+          {{signInForm.csrf_token(id="login_csrf_token")}}
           <div class="form-group">
-            {{form.email.label(class="form-control-label")}}
-            {{form.email(class="form-control")}}
+            {{signInForm.email.label(class="form-control-label")}}
+            {{signInForm.email(class="form-control", id="signInEmail", placeholder="Enter your email")}}
           </div>
 
           <div class="form-group">
-            {{form.password.label(class="form-control-label")}}
-            {{form.password(class="form-control")}}
+            {{signInForm.password.label(class="form-control-label")}}
+            {{signInForm.password(class="form-control", id="signInPassword", placeholder="Enter your password")}}
           </div>
-        </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            data-bs-toggle="modal"
+            data-bs-target="#login">
+            Cancel
+          </button>
+          {{signInForm.submit(class="btn btn-primary", form="login-modal-form")}}
+        </div>
+      </form>
       </div>
-          
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal">
-          Close
-        </button>
-        {{form.submit(class="btn btn-primary", form="modal-form")}}
-      </div>
-    </div>
   </div>
 </div>

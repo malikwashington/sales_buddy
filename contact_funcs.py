@@ -64,8 +64,8 @@ def get_texts_by_contact(contact_id):
 
 def set_priority(contact):
   '''defines the priority of a contact based on the urgency, potential, and opportunity scores'''
-
-  p =(contact.urgency+contact.potential+contact.opportunity)/(1+(datetime.utcnow()-contact.last_contacted).days)
+  last_contacted = contact.last_contacted or datetime.utcnow()
+  p =(contact.urgency+contact.potential+contact.opportunity)/(1+(datetime.utcnow()-last_contacted).days)
   contact.priority = p
   return p
 
