@@ -60,10 +60,20 @@ $(function () {
     var params = {
       To: document.getElementById("phoneNumber").value,
     };
-    console.log('number: ', params.To)
+    const fullName = document.getElementById("contactDetailModalTitle").innerHTML;
+    if (fullName) {
+      console.log('\n\n\n\nSUCCESS!\n\n\n\n\n')
+      $("#txtPhoneNumber").text(fullName);
+      const detail = document.createElement('p');
+      detail.classList.add('text-muted', 'text-center');
+      detail.innerText = params.To;
+      console.log(detail);
+      document.getElementById("modal-call-in-progress-display").appendChild(detail);
+    }
+    else {
     // output destination number
     $("#txtPhoneNumber").text(params.To);
-
+    }
     console.log("Calling " + params.To + "...");
     if (device) {
       var outgoingConnection = device.connect(params);
