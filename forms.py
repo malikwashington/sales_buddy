@@ -51,6 +51,16 @@ class ChangePasswordForm(FlaskForm):
   new_password2 = PasswordField('Confirm New Password', validators=[InputRequired(), EqualTo('new_password', message='Passwords must match')])
   submit = SubmitField('Submit')
 
+class ProfileForm(FlaskForm):
+  '''form for editing profile'''
+  
+  fname = StringField('First Name', validators=[InputRequired(), Length(min=2, max=20)])
+  lname = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)])
+  email = StringField('Email', validators=[Email()])
+  profile = StringField('Profile Picture', validators=[Length(min=0, max=100)])
+  phone = StringField('Phone Number', validators=[Length(min=0, max=20)])
+  submit = SubmitField('Submit')
+
 class SequenceForm(FlaskForm):
   '''form for creating new sequences'''
   

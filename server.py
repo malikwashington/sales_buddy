@@ -188,7 +188,13 @@ def change_password():
 def profile():
   '''profile page'''
   pwForm = forms.ChangePasswordForm()
-  return render_template('profile.html', pwForm=pwForm)
+  profileForm = forms.ProfileForm()
+  profilePic = current_user.profile or './static/img/user.png'
+  return render_template(
+    'profile.html', 
+    pwForm=pwForm, 
+    profileForm=profileForm, 
+    profilePic=profilePic )
 
 @app.route('/profile/edit', methods=['POST'])
 @login_required
