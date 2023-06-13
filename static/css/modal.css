@@ -83,8 +83,3 @@ input {
     background-image: url('/static/images/user.png');
     background-size: cover;
 }
-
-#modal-incomming-call-body{
-    background-image: url('/static/images/user.png');
-    background-size: cover;
-}

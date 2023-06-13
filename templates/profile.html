@@ -1,24 +1,28 @@
 {% extends 'loggedin.html' %}
 
+
 {% block title %}Profile{% endblock %}
 
-{% block body%}
-<h1>Profile</h1>
-<br>
-<br>
 
+{% block body%}
+
+<h1>Profile</h1>
 <div class="container overflow-auto my-5 py-5">
+  current_user.profile
+  <form action="/profile/edit/photo" method="POST" enctype="multipart/form-data">
+    <input type="file" name="photo">
+    <input type="submit" value="Upload">
+  </form>
   <div class="card">
     <div class="card-header">
-      {{ current_user.full_name }}
     </div>
     <div class="card-body">
-      
-    <p class="card-text">
-
-	<div class="row">
-		<div class="col-8">
-
+      <p class="card-text">
+        {{ current_user.full_name }}
+        
+        <div class="row">
+          <div class="col-8">
+            
       <strong>Admin:</strong>
       {{ current_user.admin }}<br/>
       
@@ -28,15 +32,22 @@
       
       <strong>Phone:</strong>
       <br/>
-
+      
     </div>
   </div>
-  </p>
-  <a href="#" id='link-button' class="btn btn-primary border-1 border-primary">Edit Profile</a>
-  <a href="{{ url_for('change_password') }}" id="link-button" class="btn btn-primary">Change Password</a>
+</p>
+<a href="#" class="link-button btn btn-primary border-1 border-primary">Edit Profile</a>
+<a 
+href="#" 
+class="link-button btn btn-primary"
+data-bs-toggle="modal"
+data-bs-target="#pw-reset">
+Change Password
+</a>
 
-    </div>
-  </div>
+</div>
+</div>
+{% include "./modals/password_reset_modal.html" %}
 </div>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import User, Contact, Sub_User
+from model import User, Contact, Sub_User, db
 # from server import app
 
 def create_user(fname, lname, email, password):
@@ -32,9 +32,10 @@ def login_user(email, password):
   '''checks if email and password match a user in the database 
   returns a tuple of boolean and if true, the user object'''
   user = get_user_by_email(email)
-  verify = user.verify_password(password)
-  if all((user,verify)):
-    return (verify, user)
+  if user:
+    verify = user.verify_password(password)
+    if verify:
+      return (verify, user)
   return (False,)
 
 
@@ -60,5 +61,11 @@ def get_contact_by_id(user_id, contact_id):
   
   return Contact.query.filter(Contact.user_id == user_id, Contact.contact_id == contact_id).first()
 
+def delete_contact_by_id(user_id, contact_id):
+  """Delete a contact by id"""
+  
+  contact = get_contact_by_id(user_id, contact_id)
+  db.session.delete(contact)
+  db.session.commit()
 # if __name__ == '__main__':
 #   connect_to_db(app)

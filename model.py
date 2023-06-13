@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
   
   
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  profile = db.Column(db.String(100), nullable=True, default=None)
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)
@@ -57,6 +58,7 @@ class Sub_User(db.Model, UserMixin):
   parent_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
+  profile = db.Column(db.String(100), nullable=False, default='./static/img/user.png')
   email = db.Column(db.String, unique=True, nullable=False)
   password_hash = db.Column(db.String(128), nullable=False)
   disabled = db.Column(db.Boolean, nullable=False, default=False)
@@ -110,7 +112,7 @@ class Contact(db.Model):
   potential = db.Column(db.Integer, nullable=False, default=0)
   opportunity = db.Column(db.Integer, nullable=False, default=0)
   date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
-  last_contacted = db.Column(db.DateTime, nullable=True, default=datetime.utcnow())
+  last_contacted = db.Column(db.DateTime, nullable=True)
   priority = db.Column(db.Float, nullable=False, default=0)
   
 
@@ -123,6 +125,12 @@ class Contact(db.Model):
   text_history = db.relationship('Text_Record', back_populates='contact')
   
   user = db.relationship('User', back_populates='contacts')
+  
+  @property
+  def full_name(self):
+    '''Return full name of contact'''
+    
+    return f'{self.f_name} {self.l_name}'
     
   def __repr__(self):
     return f'''<Contact contact_id={self.contact_id} priority={self.priority} 

@@ -1,0 +1,40 @@
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Log In To Your SalesBuddy Account
+        </h5>
+        <button type="button" class="close" data-bs-toggle="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="/" id="login-modal-form" method="POST">
+          <div class="modal-body">
+          {{signInForm.hidden_tag()}}
+          {{signInForm.csrf_token(id="login_csrf_token")}}
+          <div class="form-group">
+            {{signInForm.email.label(class="form-control-label")}}
+            {{signInForm.email(class="form-control", id="signInEmail", placeholder="Enter your email")}}
+          </div>
+
+          <div class="form-group">
+            {{signInForm.password.label(class="form-control-label")}}
+            {{signInForm.password(class="form-control", id="signInPassword", placeholder="Enter your password")}}
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            data-bs-toggle="modal"
+            data-bs-target="#login">
+            Cancel
+          </button>
+          {{signInForm.submit(class="btn btn-primary", form="login-modal-form")}}
+        </div>
+      </form>
+      </div>
+  </div>
+</div>

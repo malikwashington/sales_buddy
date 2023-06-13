@@ -1,0 +1,38 @@
+<div class="modal" id="modalTextBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered ">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+           
+      <div class="modal-header">
+        <div class='modal-title' id="textContactModalTitle">
+        </div>
+        <button type="button" 
+          class="close" 
+          data-bs-toggle="modal" 
+          data-bs-target="#contactDetailModal" 
+          aria-label="Close">
+            <span aria-hidden="true" class="no-pointer-events">&times;</span>
+        </button>
+      </div>
+
+      <form action="/text" id="textModalForm" method="POST">
+
+        <!-- Modal body -->
+        <div class="modal-body" id="modal-call-in-progress-body" style="height: 300px;">
+          <div class="mx-auto">
+            <textarea required name="sms" class="p-3" cols="30" rows="10" style="width:100%;"></textarea>
+          </div>
+        </div>
+                <!-- Modal Footer -->
+        <div class="modal-footer mx-auto">
+          <button type="submit" class="btn btn btn-info">
+            Send Text
+          </button>
+        </div>
+      </form>
+      <div>
+      </div>
+    </div>
+  </div>
+</div>

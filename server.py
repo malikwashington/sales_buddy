@@ -4,22 +4,20 @@ import forms
 import twilio_API
 import os
 import re
-from faker import Faker
 from dotenv import load_dotenv
 from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import VoiceGrant
 from twilio.twiml.voice_response import VoiceResponse, Dial
 from keys import SECRET_KEY
+import keys
+import cloudinary.uploader
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
 import user_funcs
 from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import flask_sockets 
-import json
-import base64
-import logging
-from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact 
+from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
 def add_url_rule(self, rule, _, f, **options):
@@ -34,7 +32,7 @@ sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
 
-fake = Faker()
+
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
 alphanumeric_only = re.compile("[\W_]+")
 
@@ -85,19 +83,24 @@ def page_not_found(e):
 @app.route('/', methods=['GET','POST'])
 def homepage():
   """View homepage."""
+  #redirect to profile if user is logged in
   if current_user.is_authenticated:
     return redirect(url_for('profile'))
   
-  form = forms.SignInForm()
+  #sign up form
+  signUpForm = forms.RegistrationForm()
+  
+  #sign in form 
+  signInForm = forms.SignInForm()
   #validate sign in form
-  if form.validate_on_submit():
-    email = form.email.data
-    password = form.password.data
-    form.email.data = ''
-    form.password.data = ''
+  if signInForm.validate_on_submit():
+    email = signInForm.email.data
+    password = signInForm.password.data
+    signInForm.email.data = ''
+    signInForm.password.data = ''
     # sign in user
     user = user_funcs.login_user(email, password)
-
+    print('\n\n\n\n\n', user, '\n\n\n\n\n')
     if user[0]:
       #login user
       login_user(user[1])
@@ -106,18 +109,22 @@ def homepage():
       #flash message if incorrect email or password
       flash(f'Incorrect email or password', 'danger')
       return redirect('/')
-  elif form.errors: 
+  elif signInForm.errors: 
     flash(f'Incorrect email or password', 'danger')
     return redirect('/')
-  return render_template('homepage.html', form=form)
+  return render_template('homepage.html', signInForm=signInForm, signUpForm=signUpForm)
 
     
 #signup up page
 @app.route('/signup', methods=['GET','POST'])
 def sign_up():
   """sign up page."""
+  if current_user.is_authenticated:
+    return redirect(url_for('profile'))
+  elif request.method == 'GET':
+    return redirect('/')
   
-  form = forms.RegistrationForm()  
+  form = forms.RegistrationForm(request.form)  
   
  #validate sign up form 
   if form.validate_on_submit():
@@ -144,18 +151,19 @@ def sign_up():
       return redirect('/')
   #if form is not valid flash errors
   if form.errors: 
-    print(form.errors.values())
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
     return render_template('signup.html', form=form)
   return render_template('signup.html', form=form)
 
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/password-reset', methods=['GET', 'POST'])
 @login_required
 def change_password():
   '''change password page'''
+  if request.method == 'GET':
+    return render_template('404.html')
   
-  form = forms.ChangePasswordForm()
+  form = forms.ChangePasswordForm(request.form)
   if form.validate_on_submit():
     old_password = form.old_password.data
     new_password = form.new_password.data
@@ -165,20 +173,50 @@ def change_password():
     form.new_password2.data = ''
     if current_user.verify_password(old_password):
       current_user.password = new_password
+      db.session.add(current_user)
       db.session.commit()
       flash('Password changed successfully', 'success')
       return redirect('/profile')
     else:
       flash('Incorrect password', 'danger')
-      return redirect('/change_password')
-  return render_template('change_password.html', form=form)
+      return redirect('/profile')
+  flash('Passwords do not match', 'danger')
+  return redirect('/profile')
 
 @app.route('/profile')
 @login_required
 def profile():
   '''profile page'''
+  pwForm = forms.ChangePasswordForm()
+  return render_template('profile.html', pwForm=pwForm)
 
-  return render_template('profile.html', form=forms.ChangePasswordForm())
+@app.route('/profile/edit', methods=['POST'])
+@login_required
+def edit_profile():
+  '''edit profile route'''
+  
+  form = request.form
+  fname = form.get('fname').strip()
+  lname = form.get('lname').strip()
+  email = form.get('email').strip()
+  phone = form.get('phone').strip()
+  
+  return redirect('/profile')
+
+@app.route('/profile/edit/photo', methods=['POST'])
+@login_required
+def edit_profile_photo():
+  '''edit profile photo route'''
+  
+
+  photo = request.files.get('photo')
+  result = cloudinary.uploader.upload(photo,
+                                      api_key=keys.CLOUDINARY_KEY,
+                                      api_secret=keys.CLOUDINARY_SECRET,
+                                      cloud_name=keys.CLOUD_NAME,)
+  img_url = result['secure_url']
+
+  return redirect('/profile')
 
 @app.route('/dashboard')
 @login_required
@@ -242,7 +280,7 @@ def contact(contact_id):
 def new_contact():
   '''new contact route'''
 
-  form = forms.ContactForm()
+  form = forms.ContactForm(request.form)
   if form.validate_on_submit():
     f_name = form.f_name.data
     l_name = form.l_name.data
@@ -265,20 +303,42 @@ def new_contact():
     form.potential.data = ''
     form.opportunity.data = ''
     contact = user_funcs.add_contact_to_user(
-      current_user, f_name, l_name, urgency, potential, opportunity, phone, email, 
-      linkedin, company, notes)
+      current_user, 
+      f_name, 
+      l_name, 
+      urgency, 
+      potential, 
+      opportunity, 
+      phone, 
+      email,
+      company, 
+      notes,
+      linkedin 
+      )
     db.session.add(contact)
     db.session.commit()
     flash(f'Contact created for {contact.full_name}!', 'success')
     return redirect('/contacts')
-
+  else :
+    flash(f'Contact not created!', 'danger')
+    [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
+    return render_template('contacts.html', form=form)
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
-def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+def edit_existing_contact(contact_id):
   '''edit contact route'''
-  form = forms.ContactForm()
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  # form = request.form
+  form = forms.ContactForm(request.form)
+
   #validate the form
   if form.validate_on_submit():
+    #edit contact
+    full_name = f'{form.f_name.data} {form.l_name.data}'
+    
     f_name = form.f_name.data
     l_name = form.l_name.data
     phone = form.phone.data
@@ -289,40 +349,44 @@ def edit_existing_contact(contact_id, f_name, l_name, phone, linkedin, email, co
     urgency = form.urgency.data
     potential = form.potential.data
     opportunity = form.opportunity.data
-    print(f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
-    form.f_name.data = ''
-    form.l_name.data = ''
-    form.phone.data = ''
-    form.linkedin.data = ''
-    form.email.data = ''
-    form.company.data = ''
-    form.notes.data = ''
-    form.urgency.data = ''
-    form.potential.data = ''
-    form.opportunity.data = ''
-    #edit contact
-    full_name = f'{f_name} {l_name}'
+
+    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
     flash(f'Contact {full_name} edited!', 'success')
-  edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+    return redirect('/contacts')
+  else :
+    flash(f'Contact not edited!', 'danger')
+    return render_template('contacts.html', form=form)
+
+
+@app.route('/contacts/<contact_id>/edit/notes', methods=['POST'])
+@login_required
+def edit_existing_contact_notes(contact_id):
+  '''edit contact notes route'''
+  if request.method == 'GET':
+    return render_template('404.html')
+  form = request.form
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  notes = form.get('notes').strip()
+  
+  flash(f'Contact {contact.full_name} edited!', 'success')
+  edit_contact_notes(current_user.id ,contact_id, notes)
   return redirect('/contacts')
 
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
 @login_required
 def delete_existing_contact(contact_id):
-  form = forms.ContactForm()
-  #validate the form
-  if form.validate_on_submit():
-    contact_id = form.contact_id.data
-    form.contact_id.data = ''
-  #delete contact
-  user_funcs.delete_contact_from_user(current_user, contact_id)
-
-  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name()
-  flash(f'Contact {full_name} deleted!', 'success')
-  redirect('/contacts')
   '''delete contact route'''
   
-  delete_contact(contact_id)
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  
+  #delete contact
+  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name
+  user_funcs.delete_contact_by_id(current_user.id, contact_id)
+
+  flash(f'Contact {full_name} deleted!', 'success')
+  
   return redirect('/contacts')
 
 @app.route('/sequences', methods=['GET','POST'])
@@ -331,11 +395,20 @@ def sequences():
   '''sequences page'''
   form = forms.SequenceForm()
   return render_template('sequences.html', form=form)
-
-@sockets.route('/text')
-def text(ws):
-  '''creating a websocket route to handle text messages from twilio api'''
   
+@app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
+@login_required
+def text(contact_id):
+  '''route to stand as endpoint for text messages'''
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  form = request.form
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  sms = form.get('sms').strip()
+  twilio_API.send_sms(contact, sms)
+  return redirect('/contacts')
 
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')
