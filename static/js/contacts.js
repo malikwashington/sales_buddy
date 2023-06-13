@@ -44,125 +44,24 @@ function openForm(id) {
   const populateData = (data) => {
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
-    document.getElementById("contactDetailModalBody").innerHTML = `
-      <form
-        action='contacts/${data.contact_id}/edit/notes' 
-        method='POST' 
-        id="contactDetailForm"
-      >
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="phone">Phone Number</label>
-            </div>
-            <div class="col-5">
-            <input type="text" class="form-control" disabled=true id="phone" name="phone"
-            value="${data.phone ? phoneFormat(data.phone) : ""}">
-            </div>
-            <div class="col-3">
-            <span>
-                  <button 
-                    type="button" 
-                    class="btn 
-                    btn-outline-success" 
-                    id="phoneBtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-call-in-progress">
-                    <i class="fas fa-phone no-pointer-events"></i>
-                  </button>
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-info" 
-                    id="textBtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalTextBox">
-                    <i class="fas fa-comment no-pointer-events"></i>
-                  </button>
-                </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="email">Email</label>
-            </div>
-            <div class="col-8">
-              <input type="text" class="form-control" disabled=true id="email" name="email"
-              value="${data.email ? data.email : ""}">
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="company">Company</label>
-            </div>
-            <div class="col-8">
-              <input type="text" class="form-control" disabled=true id="company" name="company"
-              value="${data.company ? data.company : ""}">
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="linkedin">Linkedin</label>
-            </div>
-            <div class="col-8">
-              <a 
-                ${
-                  data.linkedin
-                    ? 'target="_blank"'
-                    : "style='pointer-events: none; cursor: default; text-decoration: none;'"
-                }
-                class="form-control" 
-                id="linkedin" 
-                href="
-                ${
-                  data.linkedin
-                    ? "https://www.linkedin.com/in/" + data.linkedin
-                    : "javascript:void(0)"
-                }">
-                ${data.linkedin ? "/in/" + data.linkedin : "/in/"}
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="last_contacted">Last Contacted</label>
-            </div>
-            <div class="col-8">
-              <p class="mt-2">${
-                data.last_contacted ? data.last_contacted : ""
-              }</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row">
-            <div class="col-4 mt-2">
-              <label for="notes">Notes</label>
-            </div>
-            <div class="col-8">
-              <textarea
-                type="text"
-                class="form-control"
-                id="notes"
-                name="notes"
-              >${data.notes ? data.notes : ""}</textarea>
-            </div>
-          </div>
-        </div>
+    document.getElementById("contactDetailForm")
+      .action = `/contacts/${data.contact_id}/edit/notes`;
+      
+    document.getElementById("phoneNumber")
+      .value=data.phone ? phoneFormat(data.phone) : "";
 
-      </form>`;
+    document.getElementById("email").value = data.email ? data.email : "";
+    document.getElementById("company").value = data.company ? data.company : "";
+    const linkedin = document.getElementById("linkedin")
+
+    linkedin.innerHTML = data.linkedin ? "/in/" + data.linkedin : "/in/"
+    linkedin.href = data.linkedin ? "https://www.linkedin.com/in/" + data.linkedin : "javascript:void(0)"           
+    linkedin.target = data.linkedin ? "_blank" : ""
+    linkedin.style = data.linkedin ? "" : "pointer-events: none; cursor: default; text-decoration: none;" 
+
+    document.getElementById("notes").value = data.notes ? data.notes : "";
+    document.getElementById("last_contacted")
+      .value = data.last_contacted ? data.last_contacted : ""
       
     const footer = document.getElementById("contactDetailModalFooter");
 
@@ -196,8 +95,6 @@ function openForm(id) {
         </div>
 
       </div>`;
-      document.getElementById('phoneBtn')
-        .addEventListener('click', () => console.log('phone calls coming'));
       document.getElementById('textBtn')
         .addEventListener('click', ()=>textContact(data));
       document.getElementById('center').style.textAlign = 'center'

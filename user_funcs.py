@@ -21,12 +21,34 @@ def create_sub_user(parent_user, fname, lname, email, password):
   print(f'\n\n sub user created: {sub_user} \n\n')
   return sub_user
   
+def update_profile(user, fname=None, lname=None, email=None, phone=None, profile=None):
+  """Update a user's profile"""
+
+  if fname:
+    user.fname = fname
+  if lname:
+    user.lname = lname
+  if email:
+    user.email = email
+  if profile:
+    user.profile = profile
+  if phone:
+    user.phone = phone
+
+  db.session.add(user)
+  db.session.commit()
+
+  return user
 
 def get_user_by_email(email):
   """Return a user by email."""
 
   return User.query.filter(User.email == email.lower().strip()).first()
 
+def get_user_by_uuid(uuid):
+  '''return a user by uuid'''
+  
+  return User.query.filter(User.uuid == uuid).first()
 
 def login_user(email, password):
   '''checks if email and password match a user in the database 

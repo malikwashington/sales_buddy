@@ -116,13 +116,53 @@ def homepage():
 
     
 #signup up page
-@app.route('/signup', methods=['GET','POST'])
-def sign_up():
-  """sign up page."""
+@app.route('/signup/<uuid>', methods=['GET','POST'])
+def sign_up(uuid):
+  """sign up page for sub users."""
+  
+  #check if uuid is valid
+  user = user_funcs.get_user_by_uuid(uuid)
+  if not user:
+    flash(f'Invalid link', 'danger')
+    flash(f'Contact your network administrator for more information', 'danger')
+    return render_template('404.html')
+    
+  #redirect to profile if user is logged in
   if current_user.is_authenticated:
     return redirect(url_for('profile'))
+  
+  form = forms.RegistrationForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      fname = form.fname.data
+      lname = form.lname.data
+      email = form.email.data
+      password = form.password.data
+      password2 = form.password2.data
+      form.fname.data = ''
+      form.lname.data = ''
+      form.email.data = ''
+      form.password.data = ''
+      form.password2.data = ''
+      #check if user exists
+      if user_funcs.get_user_by_email(email):
+        flash(f'Account already exists for {email}!', 'danger')
+        flash(f'Sign in to continue', 'warning')
+        return render_template('/homepage.html', form=form)
+      else:
+      #create user 
+        sub_user = user_funcs.create_sub_user(user, fname, lname, email, password)
+        db.session.add(sub_user)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account created for {sub_user.full_name}!', 'success')
+        return redirect('/')
+    #if form is not valid flash errors
+    if form.errors: 
+      [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
+      return render_template('signup.html', form=form)
   elif request.method == 'GET':
-    return redirect('/')
+    return render_template('/signup.html', form=form)
   
   form = forms.RegistrationForm(request.form)  
   
@@ -196,18 +236,26 @@ def profile():
     profileForm=profileForm, 
     profilePic=profilePic )
 
-@app.route('/profile/edit', methods=['POST'])
+@app.route('/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile():
   '''edit profile route'''
+  if request.method == 'GET':
+    return render_template('404.html')
   
-  form = request.form
-  fname = form.get('fname').strip()
-  lname = form.get('lname').strip()
-  email = form.get('email').strip()
-  phone = form.get('phone').strip()
+  form = forms.ProfileForm(request.form)
+  if form.validate_on_submit():
+    fname = form.get('fname').strip()
+    lname = form.get('lname').strip()
+    email = form.get('email').strip()
+    profile = form.get('profile').strip()
+    phone = form.get('phone').strip()
   
-  return redirect('/profile')
+    user_funcs.update_profile(current_user, fname, lname, email, phone, profile) 
+    return redirect('/profile')
+  else :
+    flash(f'Something went wrong. Please try again.', 'danger')
+    return redirect('/profile')
 
 @app.route('/profile/edit/photo', methods=['POST'])
 @login_required
@@ -521,7 +569,7 @@ def token():
     api_secret = os.environ["API_SECRET"]
 
     # Generate a random user name and store it
-    identity = alphanumeric_only.sub("", current_user.full_name)
+    identity = alphanumeric_only.sub("_", current_user.full_name)
     IDENTITY["identity"] = identity
 
     # Create access token with credentials
@@ -536,9 +584,10 @@ def token():
 
     # Return token info as JSON
     token = token.to_jwt()
-
+    response = jsonify({'identity':identity, 'token':token})
+    response.headers.add('Access-Control-Allow-Origin', '*')
     # Return token info as JSON
-    return jsonify(identity=identity, token=token)
+    return response #jsonify(identity=identity, token=token)
 
   
 if __name__ == '__main__':

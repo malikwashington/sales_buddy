@@ -7,10 +7,11 @@ $(function () {
   $.getJSON("./token")
     .then(function (data) {
       log("Got a token.");
+      console.log(data.token)
       console.log("Token: " + data.token);
 
       // Setup Twilio.Device
-      device = new Device(data.token, {
+      device = new Twilio.Device(data.token, {
         // Set Opus as our preferred codec. Opus generally performs better, requiring less bandwidth and
         // providing better audio quality in restrained network conditions. Opus will be default in 2.0.
         codecPreferences: ["opus", "pcmu"],
@@ -52,14 +53,14 @@ $(function () {
     });
 
   // Bind button to make call
-  $("#btnDial").bind("click", function () {
+  $("#phoneBtn").bind("click", function () {
     $("#modal-dial").modal("hide");
 
     // get the phone number to connect the call to
     var params = {
       To: document.getElementById("phoneNumber").value,
     };
-
+    console.log('number: ', params.To)
     // output destination number
     $("#txtPhoneNumber").text(params.To);
 

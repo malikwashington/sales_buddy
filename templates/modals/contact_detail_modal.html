@@ -11,7 +11,114 @@
         </button>
       </div>
       <div class="modal-body" id="contactDetailModalBody">
+         <form
+        action='' 
+        method='POST' 
+        id="contactDetailForm"
+      >
+        <div class="form-group">
+          <div class="row mb-2">
+            <div class="col-4 mt-2">
+              <label for="phone">Phone Number</label>
+            </div>
+            <div class="col-5">
+            <input type="text" class="form-control" disabled=true id="phoneNumber" name="phone"
+            value="">
+            </div>
+            <div class="col-3">
+            <span>
+                  <button 
+                    type="button" 
+                    class="btn 
+                    btn-outline-success" 
+                    id="phoneBtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-call-in-progress">
+                    <i class="fas fa-phone no-pointer-events"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info" 
+                    id="textBtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalTextBox">
+                    <i class="fas fa-comment no-pointer-events"></i>
+                  </button>
+                </span>
+            </div>
+          </div>
+        </div>
         
+        <div class="form-group">
+          <div class="row mb-2">
+            <div class="col-4 mt-2">
+              <label for="email">Email</label>
+            </div>
+            <div class="col-8">
+              <input type="text" class="form-control" disabled=true id="email" name="email"
+              value="">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="row mb-2">
+            <div class="col-4 mt-2">
+              <label for="company">Company</label>
+            </div>
+            <div class="col-8">
+              <input type="text" class="form-control" disabled=true id="company" name="company"
+              value="">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="row mb-2">
+            <div class="col-4 mt-2">
+              <label for="linkedin">Linkedin</label>
+            </div>
+            <div class="col-8">
+              <a 
+                target=""
+                style=''
+                class="form-control" 
+                id="linkedin" 
+                href="#"
+              > </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="row mb-2">
+            <div class="col-4 mt-2">
+              <label for="last_contacted">Last Contacted</label>
+            </div>
+            <div class="col-8">
+              <p class="mt-2" id="last_contacted">
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="row">
+            <div class="col-4 mt-2">
+              <label for="notes">Notes</label>
+            </div>
+            <div class="col-8">
+              <textarea
+                type="text"
+                class="form-control"
+                id="notes"
+                name="notes"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+      </form>
       </div>
       <div class="modal-footer" id="contactDetailModalFooter">
         
@@ -19,3 +126,21 @@
     </div>
   </div>
 </div>
+
+<div class="container" style="display:none;">
+        <!-- log output -->
+        <div class="card text-center log-container">
+            <h3>Device log</h3>
+            <div id="log"></div>
+            <div class="btn-container">
+                <button type="button" id="btnOpenNumberPad" class="btn btn-default btn-circle btn-lg">
+                    <i class="fa fa-phone fa-flip-horizontal " aria-hidden="true" style="color: green;"></i>
+                </button>
+            </div>
+        </div>
+</div>    
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://media.twiliocdn.com/sdk/js/client/v1.8/twilio.min.js"></script>
+<script type="text/javascript" src="/static/js/main.js"></script>
+<script type="text/javascript" src="/static/js/modals.js" defer></script>

@@ -1,12 +1,5 @@
 {% extends "loggedin.html" %} 
 
-{% include './modals/contact_detail_modal.html' %}
-{% include './modals/edit_contact_modal.html' %}
-{% include './modals/new_contact_modal.html' %}
-{% include './modals/call_in_progress_modal.html' %}
-{% include './modals/confirmation_modal.html' %}
-{% include './modals/call_in_progress_modal.html' %}
-{% include './modals/text_modal.html' %}
 
 {% block title %}Contacts{% endblock %} 
 
@@ -15,18 +8,18 @@
 {% block nr_extra %}
 <li class="nav-item">
   <a 
-      data-bs-toggle="modal" 
-      data-bs-target="#newContactModal" 
-      class="nav-link"
-      href="#">
-      Create New Contact
-    </a>
-  </li>
-  {% endblock %}
-  
+  data-bs-toggle="modal" 
+  data-bs-target="#newContactModal" 
+  class="nav-link"
+  href="#">
+  Create New Contact
+</a>
+</li>
+{% endblock %}
+
   {% block body%}
-
-
+    
+  
 <!-- <div id="sidebar" class="sidebar bg-light"></div> -->
 <h1>Contacts</h1>
 <br />
@@ -39,14 +32,14 @@
       <input type="text" id="searchTable" class="form-control col-4" onkeyup="searchTable()" placeholder="Search for names..">
     </div>
     <table
-      id="myTable2"
-      class="sortable table table-striped table-dark table-hover"
+    id="myTable2"
+    class="sortable table table-striped table-dark table-hover"
     >
-      <thead>
-        <tr>
-          <!-- <th scope="col">#</th> -->
-          <th scope="col">First Name</th>
-          <th scope="col">Last Name</th>
+    <thead>
+      <tr>
+        <th scope="col">Priority</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
           <th scope="col">Email</th>
           <th scope="col">Phone</th>
           <th scope="col">Company</th>
@@ -60,8 +53,8 @@
           name="{{loop.index}}"
           data-bs-toggle="modal"
           data-bs-target="#contactDetailModal"
-        >
-          <!-- <th scope="row">{{loop.index}}</th> -->
+          >
+          <td >{{contact.priority}}</td>
           <td>{{contact.f_name}}</td>
           <td>{{contact.l_name or ''}}</td>
           <td>{{contact.email or ''}}</td>
@@ -73,6 +66,14 @@
     </table>
   </div>
 </div>
+{% include './modals/contact_detail_modal.html' %}
+{% include './modals/edit_contact_modal.html' %}
+{% include './modals/new_contact_modal.html' %}
+{% include './modals/call_in_progress_modal.html' %}
+{% include './modals/confirmation_modal.html' %}
+{% include './modals/dial_modal.html' %}
+{% include './modals/call_in_progress_modal.html' %}
+{% include './modals/text_modal.html' %}
 {% endblock %} 
 
 
@@ -80,4 +81,5 @@
 
 {% block scripts %}
 <script src="../static/js/contacts.js"></script>
+
 {% endblock %}
