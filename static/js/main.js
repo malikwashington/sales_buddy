@@ -64,11 +64,7 @@ $(function () {
     if (fullName) {
       console.log('\n\n\n\nSUCCESS!\n\n\n\n\n')
       $("#txtPhoneNumber").text(fullName);
-      const detail = document.createElement('p');
-      detail.classList.add('text-muted', 'text-center');
-      detail.innerText = params.To;
-      console.log(detail);
-      document.getElementById("modal-call-in-progress-display").appendChild(detail);
+      document.getElementById("contact-call-name").innerHTML=fullName;
     }
     else {
     // output destination number
@@ -86,7 +82,7 @@ $(function () {
   // Bind button to hangup call
 
   $(".btnHangUp").bind("click", function () {
-    $(".modal").modal("hide");
+    // $(".modal").modal("hide");
     log("Hanging up...");
     if (device) {
       device.disconnectAll();

@@ -60,8 +60,9 @@ function openForm(id) {
     linkedin.style = data.linkedin ? "" : "pointer-events: none; cursor: default; text-decoration: none;" 
 
     document.getElementById("notes").value = data.notes ? data.notes : "";
+    console.log(data.last_contacted)
     document.getElementById("last_contacted")
-      .value = data.last_contacted ? data.last_contacted : ""
+      .innerHTML = data.last_contacted ? data.last_contacted : ""
       
     const footer = document.getElementById("contactDetailModalFooter");
 
@@ -71,7 +72,7 @@ function openForm(id) {
         <div class="col-4">
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-danger buttons"
           data-bs-toggle='modal'
           data-bs-target='#confirmationModal'
           id='detailDelete'>
@@ -82,7 +83,7 @@ function openForm(id) {
         <div id='center' class="col-4">
         <button 
           type="button" 
-          class="btn btn-primary" 
+          class="btn btn-primary buttons" 
           data-bs-toggle='modal' 
           data-bs-target='#contactEditModal'
           id='edit'>
@@ -91,7 +92,7 @@ function openForm(id) {
         </div>
 
         <div id='right' class="col-4">
-        <button type="button" class="btn btn-success" id='detailSave'>Save</button>
+        <button type="button" class="btn buttons btn-success" id='detailSave'>Save</button>
         </div>
 
       </div>`;
@@ -156,8 +157,9 @@ function editContact(data) {
 
 function saveContact(id, past) {
   const form = document.getElementById(past)
-  form.linkedin.value = form.linkedin.value.replace('/in/', '')
-  
+  const linkedin = document.getElementById('linkedin')
+  console.log('linkedin: ', linkedin.value)
+  linkedin.value = linkedin.value ? linkedin.value.replace('/in/', '') : '';
   form.submit()
 }
 
@@ -170,14 +172,14 @@ function deleteContact(id, fullName) {
   document.getElementById('confirmationModalFooter').innerHTML = `
     <button 
       type="button" 
-      class="btn btn-secondary" 
+      class="btn btn-secondary buttons" 
       data-bs-toggle="modal" 
       data-bs-target="#contactDetailModal">
     Cancel
   </button>
 
   <form action="/contacts/${id}/delete" method="POST">
-    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit" class="btn buttons btn-danger">Delete</button>
   </form>`
 }
 

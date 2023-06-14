@@ -89,5 +89,11 @@ def delete_contact_by_id(user_id, contact_id):
   contact = get_contact_by_id(user_id, contact_id)
   db.session.delete(contact)
   db.session.commit()
+
+def get_contact_by_phone(user_id, phone):
+  """Return a contact by phone number"""
+  
+  return Contact.query.filter(Contact.user_id == user_id, Contact.phone == phone).first()
+
 # if __name__ == '__main__':
 #   connect_to_db(app)

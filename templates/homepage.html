@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% include './modals/login_modal.html' %}
-{% include './modals/signup_modal.html' %}
 
 {%block navright %}
 
@@ -21,30 +19,14 @@
   <div class="container overflow-auto my-5 py-5">
     <div class="row">
       <div class="col">
-        <p>
-          Welcome to Sales Buddy - Your Ultimate Sales Companion!
-
-Achieve sales success like never before with Sales Buddy, the revolutionary app designed to empower sales professionals like you. Whether you're a seasoned sales guru or just starting out, Sales Buddy is here to transform the way you sell and skyrocket your results.
-
-🎯 Maximize Your Sales Potential Unlock your true potential with Sales Buddy's cutting-edge features and intuitive interface.
-
-🚀 Seamless Collaboration
-
-No more scattered information or missed opportunities. Sales Buddy houses crucial customer data, updates, and notes instantly, ensuring everyone is on the same page.
-
-⚡️ Automate and Streamline
-
-Save time and streamline your workflow with Sales Buddy's intelligent automation. Effortlessly manage your contacts, appointments, and follow-ups, while the app handles the repetitive tasks. Spend less time on administrative work and more time doing what you do best - closing deals.
-
-🔒 Data Security and Privacy We understand the importance of your data, and that's why Sales Buddy ensures top-notch security and privacy. Rest easy knowing that your customer information and sales data are protected with advanced encryption and stringent security measures.
-
-📈 Compatible with Any Device
-
-Sales Buddy is designed to seamlessly adapt to your preferred device, whether it's a smartphone, tablet, or desktop. Access your sales data and collaborate with your team anytime, anywhere, and on any device.
-        </p>
+        <h1 class="text-center">Welcome to Sales Buddy - Your Ultimate Sales Companion!</h1>
+        <h5 class="mt-3">
+          Achieve sales success like never before with Sales Buddy, the revolutionary app designed to empower sales professionals like you. Whether you're a seasoned sales guru or just starting out, Sales Buddy is here to transform the way you sell and skyrocket your results.
+        </h5>
+          
       </div>
-
-
+      
+      
     </div>
     
     <!-- carousel -->
@@ -57,24 +39,24 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
               
         <div class="carousel-item active">
             <div class="row">
-            <!-- card 1 -->
-                <div class="col-lg-4">
-                  <div class="card">
-                      <!-- card front -->
-                    <div class="box front">
-                      <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                      <h2>Name</h2>
-                      <h3>Title</h3>
-                      <h4>Company</h4>
-                    </div>
-                      
-                    <div class="box back">
-                      <span class="fa fa-quote-left mb-1"></span>
-                      <!-- quote for the back of the card -->
-                      <p class="mt-2">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                        Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
-                        <span class="fa fa-quote-right float-end"></span>
+              <!-- card 1 -->
+              <div class="col-lg-4">
+                <div class="card">
+                  <!-- card front -->
+                  <div class="box front">
+                    <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
+                    <h2>Name</h2>
+                    <h3>Title</h3>
+                    <h4>Company</h4>
+                  </div>
+                  
+                  <div class="box back">
+                    <span class="fa fa-quote-left mb-1"></span>
+                    <!-- quote for the back of the card -->
+                    <p class="mt-2">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+                      Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                      <span class="fa fa-quote-right float-end"></span>
                       </p>
                     </div>
                   </div>
@@ -102,7 +84,7 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
             </div>
             
             <!-- card 3 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
@@ -126,7 +108,7 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
             
           </div>
         </div>
-
+        
         <div class="carousel-item">
           <div class="row">
           <!-- card 4 -->
@@ -173,9 +155,9 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
             </div>
           </div>
         </div>
-          
+        
         <!-- card 6 -->
-
+        
         <div class="col-lg-4">
           <div class="card">    
             <div class="box front">
@@ -199,21 +181,21 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
 
           </div>
         </div>
-            
+        
 
-          <div class="carousel-item">
+        <div class="carousel-item">
             <div class="row">
-            <!-- card 7 -->
-            <div class="col-lg-4">
-              <div class="card">
-                
-                <div class="box front">
-                  <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
-                </div>
-                
+              <!-- card 7 -->
+              <div class="col-lg-4">
+                <div class="card">
+                  
+                  <div class="box front">
+                    <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
+                    <h2>Name</h2>
+                    <h3>Title</h3>
+                    <h4>Company</h4>
+                  </div>
+                  
                 <div class="box back">
                   <!-- text for the back of the card -->
                   <p>
@@ -226,7 +208,7 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
               </div>
             </div>
             <!-- card 8 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
@@ -249,7 +231,7 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
             </div>
             
             <!-- card 9 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
@@ -270,12 +252,14 @@ Sales Buddy is designed to seamlessly adapt to your preferred device, whether it
                 </div>
               </div>
             </div>
-                  
-            </div>   
-
-          </div>
+            
+          </div>   
+          
+        </div>
       </div>
     </div>
   </div>
   
-{% endblock %}
+  {% include './modals/login_modal.html' %}
+  {% include './modals/signup_modal.html' %}
+  {% endblock %}

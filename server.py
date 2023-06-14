@@ -18,6 +18,9 @@ from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import flask_sockets 
 from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
+import contact_funcs
+from datetime import datetime
+import json
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
 def add_url_rule(self, rule, _, f, **options):
@@ -245,12 +248,13 @@ def edit_profile():
   
   form = forms.ProfileForm(request.form)
   if form.validate_on_submit():
-    fname = form.get('fname').strip()
-    lname = form.get('lname').strip()
-    email = form.get('email').strip()
-    profile = form.get('profile').strip()
-    phone = form.get('phone').strip()
-  
+    fname = form.fname.data.strip()
+    lname = form.lname.data.strip()
+    email = form.email.data.strip()
+    profile = form.profile.data.strip()
+    phone = form.phone.data.strip()
+
+    print('\n\n\n\n\n', fname, lname, email, profile, phone, '\n\n\n\n\n')
     user_funcs.update_profile(current_user, fname, lname, email, phone, profile) 
     return redirect('/profile')
   else :
@@ -377,6 +381,8 @@ def new_contact():
     flash(f'Contact not created!', 'danger')
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
     return render_template('contacts.html', form=form)
+
+
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id):
@@ -422,7 +428,7 @@ def edit_existing_contact_notes(contact_id):
   contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
   notes = form.get('notes').strip()
   
-  flash(f'Contact {contact.full_name} edited!', 'success')
+  flash(f'Contact {contact.full_name} edited {current_user.id}!', 'success')
   edit_contact_notes(current_user.id ,contact_id, notes)
   return redirect('/contacts')
 
@@ -502,28 +508,29 @@ def phone():
 
 @app.route("/voice", methods=["POST"])
 def voice():
-  print('\n\n\n\n\n', 'welcome to the terror dome', '\n\n\n\n\n')
-  resp = VoiceResponse()
-  if request.form.get("To") == twilio_number:
-      # Receiving an incoming call to our Twilio number
-      dial = Dial()
-      # Route to the most recently created client based on the identity stored in the session
-      dial.client(IDENTITY["identity"])
-      resp.append(dial)
-  elif request.form.get("To"):
-      # Placing an outbound call from the Twilio client
-      dial = Dial(caller_id=twilio_number)
-      # wrap the phone number or client name in the appropriate TwiML verb
-      # by checking if the number given has only digits and format symbols
-      if phone_pattern.match(request.form["To"]):
-          dial.number(request.form["To"])
-      else:
-          dial.client(request.form["To"])
-      resp.append(dial)
-  else:
-      resp.say("Thanks for calling!")
+    print('\n\n\n\n\n', 'welcome to the terror dome', '\n\n\n\n\n')
+    resp = VoiceResponse()
+    if request.form.get("To") == twilio_number:
+        # Receiving an incoming call to our Twilio number
+        dial = Dial()
+        # Route to the most recently created client based on the identity stored in the session
+        dial.client(IDENTITY["identity"])
+        resp.append(dial)
+    elif request.form.get("To"):
+        # Placing an outbound call from the Twilio client
+        dial = Dial(caller_id=twilio_number)
+        # wrap the phone number or client name in the appropriate TwiML verb
+        # by checking if the number given has only digits and format symbols
+        if phone_pattern.match(request.form["To"]):
+            dial.number(request.form["To"])
+        else:
+            dial.client(request.form["To"])
+        resp.append(dial)
+    else:
+        resp.say("Thanks for calling!")
 
-  return Response(str(resp), mimetype="text/xml")
+    return Response(str(resp), mimetype="text/xml")
+
   
 
 @app.route('/email', methods=['GET', 'POST'])

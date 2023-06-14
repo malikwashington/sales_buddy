@@ -47,22 +47,23 @@
       {% block SalesBuddy %}
       <a class="navbar-brand" href="/">SalesBuddy</a>
       {% endblock %}
+      
       <button
-        class="navbar-toggler"
+        class="navbar-toggler buttons"
         type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
+        data-bs-toggle="collapse"
+        data-bs-target=".allNavbarItems"
+        aria-controls="navbarItems"
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse allNavbarItems" id="navbarItems">
         <ul class="navbar-nav mr-auto">
           {% block navleft %}
-          <li class="nav-item active">
+          <!-- <li class="nav-item active">
             <a class="nav-link" href="#">Home</a>
           </li>
 
@@ -71,12 +72,12 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" href="#">Pricing</a> -->
           </li>
           {% endblock %}
         </ul>
         
-        <div class="collapse navbar-collapse justify-content-end mr-auto">
+        <div class="collapse navbar-collapse allNavbarItems justify-content-end mr-auto">
           <ul class="navbar-nav mr-3">
             {% block navright %}
            

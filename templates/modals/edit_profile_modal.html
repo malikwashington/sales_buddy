@@ -8,12 +8,13 @@
         </h5>
       </div>
       
-      <form action="/" method='POST' id="contactEditForm">
+      <form action="/profile/edit" method='POST' id="contactEditForm">
         
         <div class="modal-body" id="contactEditModalBody">
-          {{form.hidden_tag()}} 
+          {{profileForm.hidden_tag()}} 
 
-          {% for line in form if line.id != "submit" %}
+          {% for line in profileForm if line.id != "submit" %}
+          {% if line.id != 'csrf_token' %}
 
           <div class="form-group">
             <div class="row mb-2">
@@ -27,13 +28,18 @@
                 {% if line.id == 'phone' %}
                   {{line(
                     class_="form-control", 
-                    onInput="this.value = phoneFormat(this.value)")}}
+                    onInput="this.value = phoneFormat(this.value)",
+                    value=phoneFormat(current_user.phone) if current_user.phone else '')}}
                 {% else %}
-                {{line(class_="form-control")}}
+                {{line(
+                  class_="form-control", 
+                  value=current_user[line.id] if current_user[line.id] else ''
+                  )}}
                 {% endif %}
               </span>
             </div>
           </div>
+          {% endif %}
           {% endfor %}
         </div>
         <div class="modal-footer" id="contactEditModalFooter">
@@ -42,13 +48,13 @@
           data-bs-toggle='modal' 
           data-bs-target='#contactDetailModal' 
           data.bs-dismiss='modal' 
-          class="btn btn-info" 
+          class="btn buttons btn-info" 
           id='cancelEdit'
           >
             Cancel
           </button>
           
-          {{form.submit(class="btn btn-warning", id="editSave", value="Save Changes")}}
+          {{profileForm.submit(class="buttons btn btn-warning", id="editSave", value="Save Changes")}}
         </div>
       </form> 
     </div>

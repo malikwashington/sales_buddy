@@ -1,4 +1,6 @@
-const websocket = new WebSocket("wss://0cda-74-88-202-161.ngrok-free.app/phone");
+const websocket = new WebSocket(
+  "wss://https://5698-74-88-202-161.ngrok-free.app/phone"
+);
 const Device = require('@twilio/voice-sdk').Device
 let device = null
 
