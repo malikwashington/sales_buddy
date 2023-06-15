@@ -42,6 +42,7 @@ function openForm(id) {
   //helper function to populate data into contact detail modal, 
   //add onclick to delete and add event listener to edit button
   const populateData = (data) => {
+    console.log(data.call)
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
     document.getElementById("contactDetailForm")
@@ -96,14 +97,91 @@ function openForm(id) {
         </div>
 
       </div>`;
-      document.getElementById('textBtn')
-        .addEventListener('click', ()=>textContact(data));
-      document.getElementById('center').style.textAlign = 'center'
-      document.getElementById('right').style.textAlign = 'right'
-      footer.style.display = "block";
-      document.getElementById("edit").addEventListener("click",()=>editContact(data));
-      document.getElementById("detailSave").addEventListener("click",()=>saveContact(data.contact_id, 'contactDetailForm'));
-      document.getElementById("detailDelete").addEventListener("click",()=>deleteContact(data.contact_id, `${data.f_name} ${data.l_name}`));
+    document.getElementById('textBtn')
+      .addEventListener('click', ()=>textContact(data));
+    document.getElementById('center').style.textAlign = 'center'
+    document.getElementById('right').style.textAlign = 'right'
+    footer.style.display = "block";
+    document.getElementById("edit").addEventListener("click",()=>editContact(data));
+    document.getElementById("detailSave").addEventListener("click",()=>saveContact(data.contact_id, 'contactDetailForm'));
+    document.getElementById("detailDelete").addEventListener("click",()=>deleteContact(data.contact_id, `${data.f_name} ${data.l_name}`));
+  
+    const emailContainer = document.getElementById('email-history-container')
+    const callContainer = document.getElementById('call-history-container')
+    const textContainer = document.getElementById('text-history-container')
+    emailContainer.innerHTML = ''
+    callContainer.innerHTML = ''
+    textContainer.innerHTML = ''
+    console.log(data, data.text_history, data.call_history, data.email_history)
+    
+    if (data.email_history.length > 0) {
+      data.email_history.forEach((email,i) => {
+        emailContainer.innerHTML += `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${email.email_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>To: ${email.to}</p>
+            <p>Message:</p>
+            <p>${email.email_body}</p>
+          </div>
+        </div>
+        <hr>`
+      })
+    } else { emailContainer.innerHTML = '<p>No email history</p>' }
+
+    if (data.text_history.length > 0) {
+      data.text_history.forEach((text,i) => {
+        textContainer.innerHTML += `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${text.text_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>To: ${email.to}</p>
+            <p>Message:</p>
+            <p>${text.text_body}</p>
+          </div>
+        </div>
+        <hr>`
+      })
+    } else { textContainer.innerHTML = '<p>No text history</p>' }
+    
+
+    if (data.call_history.length > 0) {
+      data.call_history.forEach((call,i) => {
+        callContainer.innerHTML += `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${call.call_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>To: ${call.to}</p>
+            <p>Message:</p>
+            <p>${call.call_body}</p>
+          </div>
+        </div>
+        <hr>`
+      })
+    } else { callContainer.innerHTML = '<p>No call history</p>' }
+
+
   }
 
 //uses the + operator to convert id variable to a number, if it is not a number, it is full contact data

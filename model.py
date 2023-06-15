@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
   
   
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  profile = db.Column(db.String(100), nullable=True, default=None)
+  profile = db.Column(db.String(100), nullable=True, default='./static/img/user.png')
   fname = db.Column(db.String(25), nullable=False)
   lname = db.Column(db.String(25), nullable=True)
   email = db.Column(db.String, unique=True, nullable=False)

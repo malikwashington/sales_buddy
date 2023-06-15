@@ -7,8 +7,6 @@ $(function () {
   $.getJSON("./token")
     .then(function (data) {
       log("Got a token.");
-      console.log(data.token)
-      console.log("Token: " + data.token);
 
       // Setup Twilio.Device
       device = new Twilio.Device(data.token, {
@@ -60,11 +58,12 @@ $(function () {
     var params = {
       To: document.getElementById("phoneNumber").value,
     };
+    // output name of contact and destination number
     const fullName = document.getElementById("contactDetailModalTitle").innerHTML;
     if (fullName) {
-      console.log('\n\n\n\nSUCCESS!\n\n\n\n\n')
+      console.log(`'\n\n\n\n${fullName}\n\n\n\n\n'`)
       $("#txtPhoneNumber").text(fullName);
-      document.getElementById("contact-call-name").innerHTML=fullName;
+      document.getElementById("contact-call-name").innerHTML=params.To;
     }
     else {
     // output destination number

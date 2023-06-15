@@ -12,6 +12,10 @@ body {
   pointer-events: none;
 }
 
+.no-decoration {
+  text-decoration: none;
+}
+
 .sticky{
   position: sticky;
   top: 0;

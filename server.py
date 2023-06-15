@@ -10,7 +10,9 @@ from twilio.jwt.access_token.grants import VoiceGrant
 from twilio.twiml.voice_response import VoiceResponse, Dial
 from keys import SECRET_KEY
 import keys
+import cloudinary
 import cloudinary.uploader
+import cloudinary.api
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
 import user_funcs
@@ -29,18 +31,19 @@ def add_url_rule(self, rule, _, f, **options):
 
 flask_sockets.Sockets.add_url_rule = add_url_rule
   
-
 app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
 
+cloud_config = cloudinary.config(secure=True)
 
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
 alphanumeric_only = re.compile("[\W_]+")
 
 load_dotenv()
-twilio_number = os.environ.get("TWILIO_CALLER_ID")
+twilio_number = keys.TWILIO_NUMBER
+biz_phone = keys.BIZ_PHONE 
 
 # Store the most recently created identity in memory for routing calls
 IDENTITY = {"identity": ""}
@@ -167,6 +170,9 @@ def sign_up(uuid):
   elif request.method == 'GET':
     return render_template('/signup.html', form=form)
   
+  
+@app.route('/signup', methods=['GET','POST'])
+def sign_up_main():
   form = forms.RegistrationForm(request.form)  
   
  #validate sign up form 
@@ -251,17 +257,16 @@ def edit_profile():
     fname = form.fname.data.strip()
     lname = form.lname.data.strip()
     email = form.email.data.strip()
-    profile = form.profile.data.strip()
     phone = form.phone.data.strip()
 
-    print('\n\n\n\n\n', fname, lname, email, profile, phone, '\n\n\n\n\n')
-    user_funcs.update_profile(current_user, fname, lname, email, phone, profile) 
+    print('\n\n\n\n\n', fname, lname, email, phone, '\n\n\n\n\n')
+    user_funcs.update_profile(current_user, fname, lname, email, phone, '') 
     return redirect('/profile')
   else :
     flash(f'Something went wrong. Please try again.', 'danger')
     return redirect('/profile')
 
-@app.route('/profile/edit/photo', methods=['POST'])
+@app.route('/profile/edit/photo', methods=['GET', 'POST'])
 @login_required
 def edit_profile_photo():
   '''edit profile photo route'''
@@ -274,7 +279,7 @@ def edit_profile_photo():
                                       cloud_name=keys.CLOUD_NAME,)
   img_url = result['secure_url']
 
-  return redirect('/profile')
+  return redirect('/profile', img_url=img_url)
 
 @app.route('/dashboard')
 @login_required
@@ -347,9 +352,9 @@ def new_contact():
     email = form.email.data
     company = form.company.data
     notes = form.notes.data
-    urgency = form.urgency.data
-    potential = form.potential.data
-    opportunity = form.opportunity.data
+    # urgency = form.urgency.data
+    # potential = form.potential.data
+    # opportunity = form.opportunity.data
     form.f_name.data = ''
     form.l_name.data = ''
     form.phone.data = ''
@@ -364,9 +369,9 @@ def new_contact():
       current_user, 
       f_name, 
       l_name, 
-      urgency, 
-      potential, 
-      opportunity, 
+      0, 
+      0, 
+      0, 
       phone, 
       email,
       company, 
@@ -406,11 +411,11 @@ def edit_existing_contact(contact_id):
     email = form.email.data
     company = form.company.data
     notes = form.notes.data
-    urgency = form.urgency.data
-    potential = form.potential.data
-    opportunity = form.opportunity.data
+    # urgency = form.urgency.data
+    # potential = form.potential.data
+    # opportunity = form.opportunity.data
 
-    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, 0, 0, 0)
     flash(f'Contact {full_name} edited!', 'success')
     return redirect('/contacts')
   else :
@@ -428,7 +433,7 @@ def edit_existing_contact_notes(contact_id):
   contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
   notes = form.get('notes').strip()
   
-  flash(f'Contact {contact.full_name} edited {current_user.id}!', 'success')
+  flash(f'Contact {contact.full_name} edited!', 'success')
   edit_contact_notes(current_user.id ,contact_id, notes)
   return redirect('/contacts')
 

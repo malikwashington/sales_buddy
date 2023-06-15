@@ -6,6 +6,18 @@
 <link rel="stylesheet" href="static/css/call_settings.css">
 {% endblock %}
 
+{% block nr_extra %}
+<li class="nav-item">
+  <a 
+  data-bs-toggle="modal" 
+  data-bs-target="#newContactModal" 
+  class="nav-link"
+  href="#">
+  Create New Contact
+</a>
+</li>
+{% endblock %}
+
 {% block body%}
 <h1>Phone Calls</h1>
 <br>
@@ -36,7 +48,7 @@
             <input id="phone-number" type="text" placeholder="+15552221234" />
             <button class="btn buttons btn-primary border m-2" id="button-call" type="submit">Call</button>
           </form>
-          <button id="button-hangup-outgoing" class="hide">Hang Up</button>
+          <button id="button-hangup-outgoing" class="hide btn btn-danger buttons border">Hang Up</button>
           <div id="incoming-call" class="hide">
             <h2>Incoming Call Controls</h2>
             <p class="instructions">
@@ -65,6 +77,8 @@
   
   {% endblock %}
   
+  {% include "./modals/new_contact_modal.html" %}
+
   {% block scripts %}
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

@@ -38,9 +38,9 @@ class ContactForm(FlaskForm):
   email = StringField('Email', validators=[Email()])  
   company = StringField('Company', validators=[Length(min=2, max=100)])
   notes = TextAreaField('Notes', validators=[Length(min=0, max=1000)])
-  urgency = SelectField('Urgency', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
-  potential = SelectField('Potential', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
-  opportunity = SelectField('Opportunity', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
+  # urgency = SelectField('Urgency', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
+  # potential = SelectField('Potential', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
+  # opportunity = SelectField('Opportunity', choices=[0,1,2,3,4,5,6,7,8,9,10],default=0)
   submit = SubmitField('Submit')
   
 class ChangePasswordForm(FlaskForm):
@@ -57,7 +57,7 @@ class ProfileForm(FlaskForm):
   fname = StringField('First Name', validators=[InputRequired(), Length(min=2, max=20)])
   lname = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=20)])
   email = StringField('Email', validators=[Email()])
-  profile = StringField('Profile Picture', validators=[Length(min=0, max=100)])
+  # profile = StringField('Profile Picture', validators=[Length(min=0, max=100)])
   phone = StringField('Phone Number', validators=[Length(min=0, max=20)])
   submit = SubmitField('Submit')
 
