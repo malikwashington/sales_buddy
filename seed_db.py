@@ -43,21 +43,37 @@ with server.app.app_context():
             contact['opportunity'], contact['phone'],
             contact['email'],contact['company'], contact['notes'])
 
-        for record in contact['call_history']:
+        for i, record in enumerate(contact['call_history']):
             record['call_time'] = re.sub('[:\-]', '', record['call_time'].strip())
             record['call_time'] = re.sub('\s', ',', record['call_time'])
+            if test_contact.last_contacted == None:
+                test_contact.last_contacted = record['call_time']
+            elif record['call_time'] > contact.last_contacted:
+                test_contact.last_contacted = record['call_time']
+                
             test_contact = contact_funcs.add_call_to_contact(
                 test_contact, record['call_notes'], record['call_time'])
 
-        for record in contact['text_history']:
+        for i, record in enumerate(contact['text_history']):
             record['text_time'] = re.sub('[:\-]', '', record['text_time'].strip())
             record['text_time'] = re.sub('\s', ',', record['text_time'])
+
+            if test_contact.last_contacted == None:
+                test_contact.last_contacted = record['text_time']
+            elif record['text_time'] > test_contact.last_contacted:
+                test_contact.last_contacted = record['text_time']
+            
             test_contact = contact_funcs.add_text_to_contact(
                 test_contact, record['text_body'], record['text_time'])
 
-        for record in contact['email_history']:
+        for i, record in enumerate(contact['email_history']):
             record['email_time'] = re.sub('[:\-]', '', record['email_time'].strip())
             record['email_time'] = re.sub('\s', ',', record['email_time'])
+
+            if test_contact.last_contacted == None:
+                test_contact.last_contacted = record['email_time']
+            elif record['email_time'] > test_contact.last_contacted:
+                test_contact.last_contacted = record['email_time']
 
             test_contact = contact_funcs.add_email_to_contact(
                 test_contact, record['email_body'], record['email_time'])

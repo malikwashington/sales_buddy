@@ -12,6 +12,11 @@ body {
   pointer-events: none;
 }
 
+/* .modal-body {
+  width: 489px;
+  max-height: 500px;
+} */
+
 .no-decoration {
   text-decoration: none;
 }

@@ -112,7 +112,16 @@ function openForm(id) {
     emailContainer.innerHTML = ''
     callContainer.innerHTML = ''
     textContainer.innerHTML = ''
-    console.log(data, data.text_history, data.call_history, data.email_history)
+    data.text_history.forEach((text, i, list) => {
+      if (i > 0){  
+        let prev = list[i - 1].text_time
+        let curr = text.text_time
+        console.log(
+          'prev: ', prev, '\n', 'curr: ', curr, '\n',
+          'diff: ', curr - prev, '\n prev > curr? ',
+          prev > curr, '\n\n')
+        }
+    })
     
     if (data.email_history.length > 0) {
       data.email_history.forEach((email,i) => {
@@ -173,8 +182,6 @@ function openForm(id) {
         <div class="row">
           <div class="col-12">
             <p>To: ${call.to}</p>
-            <p>Message:</p>
-            <p>${call.call_body}</p>
           </div>
         </div>
         <hr>`
