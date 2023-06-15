@@ -65,6 +65,10 @@ select {
   margin-bottom: 1rem;
 }
 
+option{
+  color: black;
+}
+
 /* Center Column */
 input {
   font-family: Helvetica-LightOblique, Helvetica, sans-serif;

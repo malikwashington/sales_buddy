@@ -494,8 +494,10 @@ def text(contact_id):
 @login_required
 def phone():
   '''route to stand as endpoint to host page for phone calls'''
-  # return app.send_static_file('phone.html')
-  return render_template('phone.html')
+  
+  form = forms.ContactForm()
+  
+  return render_template('phone.html', form=form)
 
 
 # # @sockets.route('/forwarding')

@@ -295,6 +295,7 @@
 
       var option = document.createElement("option");
       option.label = device.label;
+      option.innerText = device.label;
       option.setAttribute("data-id", id);
       if (isActive) {
         option.setAttribute("selected", "selected");
