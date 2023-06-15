@@ -238,6 +238,7 @@ def profile():
   '''profile page'''
   pwForm = forms.ChangePasswordForm()
   profileForm = forms.ProfileForm()
+  
   profilePic = current_user.profile or './static/img/user.png'
   return render_template(
     'profile.html', 
@@ -271,15 +272,27 @@ def edit_profile():
 def edit_profile_photo():
   '''edit profile photo route'''
   
-
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  if current_user.profile != './static/img/user.png':
+    cloudinary.uploader.destroy(current_user.profile)
+  
   photo = request.files.get('photo')
+  
+  if not photo:
+    img_url = './static/img/user.png'
+    user_funcs.update_profile(current_user, profile=img_url)
+    return redirect('/profile')
+  
   result = cloudinary.uploader.upload(photo,
                                       api_key=keys.CLOUDINARY_KEY,
                                       api_secret=keys.CLOUDINARY_SECRET,
                                       cloud_name=keys.CLOUD_NAME,)
   img_url = result['secure_url']
-
-  return redirect('/profile', img_url=img_url)
+  print('\n\n\n\n\n', img_url, '\n\n\n\n\n')
+  user_funcs.update_profile(current_user, profile=img_url)
+  return redirect('/profile')
 
 @app.route('/dashboard')
 @login_required
@@ -317,6 +330,7 @@ def contact(contact_id):
   texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'to': text.to} for text in texts]
   emails = get_emails_by_contact(contact_id)
   emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'to': email.to} for email in emails]
+
 
   contact_dict = {
     'contact_id': contact.contact_id,

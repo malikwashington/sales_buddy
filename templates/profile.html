@@ -8,10 +8,17 @@
 
 <h1>Profile</h1>
 <div class="container overflow-auto my-5 py-5">
-  <img src="{{ url_for('static', filename='img/user.jpeg')}}" id="profile-pic" height="225" width="225" alt="">
+  <picture id="profile-pic">
+   
+    <img 
+    src="{{current_user.profile}}"  
+    height="225" 
+    width="225" 
+    alt="">
+  </picture>
   <form action="/profile/edit/photo" method="POST" enctype="multipart/form-data">
-    <input type="file" name="photo">
-    <input type="submit" value="Upload">
+    <input type="file"  name="photo">
+    <input type="submit" class="btn btn-primary link-button" value="Upload">
   </form>
   <div class="card">
     <div class="card-header">
