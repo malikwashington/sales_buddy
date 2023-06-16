@@ -26,10 +26,11 @@
               </span>
               <span class="col-8">
                 {% if line.id == 'phone' %}
-                  {{line(
+                  {{ line(
                     class_="form-control", 
                     onInput="this.value = phoneFormat(this.value)",
-                    value=phoneFormat(current_user.phone) if current_user.phone else '')}}
+                    id="profileFormPhone",
+                    value=current_user.phone if current_user.phone else '' ) }}
                 {% else %}
                 {{line(
                   class_="form-control", 

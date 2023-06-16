@@ -30,16 +30,21 @@
         <div class="row">
           <div class="col-8">
             
-            <strong>Admin:</strong>
-            {{ current_user.admin }}<br/>
+           <p class="m-0 ">
+              <strong>Admin:</strong>
+             <span> {{ current_user.admin }}<br/></span>
+           </p>
             
-            <strong>Email:</strong>
-            {{ current_user.email }}<br/>
+          <p class="m-0">
+              <strong>Email:</strong>
+              <span>{{ current_user.email }}</span>
+          </p>
             
             
-      <strong>Phone:</strong>
-      <br/>
-      
+     <p class="m-0">
+        <strong>Phone:</strong>
+        <span id="profilePhone">{{ current_user.phone }} </span>
+     </p>
     </div>
   </div>
 </p>
@@ -61,10 +66,13 @@ Change Password
 
 </div>
 </div>
+</div>
 {% include "./modals/edit_profile_modal.html" %}
 {% include "./modals/password_reset_modal.html" %}
-</div>
 
 {% endblock %}
 
 
+{% block scripts %}
+<script type="module" src="../static/js/profile.js"></script>
+{% endblock %}

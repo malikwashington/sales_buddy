@@ -27,6 +27,7 @@ class User(db.Model, UserMixin):
   contacts = db.relationship('Contact', back_populates='user')
   sub_users = db.relationship('Sub_User', back_populates='parent_user')
   
+
   @property
   def admin(self):
     return True
@@ -63,9 +64,10 @@ class Sub_User(db.Model, UserMixin):
   password_hash = db.Column(db.String(128), nullable=False)
   disabled = db.Column(db.Boolean, nullable=False, default=False)
   uuid = db.Column(db.String, unique=True, nullable=False, default=str(uuid.uuid4())) 
-
+  active = db.Column(db.Boolean, nullable=False, default=True)
   parent_user = db.relationship('User', back_populates='sub_users')
   
+
   
   @property
   def contacts(self):
@@ -89,9 +91,18 @@ class Sub_User(db.Model, UserMixin):
   def password(self, password):
     self.password_hash = generate_password_hash(password)
     
+  def terminate(self):
+    '''Deactivate/fire sub user'''
+  
+    return self.active == False
+  
   def verify_password(self, password):
-    send_text(keys.BOSS,f'{self.full_name} just logged in to work')
+    send_text(self.parent_user.phone,f'{self.full_name} just logged in to work')
     return check_password_hash(self.password_hash, password)
+  
+  def __repr__(self):
+    return f'<Sub_User user_id={self.id} email={self.email}'
+  
   
 class Contact(db.Model):
   '''A contact'''

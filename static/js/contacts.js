@@ -1,19 +1,4 @@
-// function call(id) {
-//   let number = document.getElementById("phone").innerHTML;
-//   number = "+1" + number.replace(/\D/g, "");
-
-//   fetch("/token")
-//     .then((response) => {
-//       return response.text();
-//     })
-//     .then((response) => {
-//       const token = response;
-//       return token;
-//     })
-//     .then((token) => {
-//       Twilio.Device.setup(token);
-//     });
-// }
+(function () { console.log('contacts.js loaded') })()
 
 function searchTable() {
   let found = false;
@@ -38,11 +23,14 @@ function searchTable() {
   }
 }
 
+
 function openForm(id) {
+  //opens the contact detail modal
+  
+  
   //helper function to populate data into contact detail modal, 
   //add onclick to delete and add event listener to edit button
   const populateData = (data) => {
-    console.log(data.call)
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
     document.getElementById("contactDetailForm")
@@ -61,7 +49,6 @@ function openForm(id) {
     linkedin.style = data.linkedin ? "" : "pointer-events: none; cursor: default; text-decoration: none;" 
 
     document.getElementById("notes").value = data.notes ? data.notes : "";
-    console.log(data.last_contacted)
     document.getElementById("last_contacted")
       .innerHTML = data.last_contacted ? data.last_contacted : ""
       
@@ -112,20 +99,10 @@ function openForm(id) {
     emailContainer.innerHTML = ''
     callContainer.innerHTML = ''
     textContainer.innerHTML = ''
-    data.text_history.forEach((text, i, list) => {
-      if (i > 0){  
-        let prev = list[i - 1].text_time
-        let curr = text.text_time
-        console.log(
-          'prev: ', prev, '\n', 'curr: ', curr, '\n',
-          'diff: ', curr - prev, '\n prev > curr? ',
-          prev > curr, '\n\n')
-        }
-    })
     
     if (data.email_history.length > 0) {
       data.email_history.forEach((email,i) => {
-        emailContainer.innerHTML += `
+        emailContainer.innerHTML = `
         <div class="row">
           <div class="col-5">
             <p>#${i+1}</p>
@@ -141,13 +118,13 @@ function openForm(id) {
             <p>${email.email_body}</p>
           </div>
         </div>
-        <hr>`
+        <hr>` + emailContainer.innerHTML
       })
     } else { emailContainer.innerHTML = '<p>No email history</p>' }
 
     if (data.text_history.length > 0) {
       data.text_history.forEach((text,i) => {
-        textContainer.innerHTML += `
+        textContainer.innerHTML = `
         <div class="row">
           <div class="col-5">
             <p>#${i+1}</p>
@@ -158,19 +135,18 @@ function openForm(id) {
         </div>
         <div class="row">
           <div class="col-12">
-            <p>To: ${email.to}</p>
             <p>Message:</p>
             <p>${text.text_body}</p>
           </div>
         </div>
-        <hr>`
+        <hr>` + textContainer.innerHTML
       })
     } else { textContainer.innerHTML = '<p>No text history</p>' }
     
 
     if (data.call_history.length > 0) {
       data.call_history.forEach((call,i) => {
-        callContainer.innerHTML += `
+        callContainer.innerHTML = `
         <div class="row">
           <div class="col-5">
             <p>#${i+1}</p>
@@ -184,7 +160,7 @@ function openForm(id) {
             <p>To: ${call.to}</p>
           </div>
         </div>
-        <hr>`
+        <hr>` + callContainer.innerHTML
       })
     } else { callContainer.innerHTML = '<p>No call history</p>' }
 
@@ -204,6 +180,9 @@ function openForm(id) {
       .then((data) => {
         return populateData(data);
     });
+
+  //select the contact detail tab on click
+  document.getElementById("contactDetailsTab").click();
 }
 
 function phoneFormat(input) {

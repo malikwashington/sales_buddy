@@ -86,6 +86,8 @@ $(function () {
     if (device) {
       device.disconnectAll();
     }
+    console.log("Hanging up...");
+    $("#contactDetailModal").modal("show");
   });
 
   // Activity log

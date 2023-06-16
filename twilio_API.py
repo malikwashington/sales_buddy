@@ -34,10 +34,11 @@ def token(id):
 def send_sms(contact, text):
   """Send an SMS to a user's contact"""
 
-  phone_number = '+1' + sub('[^\d]','',contact.phone)
+  phone_number = '+1' + sub('[\D]','',contact.phone)
+  print('\n\n\n\n\n\n', type(phone_number), '\n\n\n\n\n\n')
   message = client.messages.create(
       to= phone_number,
-      from_= keys.BIZ_PHONE,
+      from_= keys.TWILIO_NUMBER,
       body= text)
   print(message.sid)
   # print(message.date_sent)

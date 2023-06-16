@@ -128,7 +128,7 @@ def sign_up(uuid):
   
   #check if uuid is valid
   user = user_funcs.get_user_by_uuid(uuid)
-  if not user:
+  if not user or len(user.invitation) == 0:
     flash(f'Invalid link', 'danger')
     flash(f'Contact your network administrator for more information', 'danger')
     return render_template('404.html')
@@ -468,13 +468,7 @@ def delete_existing_contact(contact_id):
   
   return redirect('/contacts')
 
-@app.route('/sequences', methods=['GET','POST'])
-@login_required
-def sequences():
-  '''sequences page'''
-  form = forms.SequenceForm()
-  return render_template('sequences.html', form=form)
-  
+
 @app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
 @login_required
 def text(contact_id):
@@ -488,6 +482,15 @@ def text(contact_id):
   sms = form.get('sms').strip()
   twilio_API.send_sms(contact, sms)
   return redirect('/contacts')
+
+
+@app.route('/sequences', methods=['GET','POST'])
+@login_required
+def sequences():
+  '''sequences page'''
+  form = forms.SequenceForm()
+  return render_template('sequences.html', form=form)
+
 
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')
@@ -579,7 +582,12 @@ def admin():
   '''route to handle admin page'''
   
   if current_user.admin:
-    return render_template('admin.html')
+    uuid = current_user.uuid
+    invite = f'http://localhost:5000/signup/{uuid}'
+    print(current_user.invitation)
+    current_user.invitation.append('invite')
+    print(current_user.invitation)
+    return render_template('admin.html', uuid=uuid, invite=invite)
   else:
     flash('You do not have access to that page', 'danger')
     return redirect('/profile')
