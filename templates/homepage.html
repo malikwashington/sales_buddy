@@ -31,11 +31,36 @@
     
     <!-- carousel -->
     
-    <div id="carousel" class="carousel slide mb-5 pb-2 mt-2" data-bs-ride="carousel">
+    <div 
+    id="carousel" 
+    class="carousel slide mb-5 pb-2 mt-2"  
+    data-bs-interval="2000"
+    data-bs-pause="hover"
+    data-bs-ride="carousel">
       <div class="container text-center">
         <h2 class="p-5">Customer Testimonials:</h2>
       </div>
-      <div class="carousel-inner">
+      <div class="carousel-indicators">
+        
+        <button 
+        data-bs-target="#carousel" 
+        data-bs-slide-to="0" 
+        aria-label="Slide 1" 
+        class="active mx-2"></button>
+        
+        <button 
+        data-bs-target="#carousel" 
+        class="mx-2" 
+        aria-label="Slide 2" 
+        data-bs-slide-to="1"></button>
+        
+        <button 
+        data-bs-target="#carousel" 
+        aria-label="Slide 3" 
+        class="mx-2" 
+        data-bs-slide-to="2"></button>
+      </div>
+      <div class="carousel-inner m-3 p-5">
               
         <div class="carousel-item active">
             <div class="row">

@@ -530,9 +530,9 @@ def phone():
 #   print('closed')
 #   ws.close()
 
-@app.route("/voice", methods=["POST"])
+@app.route("/voice", methods=["GET","POST"])
 def voice():
-    print('\n\n\n\n\n', 'welcome to the terror dome', '\n\n\n\n\n')
+    print('\n\n\n\n\n', request.form, '\n\n\n\n\n')
     resp = VoiceResponse()
     if request.form.get("To") == twilio_number:
         # Receiving an incoming call to our Twilio number
