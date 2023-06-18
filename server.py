@@ -638,7 +638,7 @@ if __name__ == '__main__':
   
  #this is the old way to start the server before flask_sockets was added
  #development server
-  # app.run(host='0.0.0.0', debug=True)
+  app.run(host='0.0.0.0', debug=True)
  
  #production server
-  app.run()
+  # app.run()

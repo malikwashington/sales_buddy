@@ -97,7 +97,7 @@
                   <div class="col-4 mt-2">
                     <label for="phone">Phone Number</label>
                   </div>
-                  <div class="col-5">
+                  <div class="col-4" id="phoneNumberDetail">
                     <input
                       type="text"
                       class="form-control"
@@ -107,11 +107,11 @@
                       value=""
                     />
                   </div>
-                  <div class="col-3">
-                    <span>
+                  <div class="col-4" id="phoneActionButtons">
+                    <span class="m-2">
                       <button
                         type="button"
-                        class="btn btn-outline-success buttons mx-1"
+                        class="btn btn-outline-success buttons contactMe"
                         id="phoneBtn"
                         data-bs-toggle="modal"
                         data-bs-target="#modal-call-in-progress"
@@ -120,12 +120,21 @@
                       </button>
                       <button
                         type="button"
-                        class="btn buttons btn-outline-info mx-1"
+                        class="btn btn-outline-info buttons contactMe"
                         id="textBtn"
                         data-bs-toggle="modal"
                         data-bs-target="#modalTextBox"
                       >
                         <i class="fas fa-comment no-pointer-events"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger buttons contactMe"
+                        id="emailBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEmailBox"
+                      >
+                        <i class="fas fa-envelope no-pointer-events"></i>
                       </button>
                     </span>
                   </div>

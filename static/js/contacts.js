@@ -249,7 +249,15 @@ function deleteContact(id, fullName) {
 
 function textContact(data) {
   console.log('texting', data)
+  document.getElementById('text-body').value = ''
   document.getElementById('textContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send A Text To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
   document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/text`
+}
+function emailContact(data) {
+  console.log('emailing', data)
+  document.getElementById('email-body').value = ''
+  document.getElementById('emailContactModalTitle')
+    .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send An Email To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
+  document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/email`
 }

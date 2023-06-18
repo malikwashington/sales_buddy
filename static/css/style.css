@@ -139,6 +139,10 @@ table{
   transform: rotateY(180deg);
 }
 
+#textBtn:hover{
+  color: white;
+}
+
 #message {
   font-size: 1.5rem;
   font-weight: 500;
@@ -153,6 +157,25 @@ table{
     width: 0;
     height: 0;
   }
+}
+
+#phoneNumberDetail{
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+#phoneNumber{
+  padding-right: 0px;
+}
+
+#phoneActionButtons{
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+.contactMe{
+  margin-left: 2.5px;
+  margin-right: 2.5px;
 }
 
 .box.front h2 {
