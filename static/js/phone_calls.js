@@ -9,7 +9,6 @@ fetch('/token')
     return response.json()
   })
   .then((data) => {
-    console.log('token', data.token, typeof data.token)
     return device = new Device(data.token)
   })
   .then((device) => {
@@ -22,11 +21,9 @@ fetch('/token')
 
 document.getElementById('button').addEventListener('click', () => {
   if (!device) {
-    console.log('device not initialized')
     return
   }
   else {
-    console.log('button clicked')
     device.connect()
   }
 })

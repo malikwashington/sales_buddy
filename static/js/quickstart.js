@@ -53,7 +53,6 @@
       setClientNameUI(data.identity);
       intitializeDevice();
     } catch (err) {
-      console.log(err);
       log("An error occurred. See your browser console for more information.");
     }
   }

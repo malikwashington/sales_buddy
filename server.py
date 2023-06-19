@@ -106,7 +106,6 @@ def homepage():
     signInForm.password.data = ''
     # sign in user
     user = user_funcs.login_user(email, password)
-    print('\n\n\n\n\n', user, '\n\n\n\n\n')
     if user[0]:
       #login user
       login_user(user[1])
@@ -260,7 +259,6 @@ def edit_profile():
     email = form.email.data.strip()
     phone = form.phone.data.strip()
 
-    print('\n\n\n\n\n', fname, lname, email, phone, '\n\n\n\n\n')
     user_funcs.update_profile(current_user, fname, lname, email, phone, '') 
     return redirect('/profile')
   else :
@@ -290,7 +288,6 @@ def edit_profile_photo():
                                       api_secret=keys.CLOUDINARY_SECRET,
                                       cloud_name=keys.CLOUD_NAME,)
   img_url = result['secure_url']
-  print('\n\n\n\n\n', img_url, '\n\n\n\n\n')
   user_funcs.update_profile(current_user, profile=img_url)
   return redirect('/profile')
 
@@ -483,6 +480,21 @@ def text(contact_id):
   twilio_API.send_sms(contact, sms)
   return redirect('/contacts')
 
+@app.route('/contacts/<contact_id>/email', methods=['GET', 'POST'])
+@login_required
+def email_contact(contact_id):
+  '''route to stand as endpoint for email messages'''
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  form = request.form
+  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  body = form.get('email')
+  #send email to contact using the gmail api
+
+  return redirect('/contacts')
+
 
 @app.route('/sequences', methods=['GET','POST'])
 @login_required
@@ -510,14 +522,12 @@ def phone():
 # #   and route them to my personal phone number using the twilio api'''
   
 # #   app.logger.info('Connection accepted')
-# #   print('\n\n\n\n\n', ws, '\n\n\n\n\n')
 # #   while not ws.closed:
 # #     message = ws.receive()
 # #     if message is None:
 # #       app.logger.info('No message received...')
 #       continue
 #     message = json.loads(message)
-#     print('\n\n', message, '\n\n')
 #     if message['type'] == 'call':
 #       resp = twilio_API.voice(message['number'])
 #       ws.send(resp)
@@ -525,14 +535,11 @@ def phone():
 #       resp = twilio_API.send_sms(message['number'], message['text'])
 #       ws.send(resp)
 #     else:
-#       print('error')
 #       ws.send('error')
-#   print('closed')
 #   ws.close()
 
 @app.route("/voice", methods=["GET","POST"])
 def voice():
-    print('\n\n\n\n\n', request.form, '\n\n\n\n\n')
     resp = VoiceResponse()
     if request.form.get("To") == twilio_number:
         # Receiving an incoming call to our Twilio number
@@ -584,9 +591,7 @@ def admin():
   if current_user.admin:
     uuid = current_user.uuid
     invite = f'http://localhost:5000/signup/{uuid}'
-    print(current_user.invitation)
     current_user.invitation.append('invite')
-    print(current_user.invitation)
     return render_template('admin.html', uuid=uuid, invite=invite)
   else:
     flash('You do not have access to that page', 'danger')
@@ -633,12 +638,11 @@ if __name__ == '__main__':
   connect_to_db(app)
   
   # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-  print('\n\n Server started \n\n')
   # server.serve_forever()
   
  #this is the old way to start the server before flask_sockets was added
  #development server
-  app.run(host='0.0.0.0', debug=True)
+  # app.run(host='0.0.0.0', debug=True)
  
  #production server
-  # app.run()
+  app.run()

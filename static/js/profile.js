@@ -20,6 +20,5 @@
   phone.oninput = () => phone.value = phoneFormat(phone.value)
   profilePhone.innerHTML = phoneFormat(profilePhone.innerHTML)
   phone.value = phoneFormat(phone.value)
-  console.log(phone)
 }
 )()

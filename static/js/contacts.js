@@ -1,5 +1,3 @@
-(function () { console.log('contacts.js loaded') })()
-
 function searchTable() {
   let found = false;
   const input = document.getElementById("searchTable");
@@ -8,7 +6,6 @@ function searchTable() {
   const tr = table.getElementsByTagName("tr");
   for (let i = 1; i < tr.length; i++) {
     let td = tr[i].getElementsByTagName("td");
-    console.log(td)
     for (let j = 0; j < td.length; j++) {
       if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
         found = true;
@@ -86,6 +83,8 @@ function openForm(id) {
       </div>`;
     document.getElementById('textBtn')
       .addEventListener('click', ()=>textContact(data));
+    document.getElementById('emailBtn')
+      .addEventListener('click', ()=>emailContact(data));
     document.getElementById('center').style.textAlign = 'center'
     document.getElementById('right').style.textAlign = 'right'
     footer.style.display = "block";
@@ -222,7 +221,6 @@ function editContact(data) {
 function saveContact(id, past) {
   const form = document.getElementById(past)
   const linkedin = document.getElementById('linkedin')
-  console.log('linkedin: ', linkedin.value)
   linkedin.value = linkedin.value ? linkedin.value.replace('/in/', '') : '';
   form.submit()
 }
@@ -248,14 +246,13 @@ function deleteContact(id, fullName) {
 }
 
 function textContact(data) {
-  console.log('texting', data)
   document.getElementById('text-body').value = ''
   document.getElementById('textContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send A Text To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
   document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/text`
 }
+
 function emailContact(data) {
-  console.log('emailing', data)
   document.getElementById('email-body').value = ''
   document.getElementById('emailContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send An Email To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`

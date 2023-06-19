@@ -46,7 +46,6 @@ $(function () {
       });
     })
     .catch(function (err) {
-      console.log(err);
       log("Could not get a token from server!");
     });
 
@@ -61,7 +60,6 @@ $(function () {
     // output name of contact and destination number
     const fullName = document.getElementById("contactDetailModalTitle").innerHTML;
     if (fullName) {
-      console.log(`'\n\n\n\n${fullName}\n\n\n\n\n'`)
       $("#txtPhoneNumber").text(fullName);
       document.getElementById("contact-call-name").innerHTML=params.To;
     }
@@ -69,7 +67,6 @@ $(function () {
     // output destination number
     $("#txtPhoneNumber").text(params.To);
     }
-    console.log("Calling " + params.To + "...");
     if (device) {
       var outgoingConnection = device.connect(params);
       outgoingConnection.on("ringing", function () {
@@ -86,7 +83,6 @@ $(function () {
     if (device) {
       device.disconnectAll();
     }
-    console.log("Hanging up...");
     $("#contactDetailModal").modal("show");
   });
 

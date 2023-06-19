@@ -1,5 +1,5 @@
 [Unit]
-Description=SalesBuddy
+Description=Sales Buddy
 After=network.target
 
 [Service]
@@ -7,10 +7,9 @@ User=ubuntu
 Group=ubuntu
 Environment="LANG=en_US.UTF-8"
 Environment="LANGUAGE=en_US.UTF-8:"
-WorkingDirectory=/home/ubuntu/salesbuddy/
-ExecStart=/bin/bash -c "source .env\
-&& source env/bin/activate \
-&& python3 server.py &>>flask.log"
+WorkingDirectory=/home/ubuntu/sales_buddy/
+ExecStart=/bin/bash -c "source env/bin/activate\
+&& python3 server.py &>> flask.log"
 Restart=always
 
 [Install]

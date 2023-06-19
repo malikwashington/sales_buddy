@@ -23,7 +23,6 @@ $(document).ready(function () {
 
 
     btnDelete.addEventListener('click', (event) => {
-        console.log('clicked', event)
         var str = inputPhoneNumber.value
         var position = inputPhoneNumber.selectionStart - 1;
 
