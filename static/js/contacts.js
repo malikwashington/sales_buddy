@@ -24,19 +24,24 @@ function searchTable() {
 function openForm(id) {
   //opens the contact detail modal
   
-  
   //helper function to populate data into contact detail modal, 
   //add onclick to delete and add event listener to edit button
   const populateData = (data) => {
+    console.log(data) 
+    //title header
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
+      //contact detail tab
     document.getElementById("contactDetailForm")
       .action = `/contacts/${data.contact_id}/edit/notes`;
-      
-    document.getElementById("phoneNumber")
-      .value=data.phone ? phoneFormat(data.phone) : "";
-
-    document.getElementById("email").value = data.email ? data.email : "";
+     //setting the contact id in the modal
+     document.getElementById("contactID").innerHTML = data.contact_id;
+     console.log(document.getElementById("contactID"))
+     
+     document.getElementById("phoneNumber")
+     .value=data.phone ? phoneFormat(data.phone) : "";
+     
+     document.getElementById("email").value = data.email ? data.email : "";
     document.getElementById("company").value = data.company ? data.company : "";
     const linkedin = document.getElementById("linkedin")
 
@@ -99,6 +104,7 @@ function openForm(id) {
     callContainer.innerHTML = ''
     textContainer.innerHTML = ''
     
+    //email history tab 
     if (data.email_history.length > 0) {
       data.email_history.forEach((email,i) => {
         emailContainer.innerHTML = `
@@ -121,6 +127,7 @@ function openForm(id) {
       })
     } else { emailContainer.innerHTML = '<p>No email history</p>' }
 
+    //text history tab
     if (data.text_history.length > 0) {
       data.text_history.forEach((text,i) => {
         textContainer.innerHTML = `
@@ -143,6 +150,7 @@ function openForm(id) {
     } else { textContainer.innerHTML = '<p>No text history</p>' }
     
 
+    //call history tab
     if (data.call_history.length > 0) {
       data.call_history.forEach((call,i) => {
         callContainer.innerHTML = `
@@ -250,6 +258,7 @@ function textContact(data) {
   document.getElementById('textContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send A Text To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
   document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/text`
+  document.getElementById('text-body').focus()
 }
 
 function emailContact(data) {
@@ -257,4 +266,5 @@ function emailContact(data) {
   document.getElementById('emailContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send An Email To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
   document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/email`
+  document.getElementById('email-body').focus()
 }

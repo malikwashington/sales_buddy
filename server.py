@@ -320,7 +320,7 @@ def contacts():
 def contact(contact_id):
   '''returns a single contact'''
     
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   calls = get_calls_by_contact(contact_id)
   calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'to': call.to} for call in calls]
   texts = get_texts_by_contact(contact_id)
@@ -338,11 +338,11 @@ def contact(contact_id):
     'email': contact.email,
     'company': contact.company,
     'notes': contact.notes,
-    'urgency': contact.urgency,
-    'potential': contact.potential,
-    'opportunity': contact.opportunity,
+    # 'urgency': contact.urgency,
+    # 'potential': contact.potential,
+    # 'opportunity': contact.opportunity,
     'last_contacted': contact.last_contacted,
-    'priority': contact.priority,
+    # 'priority': contact.priority,
     'call_history': calls,
     'text_history': texts,
     'email_history': emails,
@@ -373,9 +373,9 @@ def new_contact():
     form.email.data = ''
     form.company.data = ''
     form.notes.data = ''
-    form.urgency.data = ''
-    form.potential.data = ''
-    form.opportunity.data = ''
+    # form.urgency.data = ''
+    # form.potential.data = ''
+    # form.opportunity.data = ''
     contact = user_funcs.add_contact_to_user(
       current_user, 
       f_name, 
@@ -426,7 +426,7 @@ def edit_existing_contact(contact_id):
     # potential = form.potential.data
     # opportunity = form.opportunity.data
 
-    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, 0, 0, 0)
+    edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, 0, 0, 0)
     flash(f'Contact {full_name} edited!', 'success')
     return redirect('/contacts')
   else :
@@ -441,7 +441,7 @@ def edit_existing_contact_notes(contact_id):
   if request.method == 'GET':
     return render_template('404.html')
   form = request.form
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   notes = form.get('notes').strip()
   
   flash(f'Contact {contact.full_name} edited!', 'success')
@@ -458,8 +458,8 @@ def delete_existing_contact(contact_id):
   
   
   #delete contact
-  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name
-  user_funcs.delete_contact_by_id(current_user.id, contact_id)
+  full_name = contact_funcs.get_contact_by_id(contact_id).full_name
+  contact_funcs.delete_contact_by_id(contact_id)
 
   flash(f'Contact {full_name} deleted!', 'success')
   
@@ -475,7 +475,7 @@ def text(contact_id):
     return render_template('404.html')
   
   form = request.form
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   sms = form.get('sms').strip()
   twilio_API.send_sms(contact, sms)
   return redirect('/contacts')
@@ -489,7 +489,7 @@ def email_contact(contact_id):
     return render_template('404.html')
   
   form = request.form
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   body = form.get('email')
   #send email to contact using the gmail api
 
@@ -540,6 +540,9 @@ def phone():
 
 @app.route("/voice", methods=["GET","POST"])
 def voice():
+    print('\n\n\n\n\n\n\n', request.form, '\n\n\n\n\n\n\n')
+    id = request.form.get('contactID')
+    contact_funcs.add_call_to_contact(id)
     resp = VoiceResponse()
     if request.form.get("To") == twilio_number:
         # Receiving an incoming call to our Twilio number
@@ -550,6 +553,7 @@ def voice():
     elif request.form.get("To"):
         # Placing an outbound call from the Twilio client
         dial = Dial(caller_id=twilio_number)
+        #grab the user id from the form
         # wrap the phone number or client name in the appropriate TwiML verb
         # by checking if the number given has only digits and format symbols
         if phone_pattern.match(request.form["To"]):

@@ -43,6 +43,7 @@ $(function () {
       device.on("disconnect", function (conn) {
         log("Call ended.");
         $(".modal").modal("hide");
+        $("#contactDetailModal").modal("show");
       });
     })
     .catch(function (err) {
@@ -51,11 +52,14 @@ $(function () {
 
   // Bind button to make call
   $("#phoneBtn").bind("click", function () {
-    $("#modal-dial").modal("hide");
+    //decided not to use the dialer for this app
+    //might come back to it because the dial tones are cool
+    // $("#modal-dial").modal("hide");
 
     // get the phone number to connect the call to
     var params = {
       To: document.getElementById("phoneNumber").value,
+      contactID : document.getElementById("contactID").innerHTML
     };
     // output name of contact and destination number
     const fullName = document.getElementById("contactDetailModalTitle").innerHTML;

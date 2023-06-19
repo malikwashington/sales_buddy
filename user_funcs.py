@@ -1,6 +1,7 @@
 """CRUD operations."""
 
 from model import User, Contact, Sub_User, db
+from datetime import datetime
 # from server import app
 
 def create_user(fname, lname, email, password):
@@ -94,6 +95,7 @@ def get_contact_by_phone(user_id, phone):
   """Return a contact by phone number"""
   
   return Contact.query.filter(Contact.user_id == user_id, Contact.phone == phone).first()
+
 
 # if __name__ == '__main__':
 #   connect_to_db(app)
