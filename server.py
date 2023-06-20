@@ -445,7 +445,7 @@ def edit_existing_contact_notes(contact_id):
   notes = form.get('notes').strip()
   
   flash(f'Contact {contact.full_name} edited!', 'success')
-  edit_contact_notes(current_user.id ,contact_id, notes)
+  edit_contact_notes(contact_id, notes)
   return redirect('/contacts')
 
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
