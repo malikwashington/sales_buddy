@@ -93,7 +93,7 @@ def set_priority(contact):
   return p
 
   
-def edit_contact(user_id, contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+def edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
   '''edits a contact'''
   contact = get_contact_by_id(contact_id)
   contact.f_name = f_name
