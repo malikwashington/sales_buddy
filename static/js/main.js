@@ -43,7 +43,9 @@ $(function () {
       device.on("disconnect", function (conn) {
         log("Call ended.");
         $(".modal").modal("hide");
-        $("#contactDetailModal").modal("show");
+        // $("#contactDetailModal").modal("show");
+        const id = document.getElementById("contactID").innerHTML;
+        $(`#${id}`).click();
       });
     })
     .catch(function (err) {
@@ -82,12 +84,14 @@ $(function () {
   // Bind button to hangup call
 
   $(".btnHangUp").bind("click", function () {
-    // $(".modal").modal("hide");
+    $(".modal").modal("hide");
     log("Hanging up...");
     if (device) {
       device.disconnectAll();
     }
-    $("#contactDetailModal").modal("show");
+    // $("#contactDetailModal").modal("show");
+    const id = document.getElementById("contactID").innerHTML; 
+    $(`#${id}`).click();
   });
 
   // Activity log
