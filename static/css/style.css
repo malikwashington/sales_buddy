@@ -1,16 +1,63 @@
 body {
-  background: #0259f0;
+  background: lightblue;
   height: 70vh;
   font-family: 'Poppins', sans-serif;
+}
+
+#log{
+  background-color: white;
 }
 
 .no-pointer-events {
   pointer-events: none;
 }
 
-.link-button{
-  color: rgb(255,255,255);
+#detailTabs:last-child {
+  float: right;
+}
+
+.modal-content {
+  max-width: 498px;
+  max-height: 540px;
+}
+
+.modal-body {
+  overflow-y: auto;
+  padding: 16px;
+  max-width: 466;
+  max-height: 403;
+}
+
+.no-decoration {
+  text-decoration: none;
+}
+
+.sticky{
+  position: sticky;
+  top: 0;
+}
+
+tbody{
+  overflow-y: scroll;
+  height: 300px;
+}
+
+::file-selector-button, .link-button{
   background-color: rgb(67, 69, 139);
+  color: rgb(255,255,255);
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 0px;
+  margin: 5px;
+  text-decoration: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  outline: solid 1px #0000;
+  outline-offset: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+.buttons{
+  /* color: rgb(255,255,255); */
   border-radius: 5px;
   padding: 5px;
   text-decoration: none;
@@ -20,7 +67,14 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
-#link-button:active{
+::file-selector-button:active, .link-button:active{
+  transform: translateY(2px);
+  filter: saturate(150%);
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.buttons:active{
+  background-color: rgb(67, 69, 139);
   transform: translateY(2px);
   filter: saturate(150%);
   box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -29,6 +83,7 @@ body {
 /* .container {
    margin-top: 15%; 
 } */
+
 
 table{
   cursor: pointer;
@@ -84,6 +139,10 @@ table{
   transform: rotateY(180deg);
 }
 
+#textBtn:hover{
+  color: white;
+}
+
 #message {
   font-size: 1.5rem;
   font-weight: 500;
@@ -98,6 +157,25 @@ table{
     width: 0;
     height: 0;
   }
+}
+
+#phoneNumberDetail{
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+#phoneNumber{
+  padding-right: 0px;
+}
+
+#phoneActionButtons{
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+.contactMe{
+  margin-left: 2.5px;
+  margin-right: 2.5px;
 }
 
 .box.front h2 {

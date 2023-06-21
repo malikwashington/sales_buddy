@@ -53,7 +53,6 @@
       setClientNameUI(data.identity);
       intitializeDevice();
     } catch (err) {
-      console.log(err);
       log("An error occurred. See your browser console for more information.");
     }
   }
@@ -295,6 +294,7 @@
 
       var option = document.createElement("option");
       option.label = device.label;
+      option.innerText = device.label;
       option.setAttribute("data-id", id);
       if (isActive) {
         option.setAttribute("selected", "selected");

@@ -1,21 +1,292 @@
-
-<div class="modal " id="contactDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal"
+  id="contactDetailModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="contactDetailModalTitle">
-          
-        </h5>
-        <button type="button" class="close" data-bs-toggle="modal" aria-label="Close">
-          <span aria-hidden="true" class="no-pointer-events">&times;</span>
+    <nav class="navbar nav p-0" id="detailTabs">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active nav-item">
+          <button
+            class="no-decoration link-secondary nav-link active"
+            id="contactDetailsTab"
+            type="button"
+            role="tab"
+            aria-controls="contactDetails"
+            aria-selected="true"
+            data-bs-target="#contactDetails"
+            data-bs-toggle="tab"
+          >
+            Details
+          </button>
+        </li>
+
+        <li>
+          <button
+            class="no-decoration link-secondary nav-link"
+            id="callHistoryTab"
+            type="button"
+            role="tab"
+            aria-controls="callHistory"
+            aria-selected="false"
+            href="#call-history"
+            data-bs-toggle="tab"
+          >
+            Calls
+          </button>
+        </li>
+
+        <li>
+          <button
+            class="no-decoration link-secondary nav-link"
+            id="textHistoryTab"
+            type="button"
+            role="tab"
+            aria-controls="textHistory"
+            aria-selected="false"
+            href="#text-history"
+            data-bs-toggle="tab"
+          >
+            Texts
+          </button>
+        </li>
+
+        <li>
+          <button
+            class="no-decoration link-secondary nav-link"
+            id="emailHistoryTab"
+            type="button"
+            role="tab"
+            aria-controls="emailHistory"
+            aria-selected="false"
+            href="#email-history"
+            data-bs-toggle="tab"
+          >
+            Emails
+          </button>
+        </li>
+      </ul>
+        <div class="d-none" id="contactID"></div>
+        <button
+          type="button"
+          class="close m-0"
+          data-bs-toggle="modal"
+          aria-label="Close"
+          >
+          <span aria-hidden="true" class="no-pointer-events mt-0 flex-end">&times;</span>
         </button>
+    </nav>
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactDetailModalTitle"></h5>
       </div>
       <div class="modal-body" id="contactDetailModalBody">
-        
+        <div class="tab-content">
+          <div
+            class="tab-pane show active fade in"
+            role="tabpanel"
+            aria-labelledby="contactDetailsTab"
+            id="contactDetails"
+          >
+            <form action="" method="POST" id="contactDetailForm">
+              <div class="form-group">
+                <div class="row mb-2">
+                  <div class="col-4 mt-2">
+                    <label for="phone">Phone Number</label>
+                  </div>
+                  <div class="col-4" id="phoneNumberDetail">
+                    <input
+                      type="text"
+                      class="form-control"
+                      disabled="true"
+                      id="phoneNumber"
+                      name="phone"
+                      value=""
+                    />
+                  </div>
+                  <div class="col-4" id="phoneActionButtons">
+                    <span class="m-2">
+                      <button
+                        type="button"
+                        class="btn btn-outline-success buttons contactMe"
+                        id="phoneBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-call-in-progress"
+                      >
+                        <i class="fas fa-phone no-pointer-events"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-info buttons contactMe"
+                        id="textBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalTextBox"
+                      >
+                        <i class="fas fa-comment no-pointer-events"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger buttons contactMe"
+                        id="emailBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEmailBox"
+                      >
+                        <i class="fas fa-envelope no-pointer-events"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row mb-2">
+                  <div class="col-4 mt-2">
+                    <label for="email">Email</label>
+                  </div>
+                  <div class="col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      disabled="true"
+                      id="email"
+                      name="email"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row mb-2">
+                  <div class="col-4 mt-2">
+                    <label for="company">Company</label>
+                  </div>
+                  <div class="col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      disabled="true"
+                      id="company"
+                      name="company"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row mb-2">
+                  <div class="col-4 mt-2">
+                    <label for="linkedin">Linkedin</label>
+                  </div>
+                  <div class="col-8">
+                    <a
+                      target=""
+                      style=""
+                      class="form-control"
+                      id="linkedin"
+                      href="#"
+                    >
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row mb-2">
+                  <div class="col-4 mt-2">
+                    <label for="last_contacted">Last Contacted</label>
+                  </div>
+                  <div class="col-8">
+                    <p class="mt-2" id="last_contacted"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-4 mt-2">
+                    <label for="notes">Notes</label>
+                  </div>
+                  <div class="col-8">
+                    <textarea
+                      type="text"
+                      class="form-control overflow-auto"
+                      rows="4"
+                      id="notes"
+                      name="notes"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="modal-footer" id="contactDetailModalFooter"></div>
+          </div>
+          
+          <div
+          id="call-history"
+          class="tab-pane fade"
+          role="tabpanel"
+          aria-labelledby="callHistoryTab"
+          >
+            <div class="container overflow-y-scroll" id="call-history-container"></div>
+          </div>
+          
+          <div
+          id="text-history"
+          class="tab-pane fade"
+          role="tabpanel"
+          aria-labelledby="textHistoryTab"
+          >
+            <div class="container overflow-y-scroll" id="text-history-container"></div>
+          </div>
+          
+          <div
+          id="email-history"
+          class="tab-pane fade"
+          role="tabpanel"
+          aria-labelledby="emailHistoryTab"
+          >
+            <div class="overflow-y-scroll" id="email-history-container"></div>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer" id="contactDetailModalFooter">
-        
       </div>
+    </div>
+</div>
+
+<div class="container" style="display: none">
+  <!-- log output -->
+  <div class="card text-center log-container">
+    <h3>Device log</h3>
+    <div id="log"></div>
+    <div class="btn-container">
+      <button
+        type="button"
+        id="btnOpenNumberPad"
+        class="btn btn-default btn-circle btn-lg"
+      >
+        <i
+          class="fa fa-phone fa-flip-horizontal"
+          aria-hidden="true"
+          style="color: green"
+        ></i>
+      </button>
     </div>
   </div>
 </div>
+
+<script
+  type="text/javascript"
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://media.twiliocdn.com/sdk/js/client/v1.8/twilio.min.js"
+></script>
+<script type="text/javascript" src="/static/js/main.js"></script>
+<script type="text/javascript" src="/static/js/modals.js" defer></script>

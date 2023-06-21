@@ -1,6 +1,6 @@
 <div 
 class="modal" 
-id="modalTextBox" 
+id="modalEmailBox" 
 tabindex="-1" 
 data-bs-backdrop="static"
 role="dialog" 
@@ -12,11 +12,10 @@ aria-hidden="true">
       <!-- Modal Header -->
            
       <div class="modal-header">
-        <div class='modal-title' id="textContactModalTitle">
+        <div class='modal-title' id="emailContactModalTitle">
         </div>
         <button type="button" 
           class="close buttons" 
-          id="text-close"
           data-bs-toggle="modal" 
           data-bs-target="#contactDetailModal" 
           aria-label="Close">
@@ -24,21 +23,21 @@ aria-hidden="true">
         </button>
       </div>
 
-      <form action="/text" id="textModalForm" method="POST">
+      <form action="" id="emailModalForm" method="POST">
 
         <!-- Modal body -->
-        <div class="modal-body"  style="height: 300px;">
+        <div class="modal-body" style="height: 300px;">
           <div class="mx-auto">
-            <textarea required id="text-body" name="sms" class="p-3" cols="30" rows="10" style="width:100%;"></textarea>
+            <textarea required id="email-body" name="email" class="p-3" cols="30" rows="10" style="width:100%;"></textarea>
           </div>
         </div>
                 <!-- Modal Footer -->
         <div class="modal-footer mx-auto">
           <button 
           type="submit" 
-          class="btn buttons btn btn-info"
+          class="btn buttons btn btn-danger"
           >
-            Send Text
+            Send Email
           </button>
         </div>
       </form>

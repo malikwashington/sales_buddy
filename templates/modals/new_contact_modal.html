@@ -1,5 +1,5 @@
 
-<div class="modal " id="newContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal " id="newContactModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -46,10 +46,14 @@
         </div>
         
         <div class="modal-footer" id="newContactModalFooter">
-          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#newContactModal">
+          <button 
+          type="button" 
+          class="buttons btn btn-secondary" 
+          data-bs-toggle="modal" 
+          >
             Close
           </button>
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="buttons btn btn-primary">
             Save Contact
           </button>
         </div>

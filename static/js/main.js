@@ -7,10 +7,9 @@ $(function () {
   $.getJSON("./token")
     .then(function (data) {
       log("Got a token.");
-      console.log("Token: " + data.token);
 
       // Setup Twilio.Device
-      device = new Device(data.token, {
+      device = new Twilio.Device(data.token, {
         // Set Opus as our preferred codec. Opus generally performs better, requiring less bandwidth and
         // providing better audio quality in restrained network conditions. Opus will be default in 2.0.
         codecPreferences: ["opus", "pcmu"],
@@ -44,26 +43,36 @@ $(function () {
       device.on("disconnect", function (conn) {
         log("Call ended.");
         $(".modal").modal("hide");
+        // $("#contactDetailModal").modal("show");
+        const id = document.getElementById("contactID").innerHTML;
+        $(`#${id}`).click();
       });
     })
     .catch(function (err) {
-      console.log(err);
       log("Could not get a token from server!");
     });
 
   // Bind button to make call
-  $("#btnDial").bind("click", function () {
-    $("#modal-dial").modal("hide");
+  $("#phoneBtn").bind("click", function () {
+    //decided not to use the dialer for this app
+    //might come back to it because the dial tones are cool
+    // $("#modal-dial").modal("hide");
 
     // get the phone number to connect the call to
     var params = {
       To: document.getElementById("phoneNumber").value,
+      contactID : document.getElementById("contactID").innerHTML
     };
-
+    // output name of contact and destination number
+    const fullName = document.getElementById("contactDetailModalTitle").innerHTML;
+    if (fullName) {
+      $("#txtPhoneNumber").text(fullName);
+      document.getElementById("contact-call-name").innerHTML=params.To;
+    }
+    else {
     // output destination number
     $("#txtPhoneNumber").text(params.To);
-
-    console.log("Calling " + params.To + "...");
+    }
     if (device) {
       var outgoingConnection = device.connect(params);
       outgoingConnection.on("ringing", function () {
@@ -80,6 +89,9 @@ $(function () {
     if (device) {
       device.disconnectAll();
     }
+    // $("#contactDetailModal").modal("show");
+    const id = document.getElementById("contactID").innerHTML; 
+    $(`#${id}`).click();
   });
 
   // Activity log

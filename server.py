@@ -10,7 +10,9 @@ from twilio.jwt.access_token.grants import VoiceGrant
 from twilio.twiml.voice_response import VoiceResponse, Dial
 from keys import SECRET_KEY
 import keys
+import cloudinary
 import cloudinary.uploader
+import cloudinary.api
 from flask import Flask, Response, render_template, request, flash, session, redirect, url_for, jsonify
 from model import connect_to_db, db, User, Contact
 import user_funcs
@@ -18,6 +20,9 @@ from jinja2 import StrictUndefined
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import flask_sockets 
 from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
+import contact_funcs
+from datetime import datetime
+import json
 
 #this codeblock is to bypass a bug in flask_sockets where it doesn't recognize the route as a websocket 
 def add_url_rule(self, rule, _, f, **options):
@@ -26,18 +31,19 @@ def add_url_rule(self, rule, _, f, **options):
 
 flask_sockets.Sockets.add_url_rule = add_url_rule
   
-
 app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
 app.jinja_env.undefined = StrictUndefined
 app.config['SECRET_KEY'] = SECRET_KEY
 
+cloud_config = cloudinary.config(secure=True)
 
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
 alphanumeric_only = re.compile("[\W_]+")
 
 load_dotenv()
-twilio_number = os.environ.get("TWILIO_CALLER_ID")
+twilio_number = keys.TWILIO_NUMBER
+biz_phone = keys.BIZ_PHONE 
 
 # Store the most recently created identity in memory for routing calls
 IDENTITY = {"identity": ""}
@@ -100,7 +106,6 @@ def homepage():
     signInForm.password.data = ''
     # sign in user
     user = user_funcs.login_user(email, password)
-    print('\n\n\n\n\n', user, '\n\n\n\n\n')
     if user[0]:
       #login user
       login_user(user[1])
@@ -116,14 +121,57 @@ def homepage():
 
     
 #signup up page
-@app.route('/signup', methods=['GET','POST'])
-def sign_up():
-  """sign up page."""
+@app.route('/signup/<uuid>', methods=['GET','POST'])
+def sign_up(uuid):
+  """sign up page for sub users."""
+  
+  #check if uuid is valid
+  user = user_funcs.get_user_by_uuid(uuid)
+  if not user or len(user.invitation) == 0:
+    flash(f'Invalid link', 'danger')
+    flash(f'Contact your network administrator for more information', 'danger')
+    return render_template('404.html')
+    
+  #redirect to profile if user is logged in
   if current_user.is_authenticated:
     return redirect(url_for('profile'))
-  elif request.method == 'GET':
-    return redirect('/')
   
+  form = forms.RegistrationForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      fname = form.fname.data
+      lname = form.lname.data
+      email = form.email.data
+      password = form.password.data
+      password2 = form.password2.data
+      form.fname.data = ''
+      form.lname.data = ''
+      form.email.data = ''
+      form.password.data = ''
+      form.password2.data = ''
+      #check if user exists
+      if user_funcs.get_user_by_email(email):
+        flash(f'Account already exists for {email}!', 'danger')
+        flash(f'Sign in to continue', 'warning')
+        return render_template('/homepage.html', form=form)
+      else:
+      #create user 
+        sub_user = user_funcs.create_sub_user(user, fname, lname, email, password)
+        db.session.add(sub_user)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account created for {sub_user.full_name}!', 'success')
+        return redirect('/')
+    #if form is not valid flash errors
+    if form.errors: 
+      [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
+      return render_template('signup.html', form=form)
+  elif request.method == 'GET':
+    return render_template('/signup.html', form=form)
+  
+  
+@app.route('/signup', methods=['GET','POST'])
+def sign_up_main():
   form = forms.RegistrationForm(request.form)  
   
  #validate sign up form 
@@ -188,34 +236,59 @@ def change_password():
 def profile():
   '''profile page'''
   pwForm = forms.ChangePasswordForm()
-  return render_template('profile.html', pwForm=pwForm)
+  profileForm = forms.ProfileForm()
+  
+  profilePic = current_user.profile or './static/img/user.png'
+  return render_template(
+    'profile.html', 
+    pwForm=pwForm, 
+    profileForm=profileForm, 
+    profilePic=profilePic )
 
-@app.route('/profile/edit', methods=['POST'])
+@app.route('/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile():
   '''edit profile route'''
+  if request.method == 'GET':
+    return render_template('404.html')
   
-  form = request.form
-  fname = form.get('fname').strip()
-  lname = form.get('lname').strip()
-  email = form.get('email').strip()
-  phone = form.get('phone').strip()
-  
-  return redirect('/profile')
+  form = forms.ProfileForm(request.form)
+  if form.validate_on_submit():
+    fname = form.fname.data.strip()
+    lname = form.lname.data.strip()
+    email = form.email.data.strip()
+    phone = form.phone.data.strip()
 
-@app.route('/profile/edit/photo', methods=['POST'])
+    user_funcs.update_profile(current_user, fname, lname, email, phone, '') 
+    return redirect('/profile')
+  else :
+    flash(f'Something went wrong. Please try again.', 'danger')
+    return redirect('/profile')
+
+@app.route('/profile/edit/photo', methods=['GET', 'POST'])
 @login_required
 def edit_profile_photo():
   '''edit profile photo route'''
   
-
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  if current_user.profile != './static/img/user.png':
+    cloudinary.uploader.destroy(current_user.profile)
+  
   photo = request.files.get('photo')
+  
+  if not photo:
+    img_url = './static/img/user.png'
+    user_funcs.update_profile(current_user, profile=img_url)
+    return redirect('/profile')
+  
   result = cloudinary.uploader.upload(photo,
                                       api_key=keys.CLOUDINARY_KEY,
                                       api_secret=keys.CLOUDINARY_SECRET,
                                       cloud_name=keys.CLOUD_NAME,)
   img_url = result['secure_url']
-
+  user_funcs.update_profile(current_user, profile=img_url)
   return redirect('/profile')
 
 @app.route('/dashboard')
@@ -247,13 +320,14 @@ def contacts():
 def contact(contact_id):
   '''returns a single contact'''
     
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   calls = get_calls_by_contact(contact_id)
   calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'to': call.to} for call in calls]
   texts = get_texts_by_contact(contact_id)
   texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'to': text.to} for text in texts]
   emails = get_emails_by_contact(contact_id)
   emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'to': email.to} for email in emails]
+
 
   contact_dict = {
     'contact_id': contact.contact_id,
@@ -264,11 +338,11 @@ def contact(contact_id):
     'email': contact.email,
     'company': contact.company,
     'notes': contact.notes,
-    'urgency': contact.urgency,
-    'potential': contact.potential,
-    'opportunity': contact.opportunity,
+    # 'urgency': contact.urgency,
+    # 'potential': contact.potential,
+    # 'opportunity': contact.opportunity,
     'last_contacted': contact.last_contacted,
-    'priority': contact.priority,
+    # 'priority': contact.priority,
     'call_history': calls,
     'text_history': texts,
     'email_history': emails,
@@ -289,9 +363,9 @@ def new_contact():
     email = form.email.data
     company = form.company.data
     notes = form.notes.data
-    urgency = form.urgency.data
-    potential = form.potential.data
-    opportunity = form.opportunity.data
+    # urgency = form.urgency.data
+    # potential = form.potential.data
+    # opportunity = form.opportunity.data
     form.f_name.data = ''
     form.l_name.data = ''
     form.phone.data = ''
@@ -299,16 +373,16 @@ def new_contact():
     form.email.data = ''
     form.company.data = ''
     form.notes.data = ''
-    form.urgency.data = ''
-    form.potential.data = ''
-    form.opportunity.data = ''
+    # form.urgency.data = ''
+    # form.potential.data = ''
+    # form.opportunity.data = ''
     contact = user_funcs.add_contact_to_user(
       current_user, 
       f_name, 
       l_name, 
-      urgency, 
-      potential, 
-      opportunity, 
+      0, 
+      0, 
+      0, 
       phone, 
       email,
       company, 
@@ -323,6 +397,8 @@ def new_contact():
     flash(f'Contact not created!', 'danger')
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
     return render_template('contacts.html', form=form)
+
+
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id):
@@ -346,11 +422,11 @@ def edit_existing_contact(contact_id):
     email = form.email.data
     company = form.company.data
     notes = form.notes.data
-    urgency = form.urgency.data
-    potential = form.potential.data
-    opportunity = form.opportunity.data
+    # urgency = form.urgency.data
+    # potential = form.potential.data
+    # opportunity = form.opportunity.data
 
-    edit_contact(current_user.id ,contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity)
+    edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, 0, 0, 0)
     flash(f'Contact {full_name} edited!', 'success')
     return redirect('/contacts')
   else :
@@ -365,11 +441,11 @@ def edit_existing_contact_notes(contact_id):
   if request.method == 'GET':
     return render_template('404.html')
   form = request.form
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   notes = form.get('notes').strip()
   
   flash(f'Contact {contact.full_name} edited!', 'success')
-  edit_contact_notes(current_user.id ,contact_id, notes)
+  edit_contact_notes(contact_id, notes)
   return redirect('/contacts')
 
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
@@ -382,20 +458,14 @@ def delete_existing_contact(contact_id):
   
   
   #delete contact
-  full_name = user_funcs.get_contact_by_id(current_user.id, contact_id).full_name
-  user_funcs.delete_contact_by_id(current_user.id, contact_id)
+  full_name = contact_funcs.get_contact_by_id(contact_id).full_name
+  contact_funcs.delete_contact_by_id(contact_id)
 
   flash(f'Contact {full_name} deleted!', 'success')
   
   return redirect('/contacts')
 
-@app.route('/sequences', methods=['GET','POST'])
-@login_required
-def sequences():
-  '''sequences page'''
-  form = forms.SequenceForm()
-  return render_template('sequences.html', form=form)
-  
+
 @app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
 @login_required
 def text(contact_id):
@@ -405,18 +475,44 @@ def text(contact_id):
     return render_template('404.html')
   
   form = request.form
-  contact = user_funcs.get_contact_by_id(current_user.id, contact_id)
+  contact = contact_funcs.get_contact_by_id(contact_id)
   sms = form.get('sms').strip()
   twilio_API.send_sms(contact, sms)
   return redirect('/contacts')
+
+@app.route('/contacts/<contact_id>/email', methods=['GET', 'POST'])
+@login_required
+def email_contact(contact_id):
+  '''route to stand as endpoint for email messages'''
+
+  if request.method == 'GET':
+    return render_template('404.html')
+  
+  form = request.form
+  contact = contact_funcs.get_contact_by_id(contact_id)
+  body = form.get('email')
+  #send email to contact using the gmail api
+
+  return redirect('/contacts')
+
+
+@app.route('/sequences', methods=['GET','POST'])
+@login_required
+def sequences():
+  '''sequences page'''
+  form = forms.SequenceForm()
+  return render_template('sequences.html', form=form)
+
 
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')
 @login_required
 def phone():
   '''route to stand as endpoint to host page for phone calls'''
-  # return app.send_static_file('phone.html')
-  return render_template('phone.html')
+  
+  form = forms.ContactForm()
+  
+  return render_template('phone.html', form=form)
 
 
 # # @sockets.route('/forwarding')
@@ -426,14 +522,12 @@ def phone():
 # #   and route them to my personal phone number using the twilio api'''
   
 # #   app.logger.info('Connection accepted')
-# #   print('\n\n\n\n\n', ws, '\n\n\n\n\n')
 # #   while not ws.closed:
 # #     message = ws.receive()
 # #     if message is None:
 # #       app.logger.info('No message received...')
 #       continue
 #     message = json.loads(message)
-#     print('\n\n', message, '\n\n')
 #     if message['type'] == 'call':
 #       resp = twilio_API.voice(message['number'])
 #       ws.send(resp)
@@ -441,35 +535,37 @@ def phone():
 #       resp = twilio_API.send_sms(message['number'], message['text'])
 #       ws.send(resp)
 #     else:
-#       print('error')
 #       ws.send('error')
-#   print('closed')
 #   ws.close()
 
-@app.route("/voice", methods=["POST"])
+@app.route("/voice", methods=["GET","POST"])
 def voice():
-  print('\n\n\n\n\n', 'welcome to the terror dome', '\n\n\n\n\n')
-  resp = VoiceResponse()
-  if request.form.get("To") == twilio_number:
-      # Receiving an incoming call to our Twilio number
-      dial = Dial()
-      # Route to the most recently created client based on the identity stored in the session
-      dial.client(IDENTITY["identity"])
-      resp.append(dial)
-  elif request.form.get("To"):
-      # Placing an outbound call from the Twilio client
-      dial = Dial(caller_id=twilio_number)
-      # wrap the phone number or client name in the appropriate TwiML verb
-      # by checking if the number given has only digits and format symbols
-      if phone_pattern.match(request.form["To"]):
-          dial.number(request.form["To"])
-      else:
-          dial.client(request.form["To"])
-      resp.append(dial)
-  else:
-      resp.say("Thanks for calling!")
+    print('\n\n\n\n\n\n\n', request.form, '\n\n\n\n\n\n\n')
+    id = request.form.get('contactID')
+    contact_funcs.add_call_to_contact(id)
+    resp = VoiceResponse()
+    if request.form.get("To") == twilio_number:
+        # Receiving an incoming call to our Twilio number
+        dial = Dial()
+        # Route to the most recently created client based on the identity stored in the session
+        dial.client(IDENTITY["identity"])
+        resp.append(dial)
+    elif request.form.get("To"):
+        # Placing an outbound call from the Twilio client
+        dial = Dial(caller_id=twilio_number)
+        #grab the user id from the form
+        # wrap the phone number or client name in the appropriate TwiML verb
+        # by checking if the number given has only digits and format symbols
+        if phone_pattern.match(request.form["To"]):
+            dial.number(request.form["To"])
+        else:
+            dial.client(request.form["To"])
+        resp.append(dial)
+    else:
+        resp.say("Thanks for calling!")
 
-  return Response(str(resp), mimetype="text/xml")
+    return Response(str(resp), mimetype="text/xml")
+
   
 
 @app.route('/email', methods=['GET', 'POST'])
@@ -497,7 +593,10 @@ def admin():
   '''route to handle admin page'''
   
   if current_user.admin:
-    return render_template('admin.html')
+    uuid = current_user.uuid
+    invite = f'http://localhost:5000/signup/{uuid}'
+    current_user.invitation.append('invite')
+    return render_template('admin.html', uuid=uuid, invite=invite)
   else:
     flash('You do not have access to that page', 'danger')
     return redirect('/profile')
@@ -515,7 +614,7 @@ def token():
     api_secret = os.environ["API_SECRET"]
 
     # Generate a random user name and store it
-    identity = alphanumeric_only.sub("", current_user.full_name)
+    identity = alphanumeric_only.sub("_", current_user.full_name)
     IDENTITY["identity"] = identity
 
     # Create access token with credentials
@@ -530,9 +629,10 @@ def token():
 
     # Return token info as JSON
     token = token.to_jwt()
-
+    response = jsonify({'identity':identity, 'token':token})
+    response.headers.add('Access-Control-Allow-Origin', '*')
     # Return token info as JSON
-    return jsonify(identity=identity, token=token)
+    return response #jsonify(identity=identity, token=token)
 
   
 if __name__ == '__main__':
@@ -542,9 +642,11 @@ if __name__ == '__main__':
   connect_to_db(app)
   
   # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-  print('\n\n Server started \n\n')
   # server.serve_forever()
   
  #this is the old way to start the server before flask_sockets was added
-  app.run(host='0.0.0.0', debug=True)
+ #development server
+  # app.run(host='0.0.0.0', debug=True)
  
+ #production server
+  app.run()

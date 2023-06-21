@@ -1,6 +1,7 @@
 """CRUD operations."""
 
 from model import User, Contact, Sub_User, db
+from datetime import datetime
 # from server import app
 
 def create_user(fname, lname, email, password):
@@ -21,12 +22,34 @@ def create_sub_user(parent_user, fname, lname, email, password):
   print(f'\n\n sub user created: {sub_user} \n\n')
   return sub_user
   
+def update_profile(user, fname=None, lname=None, email=None, phone=None, profile=None):
+  """Update a user's profile"""
+
+  if fname:
+    user.fname = fname
+  if lname:
+    user.lname = lname
+  if email:
+    user.email = email
+  if profile:
+    user.profile = profile
+  if phone:
+    user.phone = phone
+
+  db.session.add(user)
+  db.session.commit()
+
+  return user
 
 def get_user_by_email(email):
   """Return a user by email."""
 
   return User.query.filter(User.email == email.lower().strip()).first()
 
+def get_user_by_uuid(uuid):
+  '''return a user by uuid'''
+  
+  return User.query.filter(User.uuid == uuid).first()
 
 def login_user(email, password):
   '''checks if email and password match a user in the database 
@@ -67,5 +90,12 @@ def delete_contact_by_id(user_id, contact_id):
   contact = get_contact_by_id(user_id, contact_id)
   db.session.delete(contact)
   db.session.commit()
+
+def get_contact_by_phone(user_id, phone):
+  """Return a contact by phone number"""
+  
+  return Contact.query.filter(Contact.user_id == user_id, Contact.phone == phone).first()
+
+
 # if __name__ == '__main__':
 #   connect_to_db(app)

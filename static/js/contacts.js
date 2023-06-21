@@ -1,20 +1,3 @@
-// function call(id) {
-//   let number = document.getElementById("phone").innerHTML;
-//   number = "+1" + number.replace(/\D/g, "");
-
-//   fetch("/token")
-//     .then((response) => {
-//       return response.text();
-//     })
-//     .then((response) => {
-//       const token = response;
-//       return token;
-//     })
-//     .then((token) => {
-//       Twilio.Device.setup(token);
-//     });
-// }
-
 function searchTable() {
   let found = false;
   const input = document.getElementById("searchTable");
@@ -23,7 +6,6 @@ function searchTable() {
   const tr = table.getElementsByTagName("tr");
   for (let i = 1; i < tr.length; i++) {
     let td = tr[i].getElementsByTagName("td");
-    console.log(td)
     for (let j = 0; j < td.length; j++) {
       if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
         found = true;
@@ -38,131 +20,39 @@ function searchTable() {
   }
 }
 
+
 function openForm(id) {
+  //opens the contact detail modal
+  
   //helper function to populate data into contact detail modal, 
   //add onclick to delete and add event listener to edit button
   const populateData = (data) => {
+    console.log(data) 
+    //title header
     document.getElementById('contactDetailModalTitle').innerHTML =
       `${data.f_name} ${data.l_name}`;
-    document.getElementById("contactDetailModalBody").innerHTML = `
-      <form
-        action='contacts/${data.contact_id}/edit/notes' 
-        method='POST' 
-        id="contactDetailForm"
-      >
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="phone">Phone Number</label>
-            </div>
-            <div class="col-5">
-            <input type="text" class="form-control" disabled=true id="phone" name="phone"
-            value="${data.phone ? phoneFormat(data.phone) : ""}">
-            </div>
-            <div class="col-3">
-            <span>
-                  <button 
-                    type="button" 
-                    class="btn 
-                    btn-outline-success" 
-                    id="phoneBtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-call-in-progress">
-                    <i class="fas fa-phone no-pointer-events"></i>
-                  </button>
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-info" 
-                    id="textBtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalTextBox">
-                    <i class="fas fa-comment no-pointer-events"></i>
-                  </button>
-                </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="email">Email</label>
-            </div>
-            <div class="col-8">
-              <input type="text" class="form-control" disabled=true id="email" name="email"
-              value="${data.email ? data.email : ""}">
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="company">Company</label>
-            </div>
-            <div class="col-8">
-              <input type="text" class="form-control" disabled=true id="company" name="company"
-              value="${data.company ? data.company : ""}">
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="linkedin">Linkedin</label>
-            </div>
-            <div class="col-8">
-              <a 
-                ${
-                  data.linkedin
-                    ? 'target="_blank"'
-                    : "style='pointer-events: none; cursor: default; text-decoration: none;'"
-                }
-                class="form-control" 
-                id="linkedin" 
-                href="
-                ${
-                  data.linkedin
-                    ? "https://www.linkedin.com/in/" + data.linkedin
-                    : "javascript:void(0)"
-                }">
-                ${data.linkedin ? "/in/" + data.linkedin : "/in/"}
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row mb-2">
-            <div class="col-4 mt-2">
-              <label for="last_contacted">Last Contacted</label>
-            </div>
-            <div class="col-8">
-              <p class="mt-2">${
-                data.last_contacted ? data.last_contacted : ""
-              }</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <div class="row">
-            <div class="col-4 mt-2">
-              <label for="notes">Notes</label>
-            </div>
-            <div class="col-8">
-              <textarea
-                type="text"
-                class="form-control"
-                id="notes"
-                name="notes"
-              >${data.notes ? data.notes : ""}</textarea>
-            </div>
-          </div>
-        </div>
+      //contact detail tab
+    document.getElementById("contactDetailForm")
+      .action = `/contacts/${data.contact_id}/edit/notes`;
+     //setting the contact id in the modal
+     document.getElementById("contactID").innerHTML = data.contact_id;
+     console.log(document.getElementById("contactID"))
+     
+     document.getElementById("phoneNumber")
+     .value=data.phone ? phoneFormat(data.phone) : "";
+     
+     document.getElementById("email").value = data.email ? data.email : "";
+    document.getElementById("company").value = data.company ? data.company : "";
+    const linkedin = document.getElementById("linkedin")
 
-      </form>`;
+    linkedin.innerHTML = data.linkedin ? "/in/" + data.linkedin : "/in/"
+    linkedin.href = data.linkedin ? "https://www.linkedin.com/in/" + data.linkedin : "javascript:void(0)"           
+    linkedin.target = data.linkedin ? "_blank" : ""
+    linkedin.style = data.linkedin ? "" : "pointer-events: none; cursor: default; text-decoration: none;" 
+
+    document.getElementById("notes").value = data.notes ? data.notes : "";
+    document.getElementById("last_contacted")
+      .innerHTML = data.last_contacted ? data.last_contacted : ""
       
     const footer = document.getElementById("contactDetailModalFooter");
 
@@ -172,7 +62,7 @@ function openForm(id) {
         <div class="col-4">
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-danger buttons"
           data-bs-toggle='modal'
           data-bs-target='#confirmationModal'
           id='detailDelete'>
@@ -183,7 +73,7 @@ function openForm(id) {
         <div id='center' class="col-4">
         <button 
           type="button" 
-          class="btn btn-primary" 
+          class="btn btn-primary buttons" 
           data-bs-toggle='modal' 
           data-bs-target='#contactEditModal'
           id='edit'>
@@ -192,20 +82,96 @@ function openForm(id) {
         </div>
 
         <div id='right' class="col-4">
-        <button type="button" class="btn btn-success" id='detailSave'>Save</button>
+        <button type="button" class="btn buttons btn-success" id='detailSave'>Save</button>
         </div>
 
       </div>`;
-      document.getElementById('phoneBtn')
-        .addEventListener('click', () => console.log('phone calls coming'));
-      document.getElementById('textBtn')
-        .addEventListener('click', ()=>textContact(data));
-      document.getElementById('center').style.textAlign = 'center'
-      document.getElementById('right').style.textAlign = 'right'
-      footer.style.display = "block";
-      document.getElementById("edit").addEventListener("click",()=>editContact(data));
-      document.getElementById("detailSave").addEventListener("click",()=>saveContact(data.contact_id, 'contactDetailForm'));
-      document.getElementById("detailDelete").addEventListener("click",()=>deleteContact(data.contact_id, `${data.f_name} ${data.l_name}`));
+    document.getElementById('textBtn')
+      .addEventListener('click', ()=>textContact(data));
+    document.getElementById('emailBtn')
+      .addEventListener('click', ()=>emailContact(data));
+    document.getElementById('center').style.textAlign = 'center'
+    document.getElementById('right').style.textAlign = 'right'
+    footer.style.display = "block";
+    document.getElementById("edit").addEventListener("click",()=>editContact(data));
+    document.getElementById("detailSave").addEventListener("click",()=>saveContact(data.contact_id, 'contactDetailForm'));
+    document.getElementById("detailDelete").addEventListener("click",()=>deleteContact(data.contact_id, `${data.f_name} ${data.l_name}`));
+  
+    const emailContainer = document.getElementById('email-history-container')
+    const callContainer = document.getElementById('call-history-container')
+    const textContainer = document.getElementById('text-history-container')
+    emailContainer.innerHTML = ''
+    callContainer.innerHTML = ''
+    textContainer.innerHTML = ''
+    
+    //email history tab 
+    if (data.email_history.length > 0) {
+      data.email_history.forEach((email,i) => {
+        emailContainer.innerHTML = `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${email.email_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>To: ${email.to}</p>
+            <p>Message:</p>
+            <p>${email.email_body}</p>
+          </div>
+        </div>
+        <hr>` + emailContainer.innerHTML
+      })
+    } else { emailContainer.innerHTML = '<p>No email history</p>' }
+
+    //text history tab
+    if (data.text_history.length > 0) {
+      data.text_history.forEach((text,i) => {
+        textContainer.innerHTML = `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${text.text_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>Message:</p>
+            <p>${text.text_body}</p>
+          </div>
+        </div>
+        <hr>` + textContainer.innerHTML
+      })
+    } else { textContainer.innerHTML = '<p>No text history</p>' }
+    
+
+    //call history tab
+    if (data.call_history.length > 0) {
+      data.call_history.forEach((call,i) => {
+        callContainer.innerHTML = `
+        <div class="row">
+          <div class="col-5">
+            <p>#${i+1}</p>
+          </div>
+          <div class="col-7">
+            <p>${call.call_time}</p>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>To: ${call.to}</p>
+          </div>
+        </div>
+        <hr>` + callContainer.innerHTML
+      })
+    } else { callContainer.innerHTML = '<p>No call history</p>' }
+
+
   }
 
 //uses the + operator to convert id variable to a number, if it is not a number, it is full contact data
@@ -221,6 +187,9 @@ function openForm(id) {
       .then((data) => {
         return populateData(data);
     });
+
+  //select the contact detail tab on click
+  document.getElementById("contactDetailsTab").click();
 }
 
 function phoneFormat(input) {
@@ -259,8 +228,8 @@ function editContact(data) {
 
 function saveContact(id, past) {
   const form = document.getElementById(past)
-  form.linkedin.value = form.linkedin.value.replace('/in/', '')
-  
+  const linkedin = document.getElementById('linkedin')
+  linkedin.value = linkedin.value ? linkedin.value.replace('/in/', '') : '';
   form.submit()
 }
 
@@ -273,20 +242,29 @@ function deleteContact(id, fullName) {
   document.getElementById('confirmationModalFooter').innerHTML = `
     <button 
       type="button" 
-      class="btn btn-secondary" 
+      class="btn btn-secondary buttons" 
       data-bs-toggle="modal" 
       data-bs-target="#contactDetailModal">
     Cancel
   </button>
 
   <form action="/contacts/${id}/delete" method="POST">
-    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit" class="btn buttons btn-danger">Delete</button>
   </form>`
 }
 
 function textContact(data) {
-  console.log('texting', data)
+  document.getElementById('text-body').value = ''
   document.getElementById('textContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send A Text To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
   document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/text`
+  document.getElementById('text-body').focus()
+}
+
+function emailContact(data) {
+  document.getElementById('email-body').value = ''
+  document.getElementById('emailContactModalTitle')
+    .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send An Email To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
+  document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/email`
+  document.getElementById('email-body').focus()
 }

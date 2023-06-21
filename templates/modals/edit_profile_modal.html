@@ -1,19 +1,20 @@
 
-<div class="modal " id="contactEditModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal " id="edit-profile-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="contactEditModalTitle">
-          Edit Contact 
+          Edit Profile 
         </h5>
       </div>
       
-      <form action="/" method='POST' id="contactEditForm">
+      <form action="/profile/edit" method='POST' id="contactEditForm">
         
         <div class="modal-body" id="contactEditModalBody">
-          {{form.hidden_tag()}} 
+          {{profileForm.hidden_tag()}} 
 
-          {% for line in form if line.id != "submit" %}
+          {% for line in profileForm if line.id != "submit" %}
+          {% if line.id != 'csrf_token' %}
 
           <div class="form-group">
             <div class="row mb-2">
@@ -25,15 +26,21 @@
               </span>
               <span class="col-8">
                 {% if line.id == 'phone' %}
-                  {{line(
+                  {{ line(
                     class_="form-control", 
-                    onInput="this.value = phoneFormat(this.value)")}}
+                    onInput="this.value = phoneFormat(this.value)",
+                    id="profileFormPhone",
+                    value=current_user.phone if current_user.phone else '' ) }}
                 {% else %}
-                {{line(class_="form-control")}}
+                {{line(
+                  class_="form-control", 
+                  value=current_user[line.id] if current_user[line.id] else ''
+                  )}}
                 {% endif %}
               </span>
             </div>
           </div>
+          {% endif %}
           {% endfor %}
         </div>
         <div class="modal-footer" id="contactEditModalFooter">
@@ -48,7 +55,7 @@
             Cancel
           </button>
           
-          {{form.submit(class="buttons btn btn-warning", id="editSave", value="Save Changes")}}
+          {{profileForm.submit(class="buttons btn btn-warning", id="editSave", value="Save Changes")}}
         </div>
       </form> 
     </div>

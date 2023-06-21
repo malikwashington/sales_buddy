@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %} Sales Buddy {% endblock %}</title>
     {% block head %} {% endblock %}
+    
+    <!-- Bootstrap CSS -->
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
@@ -47,22 +50,23 @@
       {% block SalesBuddy %}
       <a class="navbar-brand" href="/">SalesBuddy</a>
       {% endblock %}
+      
       <button
-        class="navbar-toggler"
+        class="navbar-toggler buttons"
         type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
+        data-bs-toggle="collapse"
+        data-bs-target=".allNavbarItems"
+        aria-controls="navbarItems"
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse allNavbarItems" id="navbarItems">
         <ul class="navbar-nav mr-auto">
           {% block navleft %}
-          <li class="nav-item active">
+          <!-- <li class="nav-item active">
             <a class="nav-link" href="#">Home</a>
           </li>
 
@@ -71,12 +75,12 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" href="#">Pricing</a> -->
           </li>
           {% endblock %}
         </ul>
         
-        <div class="collapse navbar-collapse justify-content-end mr-auto">
+        <div class="collapse navbar-collapse allNavbarItems justify-content-end mr-auto">
           <ul class="navbar-nav mr-3">
             {% block navright %}
            
@@ -107,7 +111,7 @@
           <div class="container-fluid m-0 p-0">
             <!-- Section: Social media -->
             <section class="mb-1 mt-2">
-              <a
+              <!-- <a
                 class="btn btn-primary btn-floating mb-1 mx-2"
                 style="background-color: #3b5998"
                 href="#!"
@@ -134,18 +138,20 @@
                 href="#!"
                 role="button"
                 ><i class="fab fa-instagram"></i
-              ></a>
+              ></a> -->
               <a
                 class="btn btn-primary btn-floating mb-1 mx-2"
                 style="background-color: #0082ca"
-                href="#!"
+                href="https://www.linkedin.com/in/malikwashington"
+                target="_blank"
                 role="button"
                 ><i class="fab fa-linkedin-in"></i
               ></a>
               <a
                 class="btn btn-primary btn-floating mb-1 mx-2"
                 style="background-color: #333333"
-                href="#!"
+                target="_blank"
+                href="https://github.com/malikwashington/sales_buddy/tree/main"
                 role="button"
                 ><i class="fab fa-github"></i
               ></a>
@@ -156,7 +162,7 @@
             class="text-center p-3 m-0"
             style="background-color: rgba(0, 0, 0, 0.2)"
           >
-            © 2020 Copyright: Malik Washington
+            © 2023 Copyright: Malik Washington
           </div>
         </footer>
       </div>
@@ -166,13 +172,14 @@
     {% block scripts %}
     {% endblock %}
     <script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+    integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+    crossorigin="anonymous"
+    ></script>
+    
+    <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
-      integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
       crossorigin="anonymous"
     ></script>
   </body>

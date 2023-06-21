@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% include './modals/login_modal.html' %}
-{% include './modals/signup_modal.html' %}
 
 {%block navright %}
 
@@ -21,119 +19,68 @@
   <div class="container overflow-auto my-5 py-5">
     <div class="row">
       <div class="col">
-        <h1>Home</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          voluptatum, quibusdam, voluptate, quia quod voluptas quos
-          exercitationem voluptatibus quas quibusdam, voluptate, quia quod
-          voluptas quos exercitationem voluptatibus quas.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        </p>
+        <h1 class="text-center">Welcome to Sales Buddy - Your Ultimate Sales Companion!</h1>
+        <h5 class="mt-3">
+          Achieve sales success like never before with Sales Buddy, the revolutionary app designed to empower sales professionals like you. Whether you're a seasoned sales guru or just starting out, Sales Buddy is here to transform the way you sell and skyrocket your results.
+        </h5>
           
-        <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam</h2>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        </p>
-          
-          
-        <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam</h2>
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        </p>
-        
-        
       </div>
+      
+      
     </div>
     
     <!-- carousel -->
     
-    <div id="carousel" class="carousel slide mb-5 pb-2 mt-2" data-bs-ride="carousel">
+    <div 
+    id="carousel" 
+    class="carousel slide mb-5 pb-2 mt-2"  
+    data-bs-interval="2000"
+    data-bs-pause="hover"
+    data-bs-ride="carousel">
       <div class="container text-center">
         <h2 class="p-5">Customer Testimonials:</h2>
       </div>
-      <div class="carousel-inner">
+      <div class="carousel-indicators">
+
+        <button 
+        data-bs-target="#carousel" 
+        data-bs-slide-to="0" 
+        aria-label="Slide 1" 
+        class="active mx-2"></button>
+        
+        <button 
+        data-bs-target="#carousel" 
+        class="mx-2" 
+        aria-label="Slide 2" 
+        data-bs-slide-to="1"></button>
+        
+        <button 
+        data-bs-target="#carousel" 
+        aria-label="Slide 3" 
+        class="mx-2" 
+        data-bs-slide-to="2"></button>
+      </div>
+      <div class="carousel-inner m-3 p-5">
               
         <div class="carousel-item active">
             <div class="row">
-            <!-- card 1 -->
-                <div class="col-lg-4">
-                  <div class="card">
-                      <!-- card front -->
-                    <div class="box front">
-                      <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                      <h2>Name</h2>
-                      <h3>Title</h3>
-                      <h4>Company</h4>
-                    </div>
-                      
-                    <div class="box back">
-                      <span class="fa fa-quote-left mb-1"></span>
-                      <!-- quote for the back of the card -->
-                      <p class="mt-2">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                        Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
-                        <span class="fa fa-quote-right float-end"></span>
+              <!-- card 1 -->
+              <div class="col-lg-4">
+                <div class="card">
+                  <!-- card front -->
+                  <div class="box front">
+                    <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
+                    <h2>Carol Danvers</h2>
+                    <h3>CEO</h3>
+                    <h4>Granny Smith</h4>
+                  </div>
+                  
+                  <div class="box back">
+                    <span class="fa fa-quote-left mb-1"></span>
+                    <!-- quote for the back of the card -->
+                    <p class="mt-2">
+                      I've tried several sales apps, but this one stands out from the crowd...It's a salesperson's dream tool.
+                      <span class="fa fa-quote-right float-end"></span>
                       </p>
                     </div>
                   </div>
@@ -143,17 +90,16 @@
               <div class="card">    
                 <div class="box front">
                   <img src="{{ url_for('static', filename='img/2.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
+                  <h2>Susan Nichols</h2>
+                  <h3>Head of Sales</h3>
+                  <h4>Twitter2.0</h4>
                 </div>
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
                   <!-- quote for the back of the card -->
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                    Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                    This sales technology app is a lifesaver when it comes to managing my sales activities on the go. A must-have for sales professionals on the move.
                     <span class="fa fa-quote-right float-end"></span>
                   </p>
                 </div>
@@ -161,22 +107,21 @@
             </div>
             
             <!-- card 3 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
                   <img src="{{ url_for('static', filename='img/3.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
+                  <h2>Jane Doe</h2>
+                  <h3>A Deer</h3>
+                  <h4>A Female Deer</h4>
                 </div>
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
                   <!-- text for back of card -->
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                    Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                    Say goodbye to manual data entry and hello to efficiency! 
                     <span class="fa fa-quote-right float-end"></span>
                   </p>
                 </div>
@@ -185,7 +130,7 @@
             
           </div>
         </div>
-
+        
         <div class="carousel-item">
           <div class="row">
           <!-- card 4 -->
@@ -194,17 +139,16 @@
               
               <div class="box front">
                 <img src="{{ url_for('static', filename='img/4.jpg') }}" alt="">
-                <h2>Name</h2>
-                <h3>Title</h3>
-                <h4>Company</h4>
+                <h2>Laura Smith</h2>
+                <h3>Sales Manager</h3>
+                <h4>Dunder Mifflin</h4>
               </div>
               
               <div class="box back">
                 <span class="fa fa-quote-left mb-1"></span>
                 <!-- text for back of card -->
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                  Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                  As a sales manager, this app has revolutionized the way I track my team's performance. A true asset for sales team management.
                   <span class="fa fa-quote-right float-end"></span>
                 </p>
               </div>
@@ -216,40 +160,38 @@
           <div class="card">    
             <div class="box front">
               <img src="{{ url_for('static', filename='img/5.jpg') }}" alt="">
-              <h2>Name</h2>
-              <h3>Title</h3>
-              <h4>Company</h4>
+              <h2>Lionelle Ritchie</h2>
+              <h3>Sales Executive</h3>
+              <h4>Once, Twice 3x A Lady</h4>
             </div>
             
             <div class="box back">
               <span class="fa fa-quote-left mb-1"></span>
               <!-- text for back of card -->
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                With this app, prospecting has never been easier. It's a game-changer for anyone looking to boost their sales pipeline.
                 <span class="fa fa-quote-right float-end"></span>
               </p>
             </div>
           </div>
         </div>
-          
+        
         <!-- card 6 -->
-
+        
         <div class="col-lg-4">
           <div class="card">    
             <div class="box front">
               <img src="{{ url_for('static', filename='img/6.jpg') }}" alt="">
-              <h2>Name</h2>
-              <h3>Title</h3>
-              <h4>Company</h4>
+              <h2>Charlene Harris</h2>
+              <h3>VP Sales</h3>
+              <h4>Alfa Bets</h4>
             </div>
             
             <div class="box back">
               <span class="fa fa-quote-left mb-1"></span>
               <!-- text for the back of the card -->
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                This sales app simplifies my life and amplifies my results. It's an indispensable tool for achieving sales success.
                 <span class="fa fa-quote-right float-end"></span>
               </p>
             </div>
@@ -258,49 +200,48 @@
 
           </div>
         </div>
-            
+        
 
-          <div class="carousel-item">
+        <div class="carousel-item">
             <div class="row">
-            <!-- card 7 -->
-            <div class="col-lg-4">
-              <div class="card">
-                
-                <div class="box front">
-                  <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
-                </div>
-                
+              <!-- card 7 -->
+              <div class="col-lg-4">
+                <div class="card">
+                  
+                  <div class="box front">
+                    <img src="{{ url_for('static', filename='img/7.png') }}" alt="">
+                    <h2>The Squiggly</h2>
+                    <h3>Head of Marketing</h3>
+                    <h4>Wally World</h4>
+                  </div>
+                  
                 <div class="box back">
                   <!-- text for the back of the card -->
                   <p>
                     <span class="fa fa-quote-left mb-1"></span>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                    Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                    Give me a 'W'....Give me an 'A'....Give me an 'SQUIGGLY'....
                     <span class="fa fa-quote-right float-end"></span>
                   </p>
                 </div>
               </div>
             </div>
             <!-- card 8 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
-                  <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
+                  <img height='200px' width='200px'
+                  src="{{ url_for('static', filename='img/8.jpg') }}" alt="">
+                  <h2>Judith M<sup><small><u>c</u></small></sup>Kenna</h2>
+                  <h3>President</h3>
+                  <h4>Walmart International</h4>
                 </div>
                 
                 <div class="box back">
                   <!-- text for the back of the card -->
                   <p>
                     <span class="fa fa-quote-left mb-1"></span>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                    Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                    I can't imagine my sales routine without this app.
                     <span class="fa fa-quote-right float-end"></span>
                   </p>
                 </div>
@@ -308,33 +249,34 @@
             </div>
             
             <!-- card 9 -->
-
+            
             <div class="col-lg-4">
               <div class="card">    
                 <div class="box front">
-                  <img src="{{ url_for('static', filename='img/1.jpg') }}" alt="">
-                  <h2>Name</h2>
-                  <h3>Title</h3>
-                  <h4>Company</h4>
+                  <img src="{{ url_for('static', filename='img/9.jpg') }}" alt="">
+                  <h2>Naomi Campbell</h2>
+                  <h3>Exec VP</h3>
+                  <h4>Fashion 4 Relief</h4>
                 </div>
                 
                 <div class="box back">
                   <span class="fa fa-quote-left mb-1"></span>
                   <!-- text for the back of the card -->
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                    Quisquam, voluptatum, quibusdam, voluptate, quia quod voluptas quos
+                    This sales technology app is a game-changer! Highly recommended!
                     <span class="fa fa-quote-right float-end"></span>
                   </p>
                 </div>
               </div>
             </div>
-                  
-            </div>   
-
-          </div>
+            
+          </div>   
+          
+        </div>
       </div>
     </div>
   </div>
   
-{% endblock %}
+  {% include './modals/login_modal.html' %}
+  {% include './modals/signup_modal.html' %}
+  {% endblock %}

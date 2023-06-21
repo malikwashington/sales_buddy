@@ -8,10 +8,17 @@
 
 <h1>Profile</h1>
 <div class="container overflow-auto my-5 py-5">
-  current_user.profile
+  <picture id="profile-pic">
+   
+    <img 
+    src="{{current_user.profile}}"  
+    height="225" 
+    width="225" 
+    alt="">
+  </picture>
   <form action="/profile/edit/photo" method="POST" enctype="multipart/form-data">
-    <input type="file" name="photo">
-    <input type="submit" value="Upload">
+    <input type="file"  name="photo">
+    <input type="submit" class="btn btn-primary link-button" value="Upload">
   </form>
   <div class="card">
     <div class="card-header">
@@ -23,20 +30,32 @@
         <div class="row">
           <div class="col-8">
             
-      <strong>Admin:</strong>
-      {{ current_user.admin }}<br/>
-      
-      <strong>Email:</strong>
-      {{ current_user.email }}<br/>
-      
-      
-      <strong>Phone:</strong>
-      <br/>
-      
+           <p class="m-0 ">
+              <strong>Admin:</strong>
+             <span> {{ current_user.admin }}<br/></span>
+           </p>
+            
+          <p class="m-0">
+              <strong>Email:</strong>
+              <span>{{ current_user.email }}</span>
+          </p>
+            
+            
+     <p class="m-0">
+        <strong>Phone:</strong>
+        <span id="profilePhone">{{ current_user.phone }} </span>
+     </p>
     </div>
   </div>
 </p>
-<a href="#" class="link-button btn btn-primary border-1 border-primary">Edit Profile</a>
+<a 
+href="#" 
+class="link-button btn btn-primary border-1 border-primary"
+data-bs-toggle="modal"
+data-bs-target="#edit-profile-modal"
+>
+  Edit Profile
+</a>
 <a 
 href="#" 
 class="link-button btn btn-primary"
@@ -47,9 +66,13 @@ Change Password
 
 </div>
 </div>
-{% include "./modals/password_reset_modal.html" %}
 </div>
+{% include "./modals/edit_profile_modal.html" %}
+{% include "./modals/password_reset_modal.html" %}
 
 {% endblock %}
 
 
+{% block scripts %}
+<script type="module" src="../static/js/profile.js"></script>
+{% endblock %}

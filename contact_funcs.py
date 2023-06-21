@@ -1,20 +1,40 @@
 from datetime import datetime
 from model import Contact, Email_Record, Call_Record, Text_Record, db
-from user_funcs import get_contact_by_id, delete_contact_by_id
 
-def add_call_to_contact(contact, call_notes=None, call_time=datetime.utcnow()):
-  """Add a call to a contact"""
+def add_call_to_contact(contactid, call_time=None):
+  """Add a call to a contact and update last_contacted"""
 
+  contact = get_contact_by_id(contactid)
+  call_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not call_time else call_time
+  contact.last_contacted = call_time
   contact.call_history.append(Call_Record(
-      call_time=call_time, to=contact.phone, call_notes=call_notes))
+      call_time=call_time, to=contact.phone))
   db.session.add(contact)
   db.session.commit()
 
   return contact
 
-def add_sms_to_contact(contact, text_body=None, text_time=datetime.utcnow()):
+def delete_contact(contact_id):
+  '''deletes a contact by id'''
+  
+  contact = get_contact_by_id(contact_id)
+  db.session.delete(contact)
+  db.session.commit() 
+
+  return get_contact_by_id(contact_id) == None
+  
+def get_contact_by_id(contact_id):
+  '''gets a contact by id'''  
+  
+  contact = Contact.query.filter(Contact.contact_id==contact_id).first()
+  return contact
+
+def add_sms_to_contact(contactid, text_body):
   """Add a text to a contact"""
 
+  contact = get_contact_by_id(contactid)
+  text_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S')
+  contact.last_contacted = text_time
   contact.text_history.append(Text_Record(
       text_time=text_time, to=contact.phone, text_body=text_body))
   db.session.add(contact)
@@ -28,9 +48,11 @@ def get_calls_by_contact(contact_id):
   return Call_Record.query.filter_by(contact_id=contact_id).all()
 
 
-def add_email_to_contact(contact, body, time=datetime.utcnow()):
+def add_email_to_contact(contactid, body, time=None):
   """Add an email to a contact"""
 
+  time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
+  contact = get_contact_by_id(contactid)
   contact.email_history.append(Email_Record(
       email_body=body, to=contact.email, email_time=time))
   db.session.add(contact)
@@ -45,9 +67,10 @@ def get_emails_by_contact(contact_id):
   return Email_Record.query.filter_by(contact_id=contact_id).all()
 
 
-def add_text_to_contact(contact, body, time=datetime.utcnow()):
+def add_text_to_contact(contact, body, time=None):
   """Add a text to a contact"""
-
+  
+  time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
   contact.text_history.append(Text_Record(
       text_body=body, to=contact.phone, text_time=time))
   db.session.add(contact)
@@ -69,17 +92,10 @@ def set_priority(contact):
   contact.priority = p
   return p
 
-def delete_contact(user_id, contact_id):
-  '''deletes a contact'''
   
-  delete_contact_by_id(user_id, contact_id)
-  
-  return get_contact_by_id(user_id, contact_id) == None
-
-  
-def edit_contact(user_id, contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
+def edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, urgency, potential, opportunity):
   '''edits a contact'''
-  contact = get_contact_by_id(user_id, contact_id)
+  contact = get_contact_by_id(contact_id)
   contact.f_name = f_name
   contact.l_name = l_name
   contact.phone = phone
@@ -94,9 +110,9 @@ def edit_contact(user_id, contact_id, f_name, l_name, phone, linkedin, email, co
   return contact
 
   
-def edit_contact_notes(user_id, contact_id, notes):
+def edit_contact_notes(contact_id, notes):
   '''edits a contact's notes'''
-  contact = get_contact_by_id(user_id, contact_id)
+  contact = get_contact_by_id(contact_id)
   contact.notes = notes
   db.session.commit()
   return contact
