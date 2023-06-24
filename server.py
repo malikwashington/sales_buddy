@@ -28,8 +28,8 @@ import json
 def add_url_rule(self, rule, _, f, **options):
   """Add a URL rule for websocket handling."""
   self.url_map.add(flask_sockets.Rule(rule, endpoint=f, websocket=True))
-
 flask_sockets.Sockets.add_url_rule = add_url_rule
+
   
 app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
@@ -120,7 +120,7 @@ def homepage():
   return render_template('homepage.html', signInForm=signInForm, signUpForm=signUpForm)
 
     
-#signup up page
+#subuser signup up page
 @app.route('/signup/<uuid>', methods=['GET','POST'])
 def sign_up(uuid):
   """sign up page for sub users."""
@@ -169,7 +169,7 @@ def sign_up(uuid):
   elif request.method == 'GET':
     return render_template('/signup.html', form=form)
   
-  
+#route for signing up/registering accounts  
 @app.route('/signup', methods=['GET','POST'])
 def sign_up_main():
   form = forms.RegistrationForm(request.form)  
@@ -203,7 +203,7 @@ def sign_up_main():
     return render_template('signup.html', form=form)
   return render_template('signup.html', form=form)
 
-
+#password reset route
 @app.route('/password-reset', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -231,6 +231,7 @@ def change_password():
   flash('Passwords do not match', 'danger')
   return redirect('/profile')
 
+#profile page route
 @app.route('/profile')
 @login_required
 def profile():
@@ -245,6 +246,7 @@ def profile():
     profileForm=profileForm, 
     profilePic=profilePic )
 
+#edit profile route
 @app.route('/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile():
@@ -291,13 +293,16 @@ def edit_profile_photo():
   user_funcs.update_profile(current_user, profile=img_url)
   return redirect('/profile')
 
+#dashboard page route
 @app.route('/dashboard')
 @login_required
 def dashboard():
   '''dashboard  page'''
   return render_template('dashboard.html')
 
-@app.route('/contacts')
+
+#prospects page route
+@app.route('/prospects')
 @login_required
 def contacts():
   '''contacts page'''
@@ -315,6 +320,8 @@ def contacts():
     'priority': contact.priority} for contact in contacts]
   return render_template('contacts.html', form=form, contacts=contacts)
 
+
+#route to retrieve a single contact as json
 @app.route('/contacts/<contact_id>')
 @login_required
 def contact(contact_id):
@@ -349,6 +356,8 @@ def contact(contact_id):
   }
   return contact_dict
 
+
+#route for new contacts
 @app.route('/contacts/new', methods=['POST'])
 @login_required
 def new_contact():
@@ -399,6 +408,7 @@ def new_contact():
     return render_template('contacts.html', form=form)
 
 
+#edit contact route
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id):
@@ -407,7 +417,6 @@ def edit_existing_contact(contact_id):
   if request.method == 'GET':
     return render_template('404.html')
   
-  # form = request.form
   form = forms.ContactForm(request.form)
 
   #validate the form
@@ -434,6 +443,8 @@ def edit_existing_contact(contact_id):
     return render_template('contacts.html', form=form)
 
 
+
+#edit contact notes
 @app.route('/contacts/<contact_id>/edit/notes', methods=['POST'])
 @login_required
 def edit_existing_contact_notes(contact_id):
@@ -448,6 +459,8 @@ def edit_existing_contact_notes(contact_id):
   edit_contact_notes(contact_id, notes)
   return redirect('/contacts')
 
+
+#route to delete contacts
 @app.route('/contacts/<contact_id>/delete', methods=['GET','POST'])
 @login_required
 def delete_existing_contact(contact_id):
@@ -466,6 +479,7 @@ def delete_existing_contact(contact_id):
   return redirect('/contacts')
 
 
+#route to send text to a contact
 @app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
 @login_required
 def text(contact_id):
@@ -480,6 +494,9 @@ def text(contact_id):
   twilio_API.send_sms(contact, sms)
   return redirect('/contacts')
 
+
+
+#endpoint for sending emails
 @app.route('/contacts/<contact_id>/email', methods=['GET', 'POST'])
 @login_required
 def email_contact(contact_id):
@@ -496,6 +513,7 @@ def email_contact(contact_id):
   return redirect('/contacts')
 
 
+#route for sequences
 @app.route('/sequences', methods=['GET','POST'])
 @login_required
 def sequences():
@@ -538,6 +556,8 @@ def phone():
 #       ws.send('error')
 #   ws.close()
 
+
+#route for making phone calls
 @app.route("/voice", methods=["GET","POST"])
 def voice():
     print('\n\n\n\n\n\n\n', request.form, '\n\n\n\n\n\n\n')
@@ -567,19 +587,7 @@ def voice():
     return Response(str(resp), mimetype="text/xml")
 
   
-
-@app.route('/email', methods=['GET', 'POST'])
-@login_required
-def email():
-  '''route to handle emails from twilio api'''
-
-@app.route('/calls', methods=['GET', 'POST'])
-@login_required
-def calls():
-  '''route to handle calls from twilio api'''
-
-  return render_template('calls.html')
-
+#route for the priority list/pq task list
 @app.route('/tasks', methods=['GET', 'POST'])
 @login_required
 def tasks():
@@ -587,6 +595,8 @@ def tasks():
   
   return render_template('tasks.html')
 
+
+#route for admin page
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
@@ -602,6 +612,8 @@ def admin():
     return redirect('/profile')
   
 
+
+#route to get twilio token
 @app.route("/token", methods=["GET"])
 @login_required
 def token():
