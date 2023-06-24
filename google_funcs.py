@@ -5,7 +5,7 @@ from email.message import EmailMessage
 from datetime import datetime
 from contact_funcs import add_email_to_contact
 
-def send_mail(id, to, subject, body, attachment=None):
+def send_mail(name, id, to, subject, body, attachment=None):
   em = EmailMessage()
   em['From'] = EMAIL
   em['To'] = to
@@ -20,7 +20,7 @@ def send_mail(id, to, subject, body, attachment=None):
     server.login(EMAIL, MAIL_PASSWORD)
     server.send_message(em)
 
-  contact = add_email_to_contact(id, subject, body)
+  contact = add_email_to_contact(id, subject, body, name)
   return contact
 
 

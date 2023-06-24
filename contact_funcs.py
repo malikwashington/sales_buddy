@@ -1,41 +1,41 @@
 from datetime import datetime
 from model import Contact, Email_Record, Call_Record, Text_Record, db
 
-def add_call_to_contact(contactid, call_time=None):
+def add_call_to_contact(contactid, name='test user', call_time=None):
   """Add a call to a contact and update last_contacted"""
 
   contact = get_contact_by_id(contactid)
   call_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not call_time else call_time
   contact.last_contacted = call_time
   contact.call_history.append(Call_Record(
-      call_time=call_time, to=contact.phone))
+      call_time=call_time, to=contact.phone, caller=name))
   db.session.add(contact)
   db.session.commit()
 
   return contact
 
-def add_sms_to_contact(contactid, text_body):
+def add_sms_to_contact(contactid, text_body, name='test user'):
   """Add a text to a contact"""
 
   contact = get_contact_by_id(contactid)
   text_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S')
   contact.last_contacted = text_time
   contact.text_history.append(Text_Record(
-      text_time=text_time, to=contact.phone, text_body=text_body))
+      text_time=text_time, to=contact.phone, text_body=text_body, sender=name))
   db.session.add(contact)
   db.session.commit()
 
   return contact
 
 
-def add_email_to_contact(contactid, subject, body, time=None):
+def add_email_to_contact(contactid, subject, body, name='test user', time=None):
   """Add an email to a contact"""
 
   time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
   contact = get_contact_by_id(contactid)
   contact.last_contacted = time
   contact.email_history.append(Email_Record(
-      email_subject=subject, email_body=body, to=contact.email, email_time=time))
+      email_subject=subject, email_body=body, to=contact.email, email_time=time, sender=name))
   db.session.add(contact)
   db.session.commit()
 

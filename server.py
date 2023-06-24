@@ -330,11 +330,11 @@ def contact(contact_id):
     
   contact = contact_funcs.get_contact_by_id(contact_id)
   calls = get_calls_by_contact(contact_id)
-  calls = [{'call_notes': call.call_notes, 'call_time': call.call_time, 'to': call.to} for call in calls]
+  calls = [{'caller': call.caller, 'call_time': call.call_time, 'to': call.to} for call in calls]
   texts = get_texts_by_contact(contact_id)
-  texts = [{'text_body': text.text_body, 'text_time': text.text_time, 'to': text.to} for text in texts]
+  texts = [{'sender' : text.sender, 'text_body': text.text_body, 'text_time': text.text_time, 'to': text.to} for text in texts]
   emails = get_emails_by_contact(contact_id)
-  emails = [{'email_body': email.email_body, 'email_time': email.email_time, 'to': email.to} for email in emails]
+  emails = [{'sender': email.sender, 'email_body': email.email_body, 'email_time': email.email_time, 'to': email.to} for email in emails]
 
 
   contact_dict = {
@@ -492,7 +492,7 @@ def text(contact_id):
   form = request.form
   contact = contact_funcs.get_contact_by_id(contact_id)
   sms = form.get('sms').strip()
-  twilio_API.send_sms(contact, sms)
+  twilio_API.send_sms(contact, sms, current_user.full_name)
   return redirect('/prospects')
 
 
@@ -515,7 +515,7 @@ def email_contact(contact_id):
   email = form.get('email').strip()
 
   
-  send_mail(contact_id, email, subject, body)
+  send_mail(contact_id, email, subject, body, current_user.full_name)
 
   return redirect('/prospects')
 
@@ -569,7 +569,8 @@ def phone():
 def voice():
     print('\n\n\n\n\n\n\n', request.form, '\n\n\n\n\n\n\n')
     id = request.form.get('contactID')
-    contact_funcs.add_call_to_contact(id)
+    user = request.form.get('user')
+    contact_funcs.add_call_to_contact(id, user)
     resp = VoiceResponse()
     if request.form.get("To") == twilio_number:
         # Receiving an incoming call to our Twilio number

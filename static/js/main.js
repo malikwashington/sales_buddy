@@ -61,7 +61,8 @@ $(function () {
     // get the phone number to connect the call to
     var params = {
       To: document.getElementById("phoneNumber").value,
-      contactID : document.getElementById("contactID").innerHTML
+      contactID : document.getElementById("contactID").innerHTML,
+      user : document.getElementById("userName").innerHTML 
     };
     // output name of contact and destination number
     const fullName = document.getElementById("contactDetailModalTitle").innerHTML;

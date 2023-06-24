@@ -31,7 +31,7 @@ def token(id):
   return jsonify(identity=id, token=token)
 
   
-def send_sms(contact, text):
+def send_sms(contact, text, name='test user'):
   """Send an SMS to a user's contact"""
 
   phone_number = '+1' + sub('[\D]','',contact.phone)
@@ -49,7 +49,8 @@ def send_sms(contact, text):
                               text_body=text,
                               text_time=sent_time.strftime('%Y%m%d,%H%M%S'),
                               to=message.to,
-                              text_sid=message.sid,))
+                              text_sid=message.sid,
+                              sender=name,))
   contact.last_contacted = formatted_time
   db.session.add(contact)
   db.session.commit()
