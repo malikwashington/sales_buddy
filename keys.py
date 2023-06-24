@@ -14,6 +14,9 @@ EMAIL = os.getenv('GOOGLE_ACCOUNT')
 MAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')
 CAL_PASSWORD = os.getenv("GCAL_PASSWORD")
 
+ADMIN = os.getenv('ADMIN_USERNAME')
+ADMIN_KEY  = os.getenv('ADMIN_PASSWORD')
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 BOSS = os.getenv('MASTER_NUMBER')
