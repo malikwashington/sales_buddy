@@ -512,10 +512,10 @@ def email_contact(contact_id):
 
   subject = form.get('subject').strip()
   body = form.get('body').strip()
-  form.body.data = ''
-  form.subject.data = ''
+  email = form.get('email').strip()
+
   
-  send_mail(contact_id, subject, body)
+  send_mail(contact_id, email, subject, body)
 
   return redirect('/prospects')
 
