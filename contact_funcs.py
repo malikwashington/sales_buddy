@@ -14,6 +14,35 @@ def add_call_to_contact(contactid, call_time=None):
 
   return contact
 
+def add_sms_to_contact(contactid, text_body):
+  """Add a text to a contact"""
+
+  contact = get_contact_by_id(contactid)
+  text_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S')
+  contact.last_contacted = text_time
+  contact.text_history.append(Text_Record(
+      text_time=text_time, to=contact.phone, text_body=text_body))
+  db.session.add(contact)
+  db.session.commit()
+
+  return contact
+
+
+def add_email_to_contact(contactid, subject, body, time=None):
+  """Add an email to a contact"""
+
+  time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
+  contact = get_contact_by_id(contactid)
+  contact.last_contacted = time
+  contact.email_history.append(Email_Record(
+      email_subject=subject, email_body=body, to=contact.email, email_time=time))
+  db.session.add(contact)
+  db.session.commit()
+
+  return contact
+
+
+
 def delete_contact(contact_id):
   '''deletes a contact by id'''
   
@@ -29,36 +58,11 @@ def get_contact_by_id(contact_id):
   contact = Contact.query.filter(Contact.contact_id==contact_id).first()
   return contact
 
-def add_sms_to_contact(contactid, text_body):
-  """Add a text to a contact"""
-
-  contact = get_contact_by_id(contactid)
-  text_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S')
-  contact.last_contacted = text_time
-  contact.text_history.append(Text_Record(
-      text_time=text_time, to=contact.phone, text_body=text_body))
-  db.session.add(contact)
-  db.session.commit()
-
-  return contact
 
 def get_calls_by_contact(contact_id):
   """Return all calls belonging to a contact"""
 
   return Call_Record.query.filter_by(contact_id=contact_id).all()
-
-
-def add_email_to_contact(contactid, body, time=None):
-  """Add an email to a contact"""
-
-  time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
-  contact = get_contact_by_id(contactid)
-  contact.email_history.append(Email_Record(
-      email_body=body, to=contact.email, email_time=time))
-  db.session.add(contact)
-  db.session.commit()
-
-  return contact
 
 
 def get_emails_by_contact(contact_id):

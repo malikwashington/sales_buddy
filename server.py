@@ -21,6 +21,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 import flask_sockets 
 from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
 import contact_funcs
+from google_funcs import send_mail
 from datetime import datetime
 import json
 
@@ -401,7 +402,7 @@ def new_contact():
     db.session.add(contact)
     db.session.commit()
     flash(f'Contact created for {contact.full_name}!', 'success')
-    return redirect('/contacts')
+    return redirect('/prospects')
   else :
     flash(f'Contact not created!', 'danger')
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
@@ -437,7 +438,7 @@ def edit_existing_contact(contact_id):
 
     edit_contact(contact_id, f_name, l_name, phone, linkedin, email, company, notes, 0, 0, 0)
     flash(f'Contact {full_name} edited!', 'success')
-    return redirect('/contacts')
+    return redirect('/prospects')
   else :
     flash(f'Contact not edited!', 'danger')
     return render_template('contacts.html', form=form)
@@ -457,7 +458,7 @@ def edit_existing_contact_notes(contact_id):
   
   flash(f'Contact {contact.full_name} edited!', 'success')
   edit_contact_notes(contact_id, notes)
-  return redirect('/contacts')
+  return redirect('/prospects')
 
 
 #route to delete contacts
@@ -492,7 +493,7 @@ def text(contact_id):
   contact = contact_funcs.get_contact_by_id(contact_id)
   sms = form.get('sms').strip()
   twilio_API.send_sms(contact, sms)
-  return redirect('/contacts')
+  return redirect('/prospects')
 
 
 
@@ -506,11 +507,17 @@ def email_contact(contact_id):
     return render_template('404.html')
   
   form = request.form
-  contact = contact_funcs.get_contact_by_id(contact_id)
-  body = form.get('email')
+  print('\n\n\n\n\n\n\n\n',form,'\n\n\n\n\n\n\n\n\n')
   #send email to contact using the gmail api
 
-  return redirect('/contacts')
+  subject = form.get('subject').strip()
+  body = form.get('body').strip()
+  form.body.data = ''
+  form.subject.data = ''
+  
+  send_mail(contact_id, subject, body)
+
+  return redirect('/prospects')
 
 
 #route for sequences

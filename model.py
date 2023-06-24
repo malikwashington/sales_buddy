@@ -154,6 +154,7 @@ class Email_Record(db.Model):
   __tablename__ = "email_records"
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  email_subject = db.Column(db.String(50), nullable=True, default='No Subject')
   email_body = db.Column(db.Text, nullable=True)
   email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
   to = db.Column(db.String(100), nullable=False)
