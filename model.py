@@ -154,9 +154,11 @@ class Email_Record(db.Model):
   __tablename__ = "email_records"
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id'))
   email_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  email_subject = db.Column(db.String(50), nullable=True, default='No Subject')
   email_body = db.Column(db.Text, nullable=True)
   email_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
   to = db.Column(db.String(100), nullable=False)
+  sender = db.Column(db.String(100), nullable=False, default='Unknown')
 
   @property
   def time(self):
@@ -173,9 +175,9 @@ class Call_Record(db.Model):
   contact_id = db.Column(db.Integer, db.ForeignKey('contacts.contact_id')) 
   call_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   to = db.Column(db.String(100), nullable=False, default='Unknown')
-  call_notes = db.Column(db.Text, nullable=True)
   call_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow().strftime('%Y%m%d,%H%M%S'))
   call_sid = db.Column(db.String(100), nullable=True)
+  caller = db.Column(db.String(100), nullable=False, default='Unknown')
   
   contact = db.relationship('Contact', back_populates='call_history')
 
@@ -201,6 +203,7 @@ class Text_Record(db.Model):
   text_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
   text_sid = db.Column(db.String(100), nullable=True)
   contact = db.relationship('Contact', back_populates='text_history')
+  sender = db.Column(db.String(100), nullable=False, default='Unknown')
   
   @property
   def time(self):

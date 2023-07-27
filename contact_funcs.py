@@ -1,19 +1,30 @@
 from datetime import datetime
 from model import Contact, Email_Record, Call_Record, Text_Record, db
 
+<<<<<<< HEAD
+def add_call_to_contact(contactid, name='test user', call_time=None):
+=======
 def add_call_to_contact(contactid, call_time=None):
+>>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
   """Add a call to a contact and update last_contacted"""
 
   contact = get_contact_by_id(contactid)
   call_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not call_time else call_time
   contact.last_contacted = call_time
   contact.call_history.append(Call_Record(
+<<<<<<< HEAD
+      call_time=call_time, to=contact.phone, caller=name))
+=======
       call_time=call_time, to=contact.phone))
+>>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
   db.session.add(contact)
   db.session.commit()
 
   return contact
 
+<<<<<<< HEAD
+def add_sms_to_contact(contactid, text_body, name='test user'):
+=======
 def delete_contact(contact_id):
   '''deletes a contact by id'''
   
@@ -30,17 +41,60 @@ def get_contact_by_id(contact_id):
   return contact
 
 def add_sms_to_contact(contactid, text_body):
+>>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
   """Add a text to a contact"""
 
   contact = get_contact_by_id(contactid)
   text_time = datetime.utcnow().strftime('%Y%m%d,%H%M%S')
   contact.last_contacted = text_time
   contact.text_history.append(Text_Record(
-      text_time=text_time, to=contact.phone, text_body=text_body))
+      text_time=text_time, to=contact.phone, text_body=text_body, sender=name))
   db.session.add(contact)
   db.session.commit()
 
   return contact
+
+
+def add_email_to_contact(contactid, subject, body, name='test user', from_=None, time=None):
+  """Add an email to a contact"""
+
+  time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
+  contact = get_contact_by_id(contactid)
+  
+  if not from_:
+  #for sent emails
+    contact.last_contacted = time
+    contact.email_history.append(Email_Record(
+      email_subject=subject, email_body=body, to=contact.email, email_time=time, sender=name))
+  
+  else:
+  #for received emails
+    contact.last_contacted = time
+    contact.email_history.append(Email_Record(
+      email_subject=subject, email_body=body, to=name, email_time=time, sender=from_))  
+    
+  db.session.add(contact)
+  db.session.commit()
+
+  return contact
+
+
+
+def delete_contact(contact_id):
+  '''deletes a contact by id'''
+  
+  contact = get_contact_by_id(contact_id)
+  db.session.delete(contact)
+  db.session.commit() 
+
+  return get_contact_by_id(contact_id) == None
+  
+def get_contact_by_id(contact_id):
+  '''gets a contact by id'''  
+  
+  contact = Contact.query.filter(Contact.contact_id==contact_id).first()
+  return contact
+
 
 def get_calls_by_contact(contact_id):
   """Return all calls belonging to a contact"""
@@ -48,6 +102,8 @@ def get_calls_by_contact(contact_id):
   return Call_Record.query.filter_by(contact_id=contact_id).all()
 
 
+<<<<<<< HEAD
+=======
 def add_email_to_contact(contactid, body, time=None):
   """Add an email to a contact"""
 
@@ -61,6 +117,7 @@ def add_email_to_contact(contactid, body, time=None):
   return contact
 
 
+>>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 def get_emails_by_contact(contact_id):
   """Return all emails belonging to a contact"""
 
