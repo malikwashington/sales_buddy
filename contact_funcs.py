@@ -28,14 +28,24 @@ def add_sms_to_contact(contactid, text_body, name='test user'):
   return contact
 
 
-def add_email_to_contact(contactid, subject, body, name='test user', time=None):
+def add_email_to_contact(contactid, subject, body, name='test user', from_=None, time=None):
   """Add an email to a contact"""
 
   time = datetime.utcnow().strftime('%Y%m%d,%H%M%S') if not time else time
   contact = get_contact_by_id(contactid)
-  contact.last_contacted = time
-  contact.email_history.append(Email_Record(
+  
+  if not from_:
+  #for sent emails
+    contact.last_contacted = time
+    contact.email_history.append(Email_Record(
       email_subject=subject, email_body=body, to=contact.email, email_time=time, sender=name))
+  
+  else:
+  #for received emails
+    contact.last_contacted = time
+    contact.email_history.append(Email_Record(
+      email_subject=subject, email_body=body, to=name, email_time=time, sender=from_))  
+    
   db.session.add(contact)
   db.session.commit()
 
