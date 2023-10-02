@@ -21,10 +21,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 import flask_sockets 
 from contact_funcs import get_calls_by_contact, get_emails_by_contact, get_texts_by_contact, edit_contact, delete_contact, edit_contact_notes 
 import contact_funcs
-<<<<<<< HEAD
 from google_funcs import send_mail
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 from datetime import datetime
 import json
 
@@ -33,10 +30,6 @@ def add_url_rule(self, rule, _, f, **options):
   """Add a URL rule for websocket handling."""
   self.url_map.add(flask_sockets.Rule(rule, endpoint=f, websocket=True))
 flask_sockets.Sockets.add_url_rule = add_url_rule
-<<<<<<< HEAD
-
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
   
 app = Flask(__name__)
 sockets = flask_sockets.Sockets(app)
@@ -127,11 +120,7 @@ def homepage():
   return render_template('homepage.html', signInForm=signInForm, signUpForm=signUpForm)
 
     
-<<<<<<< HEAD
 #subuser signup up page
-=======
-#signup up page
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route('/signup/<uuid>', methods=['GET','POST'])
 def sign_up(uuid):
   """sign up page for sub users."""
@@ -180,11 +169,7 @@ def sign_up(uuid):
   elif request.method == 'GET':
     return render_template('/signup.html', form=form)
   
-<<<<<<< HEAD
 #route for signing up/registering accounts  
-=======
-  
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route('/signup', methods=['GET','POST'])
 def sign_up_main():
   form = forms.RegistrationForm(request.form)  
@@ -261,10 +246,7 @@ def profile():
     profileForm=profileForm, 
     profilePic=profilePic )
 
-<<<<<<< HEAD
 #edit profile route
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route('/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile():
@@ -427,10 +409,7 @@ def new_contact():
     return render_template('contacts.html', form=form)
 
 
-<<<<<<< HEAD
 #edit contact route
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route('/contacts/<contact_id>/edit', methods=['GET','POST'])
 @login_required
 def edit_existing_contact(contact_id):
@@ -479,11 +458,7 @@ def edit_existing_contact_notes(contact_id):
   
   flash(f'Contact {contact.full_name} edited!', 'success')
   edit_contact_notes(contact_id, notes)
-<<<<<<< HEAD
   return redirect('/prospects')
-=======
-  return redirect('/contacts')
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 
 
 #route to delete contacts
@@ -505,10 +480,7 @@ def delete_existing_contact(contact_id):
   return redirect('/contacts')
 
 
-<<<<<<< HEAD
 #route to send text to a contact
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route('/contacts/<contact_id>/text', methods=['GET', 'POST'])
 @login_required
 def text(contact_id):
@@ -557,30 +529,6 @@ def sequences():
   return render_template('sequences.html', form=form)
 
 
-@app.route('/contacts/<contact_id>/email', methods=['GET', 'POST'])
-@login_required
-def email_contact(contact_id):
-  '''route to stand as endpoint for email messages'''
-
-  if request.method == 'GET':
-    return render_template('404.html')
-  
-  form = request.form
-  contact = contact_funcs.get_contact_by_id(contact_id)
-  body = form.get('email')
-  #send email to contact using the gmail api
-
-  return redirect('/contacts')
-
-
-@app.route('/sequences', methods=['GET','POST'])
-@login_required
-def sequences():
-  '''sequences page'''
-  form = forms.SequenceForm()
-  return render_template('sequences.html', form=form)
-
-
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')
 @login_required
@@ -615,21 +563,14 @@ def phone():
 #       ws.send('error')
 #   ws.close()
 
-<<<<<<< HEAD
 
 #route for making phone calls
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 @app.route("/voice", methods=["GET","POST"])
 def voice():
     print('\n\n\n\n\n\n\n', request.form, '\n\n\n\n\n\n\n')
     id = request.form.get('contactID')
-<<<<<<< HEAD
     user = request.form.get('user')
     contact_funcs.add_call_to_contact(id, user)
-=======
-    contact_funcs.add_call_to_contact(id)
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
     resp = VoiceResponse()
     if request.form.get("To") == twilio_number:
         # Receiving an incoming call to our Twilio number
