@@ -86,7 +86,6 @@ function openForm(id) {
         </div>
 
       </div>`;
-<<<<<<< HEAD
     
     const text = document.getElementById('textBtn')
     const email = document.getElementById('emailBtn')
@@ -98,12 +97,6 @@ function openForm(id) {
     
     text.addEventListener('click', ()=>textContact(data));
     email.addEventListener('click', ()=>emailContact(data));
-=======
-    document.getElementById('textBtn')
-      .addEventListener('click', ()=>textContact(data));
-    document.getElementById('emailBtn')
-      .addEventListener('click', ()=>emailContact(data));
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
     document.getElementById('center').style.textAlign = 'center'
     document.getElementById('right').style.textAlign = 'right'
     footer.style.display = "block";
@@ -114,10 +107,6 @@ function openForm(id) {
     const emailContainer = document.getElementById('email-history-container')
     const callContainer = document.getElementById('call-history-container')
     const textContainer = document.getElementById('text-history-container')
-<<<<<<< HEAD
-
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
     emailContainer.innerHTML = ''
     callContainer.innerHTML = ''
     textContainer.innerHTML = ''
@@ -137,11 +126,8 @@ function openForm(id) {
         <div class="row">
           <div class="col-12">
             <p>To: ${email.to}</p>
-<<<<<<< HEAD
             <p>Subject: ${email.email_subject}</p>
-=======
             <p>Message:</p>
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
             <p>${email.email_body}</p>
           </div>
         </div>
@@ -284,19 +270,11 @@ function textContact(data) {
 }
 
 function emailContact(data) {
-<<<<<<< HEAD
   document.getElementById('emailModalForm').action = `/contacts/${data.contact_id}/email`
   document.getElementById('email-address').value = data.email
   document.getElementById('subject').value = ''
-=======
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
   document.getElementById('email-body').value = ''
   document.getElementById('emailContactModalTitle')
     .innerHTML = `<h5 class="m-0 p-0" style="display:inline;">Send An Email To:  </h5><h4 class="m-0 p-0" style="display:inline"> ${data.f_name} ${data.l_name} </h4>`
-  document.getElementById('textModalForm').action = `/contacts/${data.contact_id}/email`
-<<<<<<< HEAD
-  document.getElementById('subject').focus()
-=======
   document.getElementById('email-body').focus()
->>>>>>> d295af891404e74b3af57e6a58bfc46fa3c5c388
 }

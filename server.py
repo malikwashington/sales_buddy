@@ -529,30 +529,6 @@ def sequences():
   return render_template('sequences.html', form=form)
 
 
-@app.route('/contacts/<contact_id>/email', methods=['GET', 'POST'])
-@login_required
-def email_contact(contact_id):
-  '''route to stand as endpoint for email messages'''
-
-  if request.method == 'GET':
-    return render_template('404.html')
-  
-  form = request.form
-  contact = contact_funcs.get_contact_by_id(contact_id)
-  body = form.get('email')
-  #send email to contact using the gmail api
-
-  return redirect('/contacts')
-
-
-@app.route('/sequences', methods=['GET','POST'])
-@login_required
-def sequences():
-  '''sequences page'''
-  form = forms.SequenceForm()
-  return render_template('sequences.html', form=form)
-
-
 # @app.route('/phone', methods=['GET', 'POST'])
 @app.route('/phone')
 @login_required
