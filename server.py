@@ -153,7 +153,7 @@ def sign_up(uuid):
       if user_funcs.get_user_by_email(email):
         flash(f'Account already exists for {email}!', 'danger')
         flash(f'Sign in to continue', 'warning')
-        return render_template('/homepage.html', form=form)
+        return render_template('homepage.html', signInForm=forms.SignInForm, signUpForm=forms.RegistrationForm)
       else:
       #create user 
         sub_user = user_funcs.create_sub_user(user, fname, lname, email, password)
@@ -165,9 +165,9 @@ def sign_up(uuid):
     #if form is not valid flash errors
     if form.errors: 
       [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
-      return render_template('signup.html', form=form)
+      return render_template('homepage.html', signInForm=forms.SignInForm, signUpForm=forms.RegistrationForm)
   elif request.method == 'GET':
-    return render_template('/signup.html', form=form)
+    return redirect('/')
   
 #route for signing up/registering accounts  
 @app.route('/signup', methods=['GET','POST'])
@@ -189,7 +189,7 @@ def sign_up_main():
     #check if user exists
     if user_funcs.get_user_by_email(email):
       flash(f'Account already exists for {email}!', 'danger')
-      return render_template('/signup.html', form=form)
+      return redirect('/')
     else:
     #create user 
       user = user_funcs.create_user(fname, lname, email, password)
@@ -200,8 +200,8 @@ def sign_up_main():
   #if form is not valid flash errors
   if form.errors: 
     [flash(f'{error[0]}', 'danger') for error in form.errors.values()]
-    return render_template('signup.html', form=form)
-  return render_template('signup.html', form=form)
+    return redirect('/')
+  return redirect('/')
 
 #password reset route
 @app.route('/password-reset', methods=['GET', 'POST'])
@@ -473,11 +473,11 @@ def delete_existing_contact(contact_id):
   
   #delete contact
   full_name = contact_funcs.get_contact_by_id(contact_id).full_name
-  contact_funcs.delete_contact_by_id(contact_id)
+  contact_funcs.delete_contact(contact_id)
 
   flash(f'Contact {full_name} deleted!', 'success')
   
-  return redirect('/contacts')
+  return redirect('/prospects')
 
 
 #route to send text to a contact
